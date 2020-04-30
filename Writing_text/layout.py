@@ -1,8 +1,5 @@
-#################################
-#####                       #####
-#####     LAYOUT MODULE     #####
-#####                       #####
-#################################
+
+#####     LAYOUT DEFINITION     #####
 
 # Some functions that define the layout of the report are implemented in this module.
 # It includes: document layout, header, footer, styles, tables, ...
