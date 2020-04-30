@@ -1,12 +1,28 @@
 import numpy as np
 from datetime import date
 from docx import Document
+import os
 
 import text_reading
 
+# name of the directory containing the input files
+input_directory = 'Inputs'
+
+# path 
+text_input_file = 'Text_input.docx'
+text_input_directory = os.path.dirname(text_input_file)
+text_input_path = os.path.join(text_input_directory, input_directory, text_input_file)
+
+definitions_file = 'Terms_definitions.docx'
+definitions_directory = os.path.dirname(text_input_file)
+definitions_path = os.path.join(definitions_directory, input_directory, definitions_file)
+
+
+
+
 # load text_input file
-text_input = Document('text_input.docx')
-definitions = Document('terms_definitions.docx')
+text_input = Document(text_input_path)
+definitions = Document(definitions_path)
 
 # report information table
 tab_report = text_input.tables[0]
