@@ -1,12 +1,7 @@
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.section import WD_SECTION
-from docx.shared import Pt, RGBColor
-from docx.enum.dml import MSO_COLOR_TYPE
 
-import layout
-import text
-import text_writing
+from Writing_text import text, text_writing, layout
 
 # create document
 document = Document()

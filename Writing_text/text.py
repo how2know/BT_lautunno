@@ -3,12 +3,12 @@ from datetime import date
 from docx import Document
 import os
 
-import text_reading
+from Reading_text import text_reading
 
 # name of the directory containing the input files
 input_directory = 'Inputs'
 
-# path 
+# path
 text_input_file = 'Text_input.docx'
 text_input_directory = os.path.dirname(text_input_file)
 text_input_path = os.path.join(text_input_directory, input_directory, text_input_file)
