@@ -1,3 +1,8 @@
+#####     TEXT ATTRIBUTION     #####
+
+# All texts that should be writen in the report is stored in variables in this module.
+# It includes: title, subtitles, paragraphs, tables entries, ...
+
 import numpy as np
 from datetime import date
 from docx import Document

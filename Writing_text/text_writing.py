@@ -1,6 +1,6 @@
 from Writing_text import layout
 
-
+# write the title and return it as a paragraph
 def write_title(document, text):
     title = document.add_paragraph(text)
     title.style = document.styles['Title']

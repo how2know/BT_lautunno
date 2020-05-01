@@ -1,4 +1,3 @@
-
 #####     LAYOUT DEFINITION     #####
 
 # Some functions that define the layout and formatting of the report are implemented in this module.
