@@ -9,6 +9,7 @@ from docx import Document
 
 from Reading_text import text_reading
 
+
 # name of the directory and the input files
 input_directory = 'Inputs'
 text_input_file = 'Text_input.docx'

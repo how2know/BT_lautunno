@@ -2,11 +2,15 @@ from Writing_text import layout
 
 # write the title and return it as a paragraph
 def write_title(document, text):
-    title = document.add_paragraph(text)
-    title.style = document.styles['Title']
+    title = document.add_paragraph(text, 'Title')
     layout.insert_horizontal_border(title)
 
     return title
+
+# write an header of two lines
+def write_header(first_line, second_line, first_line_content, second_line_content):
+    first_line.text = first_line_content
+    second_line.text = second_line_content
 
 
 def write_chapter(document, heading_title, heading_level, paragraphs):

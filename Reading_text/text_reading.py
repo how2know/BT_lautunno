@@ -6,12 +6,10 @@ import os
 
 # return the path of a file given its name and the name of its directory
 def get_path(file_name, directory_name):
-    file = file_name
-    text_input_directory = os.path.dirname(file)
-    path = os.path.join(text_input_directory, directory_name, file)
+    text_input_directory = os.path.dirname(file_name)
+    path = os.path.join(text_input_directory, directory_name, file_name)
 
     return path
-
 
 
 #  find a heading with his title and style and return the corresponding paragraph index

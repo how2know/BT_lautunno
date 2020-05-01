@@ -4,6 +4,7 @@ import os
 
 from Writing_text import text, text_writing, layout
 
+from docx.enum.style import WD_STYLE_TYPE
 
 if __name__ == '__main__':
     # file name of the report
@@ -59,7 +60,11 @@ if __name__ == '__main__':
     layout.define_page_format(section2)
 
     # add a header
-    layout.create_header(section2, text.first_header, text.second_header)
+    header = layout.create_header(section2)
+    text_writing.write_header(header.paragraphs[0], header.paragraphs[1], text.first_header, text.second_header)
+
+
+
 
     text_writing.write_chapter(document, text.purpose_title, 1, text.purpose_paragraphs)
 
@@ -96,6 +101,14 @@ if __name__ == '__main__':
         for j in range(len(text.list_of_paragraphs[i])):
             document.add_paragraph(text.list_of_paragraphs[i][j].text)
     '''
+
+    styles = document.styles
+
+    paragraph_styles = [
+        s for s in styles if s.type == WD_STYLE_TYPE.PARAGRAPH
+    ]
+    for style in paragraph_styles:
+        print(style.name)
 
     # save the report
     document.save(filename)
