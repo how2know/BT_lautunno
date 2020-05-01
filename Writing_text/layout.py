@@ -1,15 +1,16 @@
 
 #####     LAYOUT DEFINITION     #####
 
-# Some functions that define the layout of the report are implemented in this module.
+# Some functions that define the layout and formatting of the report are implemented in this module.
 # It includes: document layout, header, footer, styles, tables, ...
 
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_TAB_LEADER
 from docx.enum.section import WD_SECTION, WD_ORIENT
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
-from docx.oxml.ns import nsdecls
+from docx.oxml.ns import nsdecls, qn
 from docx.oxml import parse_xml
+from docx.oxml.shared import OxmlElement
 
 # define some colors
 black = RGBColor(0, 0, 0)                  # Hex: 000000
@@ -29,7 +30,6 @@ def define_page_format(section):
 # define the characteristics of a style of a document
 def style_definition(document, name, font, size, color, alignment, italic, bold):
     style = document.styles[name]                                   # name of the style you want to define
-    # copied from: https://github.com/python-openxml/python-docx/issues/366
     try:
         style.element.xpath('w:rPr/w:rFonts')[0].attrib.clear()     # this let us modify the font of some styles that are kind of "blocked"
     except IndexError:                                              # pass the styles for which this does not work
@@ -94,3 +94,27 @@ def define_table_style(table):
     for cell in table.rows[0].cells:
         shading_elm = parse_xml(r'<w:shd {} w:fill="D0CECE"/>'.format(nsdecls('w')))
         cell._tc.get_or_add_tcPr().append(shading_elm)
+
+
+
+# insert an horizontal border under a given paragraph
+# copied from: https://github.com/python-openxml/python-docx/issues/105
+def insert_horizontal_border(paragraph):
+    p = paragraph._p  # p is the <w:p> XML element
+    pPr = p.get_or_add_pPr()
+    pBdr = OxmlElement('w:pBdr')
+    pPr.insert_element_before(pBdr,
+        'w:shd', 'w:tabs', 'w:suppressAutoHyphens', 'w:kinsoku', 'w:wordWrap',
+        'w:overflowPunct', 'w:topLinePunct', 'w:autoSpaceDE', 'w:autoSpaceDN',
+        'w:bidi', 'w:adjustRightInd', 'w:snapToGrid', 'w:spacing', 'w:ind',
+        'w:contextualSpacing', 'w:mirrorIndents', 'w:suppressOverlap', 'w:jc',
+        'w:textDirection', 'w:textAlignment', 'w:textboxTightWrap',
+        'w:outlineLvl', 'w:divId', 'w:cnfStyle', 'w:rPr', 'w:sectPr',
+        'w:pPrChange'
+    )
+    bottom = OxmlElement('w:bottom')
+    bottom.set(qn('w:val'), 'single')
+    bottom.set(qn('w:sz'), '6')
+    bottom.set(qn('w:space'), '1')
+    bottom.set(qn('w:color'), 'auto')
+    pBdr.append(bottom)

@@ -13,8 +13,7 @@ section1 = document.sections[0]
 layout.define_page_format(section1)
 
 # add title
-title = document.add_heading(text.title, 0)
-title.style = document.styles['Title']
+title = text_writing.write_title(document, text.title)
 
 # add subtitle
 subtitle = document.add_heading(text.subtitle, 0)
