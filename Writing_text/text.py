@@ -6,24 +6,17 @@
 import numpy as np
 from datetime import date
 from docx import Document
-import os
 
 from Reading_text import text_reading
 
-# name of the directory containing the input files
+# name of the directory and the input files
 input_directory = 'Inputs'
-
-# path
 text_input_file = 'Text_input.docx'
-text_input_directory = os.path.dirname(text_input_file)
-text_input_path = os.path.join(text_input_directory, input_directory, text_input_file)
-
 definitions_file = 'Terms_definitions.docx'
-definitions_directory = os.path.dirname(text_input_file)
-definitions_path = os.path.join(definitions_directory, input_directory, definitions_file)
 
-
-
+# path of the input files
+text_input_path = text_reading.get_path(text_input_file, input_directory)
+definitions_path = text_reading.get_path(definitions_file, input_directory)
 
 # load text_input file
 text_input = Document(text_input_path)
