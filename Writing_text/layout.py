@@ -97,7 +97,6 @@ def define_table_style(table):
 
 
 # insert an horizontal border under a given paragraph
-# copied from: https://github.com/python-openxml/python-docx/issues/105
 def insert_horizontal_border(paragraph):
     p = paragraph._p  # p is the <w:p> XML element
     pPr = p.get_or_add_pPr()
