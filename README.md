@@ -1,2 +1,2 @@
 # BT_lautunno
-Bachelor Thesis
+This project is currently in progress. It is realized as part of my bachelor thesis.
