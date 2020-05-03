@@ -1,4 +1,4 @@
-# BT_lautunno
+# Automated Documents Generation for Usability Testing based on Eye Tracking Date
 This project is currently in progress.
 ## Context and motivation
 The development of medical devices, including all performed testing, must be documented according to standards that describe the processes of usability engineering. Writing this documentation is often a long and repetitive task. Therefore, I will develop a software that generates documents automatically as part of my Bachelor thesis.
