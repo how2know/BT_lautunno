@@ -3,6 +3,8 @@ from docx.enum.section import WD_SECTION
 import os
 
 from Writing_text import text, text_writing, layout
+from Reading_text import text_reading
+
 
 from docx.enum.style import WD_STYLE_TYPE
 
@@ -102,13 +104,16 @@ if __name__ == '__main__':
             document.add_paragraph(text.list_of_paragraphs[i][j].text)
     '''
 
+    '''
+    # return all styles of the document
     styles = document.styles
-
+    
     paragraph_styles = [
         s for s in styles if s.type == WD_STYLE_TYPE.PARAGRAPH
     ]
     for style in paragraph_styles:
         print(style.name)
+    '''
 
     # save the report
     document.save(filename)

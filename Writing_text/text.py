@@ -19,7 +19,7 @@ definitions_file = 'Terms_definitions.docx'
 text_input_path = text_reading.get_path(text_input_file, input_directory)
 definitions_path = text_reading.get_path(definitions_file, input_directory)
 
-# load text_input file
+# load text input files with python-docx
 text_input = Document(text_input_path)
 definitions = Document(definitions_path)
 
@@ -130,6 +130,10 @@ conclusion_title = 'Conclusion'
 conclusion_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, conclusion_paragraphs, conclusion_title, 'Heading 1')
 
+
+# read dropdown lists from text input file
+dd_lists_values = []
+text_reading.read_dropdown_lists(text_input_file, dd_lists_values)
 
 
 

@@ -3,6 +3,8 @@
 # Functions that read the text from the text input file are implemented in this module.
 
 import os
+from zipfile import ZipFile
+from bs4 import BeautifulSoup
 
 # return the path of a file given its name and the name of its directory
 def get_path(file_name, directory_name):
@@ -65,3 +67,20 @@ def find_definitions(table, columns_indexes_list, definitions_list):
         for i in range(len(table.columns[j].cells)):                   # loop over all cells of the columns
             if table.cell(i, j).text == 'Yes':                         # find all cells that contains "Yes"
                 definitions_list.append(table.cell(i, j - 1).text)     # store the terms that correspond to a "Yes"
+
+
+# read dropdown lists and store their value in a list
+def read_dropdown_lists(file_name, list_of_value):
+
+    # open docx file as a zip file and store its relevant xml data
+    zip_file = ZipFile(file_name)
+    xml_data = zip_file.read('word/document.xml')
+    zip_file.close()
+
+    # parse the xml data with BeautifulSoup
+    soup = BeautifulSoup(xml_data, 'xml')
+
+    # look for all values of dropdown lists in the data and store them
+    dd_lists_content = soup.find_all('sdtContent')
+    for i in dd_lists_content:
+        list_of_value.append(i.find('t').string)
