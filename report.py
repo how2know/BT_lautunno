@@ -115,4 +115,3 @@ if __name__ == '__main__':
 
     # open the report with the default handler for .docx (Word)
     os.startfile(filename)
-

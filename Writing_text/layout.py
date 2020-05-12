@@ -65,7 +65,7 @@ def add_tab_stops(paragraph):
 
 # create a header with two lines for a section and return it
 def create_header(section):
-    header = section.header                                      
+    header = section.header
     header.is_linked_to_previous = False                         # the header of this section is not linked to the previous section
     header_first_line = header.paragraphs[0]
     header_second_line = header.add_paragraph()
