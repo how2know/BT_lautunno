@@ -9,6 +9,14 @@ from docx import Document
 
 from Reading_text import text_reading
 
+class chapter_input:
+
+    def __init__(self, heading, parameter_table, picture_table):
+        heading = heading
+        parameter_table = parameter_table
+        picture_table = picture_table
+
+
 
 # name of the directory and the input files
 input_directory = 'Inputs'
@@ -23,6 +31,26 @@ definitions_path = text_reading.get_path(definitions_file, input_directory)
 text_input = Document(text_input_path)
 definitions = Document(definitions_path)
 
+'''
+# attribution of all tables in the text input file
+tab_report = text_input.tables[0]
+tab_study = text_input.tables[1]
+tab_header = text_input.tables[2]
+tab_approval = text_input.tables[3]
+tab_purpose_param =
+tab_purpose_pic =
+tab_background_param =
+tab_background_pic =
+tab_scope_param =
+tab_scope_pic =
+tab_ethics_param =
+tab_ethics_pic =
+tab_device_param =
+tab_device_pic =
+tab_goal_param =
+tab_goal_pic =
+'''
+
 # report information table
 tab_report = text_input.tables[0]
 title = tab_report.cell(0, 1).text
@@ -30,7 +58,7 @@ subtitle = tab_report.cell(1, 1).text
 
 
 # table entries of the document approval table
-tab_approval = text_input.tables[2]
+tab_approval = text_input.tables[3]
 name_author = tab_approval.cell(0, 1).text
 function_author = tab_approval.cell(1, 1).text
 name_reviewer = tab_approval.cell(2, 1).text
@@ -42,15 +70,17 @@ approval_cells = np.array((['Role', 'Name / Function', 'Date', 'Signature'],
                            ['Reviewer', name_reviewer, '', ''],
                            ['Approver', name_approver, '', '']))
 
+
 # table of content title
 toc_title = 'Table of content'
+
 
 # today's date
 today_date = date.today()
 date_str = today_date.strftime('%d.%m.%Y')
 
 # table entries of the header in the second section
-tab_header = text_input.tables[1]
+tab_header = text_input.tables[2]
 header_firm = tab_header.cell(0,1).text
 header_title = tab_header.cell(1,1).text
 header_ID = tab_header.cell(2,1).text
