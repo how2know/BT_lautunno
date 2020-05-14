@@ -51,7 +51,7 @@ subtitle = tab_report.cell(1, 1).text
 
 
 # table entries of the document approval table
-tab_approval = text_input.tables[3]
+tab_approval = text_input.tables[4]
 name_author = tab_approval.cell(0, 1).text
 function_author = tab_approval.cell(1, 1).text
 name_reviewer = tab_approval.cell(2, 1).text
@@ -62,7 +62,6 @@ approval_cells = np.array((['Role', 'Name / Function', 'Date', 'Signature'],
                            ['Author', name_author, '', ''],
                            ['Reviewer', name_reviewer, '', ''],
                            ['Approver', name_approver, '', '']))
-
 
 # table of content title
 toc_title = 'Table of content'
@@ -157,7 +156,6 @@ text_reading.paragraph_after_heading(text_input.paragraphs, conclusion_paragraph
 # read dropdown lists from text input file
 dd_lists_values = []
 text_reading.read_dropdown_lists(text_input_file, dd_lists_values)
-
 
 
 

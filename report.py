@@ -96,24 +96,6 @@ def main():
 
     text_writing.write_chapter(document, text.conclusion_title, 1, text.conclusion_paragraphs)
 
-    '''
-    for i in range(len(text.list_of_paragraphs)):
-        document.add_heading(text.list_of_title[i].text, 1)
-        for j in range(len(text.list_of_paragraphs[i])):
-            document.add_paragraph(text.list_of_paragraphs[i][j].text)
-    '''
-
-    '''
-    # return all styles of the document
-    styles = document.styles
-
-    paragraph_styles = [
-        s for s in styles if s.type == WD_STYLE_TYPE.PARAGRAPH
-    ]
-    for style in paragraph_styles:
-        print(style.name)
-    '''
-
     # save the report
     document.save(filename)
 

@@ -1,10 +1,9 @@
 class Chapter:
     '''A class that defines a chapter ...'''
 
-    def __init__(self, document, title, style, parameter_table, picture_table):
+    def __init__(self, document, title, parameter_table, picture_table):
         self.document = document
         self.title = title
-        self.style = style
         self.parameter_table = parameter_table
         self.picture_table = picture_table
 
@@ -31,8 +30,18 @@ class Chapter:
             list_of_styles.append(self.document.paragraphs[i].style.name)  # store all styles in a given list
 
     # store all paragraphs between a given heading and the next one
-    def paragraph_after_heading(self, paragraphs, list_of_paragraphs):
+    def paragraph_after_heading(self, list_of_paragraphs):
         heading_index = self.heading_name_index()  # index of the given heading
         next_index = self.next_heading_index(heading_index)  # index of the next heading
         for i in range(heading_index + 1, next_index):  # loop over all paragraphs between the given heading and the next one
             list_of_paragraphs.append(self.document.paragraphs[i])  # store all paragraphs in a given list
+
+    @property
+    def paragraphs(self):
+        list_of_paragraphs = []
+        heading_index = self.heading_name_index()  # index of the given heading
+        next_index = self.next_heading_index(heading_index)  # index of the next heading
+        for i in range(heading_index + 1, next_index):  # loop over all paragraphs between the given heading and the next one
+            list_of_paragraphs.append(self.document.paragraphs[i])  # store all paragraphs in a given list
+
+        return list_of_paragraphs
