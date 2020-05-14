@@ -1,4 +1,5 @@
 class Chapter:
+    '''A class that defines a chapter ...'''
 
     def __init__(self, document, title, style, parameter_table, picture_table):
         self.document = document

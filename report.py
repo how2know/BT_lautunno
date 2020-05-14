@@ -8,7 +8,9 @@ from Reading_text import text_reading
 
 from docx.enum.style import WD_STYLE_TYPE
 
-if __name__ == '__main__':
+from classes import *
+
+def main():
     # file name of the report
     filename = 'report.docx'
 
@@ -65,9 +67,6 @@ if __name__ == '__main__':
     header = layout.create_header(section2)
     text_writing.write_header(header.paragraphs[0], header.paragraphs[1], text.first_header, text.second_header)
 
-
-
-
     text_writing.write_chapter(document, text.purpose_title, 1, text.purpose_paragraphs)
 
     text_writing.write_chapter(document, text.background_title, 1, text.background_paragraphs)
@@ -107,7 +106,7 @@ if __name__ == '__main__':
     '''
     # return all styles of the document
     styles = document.styles
-    
+
     paragraph_styles = [
         s for s in styles if s.type == WD_STYLE_TYPE.PARAGRAPH
     ]
@@ -120,3 +119,6 @@ if __name__ == '__main__':
 
     # open the report with the default handler for .docx (Word)
     os.startfile(filename)
+
+if __name__ == '__main__':
+    main()
