@@ -9,13 +9,6 @@ from docx import Document
 
 from Reading_text import text_reading
 
-class chapter_input:
-
-    def __init__(self, heading, parameter_table, picture_table):
-        heading = heading
-        parameter_table = parameter_table
-        picture_table = picture_table
-
 
 
 # name of the directory and the input files
