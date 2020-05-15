@@ -6,13 +6,6 @@ import os
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 
-class chapter_input():
-
-    def __init__(self, heading, parameter_table, picture_table):
-        heading = heading
-        parameter_table = parameter_table
-        picture_table = picture_table
-
 
 # return the path of a file given its name and the name of its directory
 def get_path(file_name, directory_name):
