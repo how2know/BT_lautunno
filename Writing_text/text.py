@@ -136,11 +136,11 @@ environment_title = 'Use environment'
 environment_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, environment_paragraphs, environment_title, 'Heading 2')
 
-scenarios_title = 'Use scenarios / Use cases'
+scenarios_title = 'Use scenarios'
 scenarios_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, scenarios_paragraphs, scenarios_title, 'Heading 2')
 
-setup_title = 'Set up'
+setup_title = 'Setup'
 setup_paragraphs = []
 text_reading.paragraph_after_heading_different(text_input.paragraphs, setup_paragraphs, setup_title, 'Heading 2', 'Heading 1')
 

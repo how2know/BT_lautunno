@@ -100,38 +100,36 @@ def main():
     device = Chapter(report, text_input, 'Device specifications', 1)
     device.write_chapter()
 
-
-    # text_writing.write_chapter(report, text.background_title, 1, text.background_paragraphs)
-
-    # text_writing.write_chapter(report, text.scope_title, 1, text.scope_paragraphs)
-
-
-
-    # text_writing.write_chapter(report, text.ethics_title, 1, text.ethics_paragraphs)
-
-    # text_writing.write_chapter(report, text.device_title, 1, text.device_paragraphs)
-
     report.add_heading(text.procedure_title, 1)
 
-    text_writing.write_chapter(report, text.goal_title, 2, text.goal_paragraphs)
+    goal = Chapter(report, text_input, 'Goal', 2)
+    goal.write_chapter()
 
-    text_writing.write_chapter(report, text.participants_title, 2, text.participants_paragraphs)
+    # text_writing.write_chapter(report, text.goal_title, 2, text.goal_paragraphs)
 
-    text_writing.write_chapter(report, text.environment_title, 2, text.environment_paragraphs)
+    participants = Chapter(report, text_input, 'Participants', 2)
+    participants.write_chapter()
 
-    text_writing.write_chapter(report, text.scenarios_title, 2, text.scenarios_paragraphs)
+    environment = Chapter(report, text_input, 'Use environment', 2)
+    environment.write_chapter()
 
-    text_writing.write_chapter(report, text.setup_title, 2, text.setup_paragraphs)
+    scenarios = Chapter(report, text_input, 'Use scenarios', 2)
+    scenarios.write_chapter()
+
+    setup = Chapter(report, text_input, 'Setup', 2)
+    setup.write_chapter()
 
     text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
 
-    text_writing.write_chapter(report, text.conclusion_title, 1, text.conclusion_paragraphs)
+    conclusion = Chapter(report, text_input, 'Conclusion', 1)
+    conclusion.write_chapter()
 
     # save the report
     report.save(report_file)
 
     # open the report with the default handler for .docx (Word)
     os.startfile(report_file)
+
 
 if __name__ == '__main__':
     main()

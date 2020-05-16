@@ -43,15 +43,41 @@ class Chapter:
     #  find a heading with his title and style and return the corresponding paragraph index
     def heading_name_index(self):
         for i in range(len(self.text_input.paragraphs)):  # loop over all paragraphs
+            if self.text_input.paragraphs[i].style.name == 'Heading 1':  # look for paragraphs with corresponding style
+                if self.text_input.paragraphs[i].text == self.title:  # look for paragraphs with corresponding title
+                    return i  # return the index of the paragraphs
+            elif self.text_input.paragraphs[i].style.name == 'Heading 2':  # look for paragraphs with corresponding style
+                if self.text_input.paragraphs[i].text == self.title:  # look for paragraphs with corresponding title
+                    return i  # return the index of the paragraphs
+            elif self.text_input.paragraphs[i].style.name == 'Heading 3':  # look for paragraphs with corresponding style
+                if self.text_input.paragraphs[i].text == self.title:  # look for paragraphs with corresponding title
+                    return i  # return the index of the paragraphs
+            elif self.text_input.paragraphs[i].style.name == 'Heading 4':  # look for paragraphs with corresponding style
+                if self.text_input.paragraphs[i].text == self.title:  # look for paragraphs with corresponding title
+                    return i  # return the index of the paragraphs
+
+            '''
             if self.text_input.paragraphs[i].style.name == 'Heading {}'.format(1 or 2 or 3 or 4):  # look for paragraphs with corresponding style
                 if self.text_input.paragraphs[i].text == self.title:  # look for paragraphs with corresponding title
                     return i  # return the index of the paragraphs
+            '''
 
     # return the index of the next heading corresponding to a style given the index of the previous heading
     def next_heading_index(self, previous_index):
         for i in range(previous_index + 1, len(self.text_input.paragraphs)):  # loop over paragraphs coming after the given paragraph index
+            if self.text_input.paragraphs[i].style.name == 'Heading 1':  # look for paragraphs with corresponding style
+                    return i  # return the index of the paragraphs
+            elif self.text_input.paragraphs[i].style.name == 'Heading 2':  # look for paragraphs with corresponding style
+                    return i  # return the index of the paragraphs
+            elif self.text_input.paragraphs[i].style.name == 'Heading 3':  # look for paragraphs with corresponding style
+                    return i  # return the index of the paragraphs
+            elif self.text_input.paragraphs[i].style.name == 'Heading 4':  # look for paragraphs with corresponding style
+                    return i  # return the index of the paragraphs
+
+            '''
             if self.text_input.paragraphs[i].style.name == 'Heading {}'.format(1 or 2 or 3 or 4):  # look for paragraphs with corresponding style
                 return i  # return the index of the paragraph
+            '''
 
     # store all paragraphs and their corresponding style between a given heading and the next one
     def paragraph_after_heading_with_styles(self, list_of_paragraphs, list_of_styles):
@@ -75,4 +101,5 @@ class Chapter:
     def write_chapter(self):
         self.report.add_heading(self.title, self.heading_level)
         for i in range(len(self.paragraphs)):
-            self.report.add_paragraph(self.paragraphs[i].text)
+            paragraph = self.report.add_paragraph(self.paragraphs[i].text)
+            paragraph.style.name = 'Normal'
