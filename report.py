@@ -12,27 +12,40 @@ from classes import *
 
 def main():
     # file name of the report
-    filename = 'report.docx'
+    report_file = 'report.docx'
 
     # create document
-    document = Document()
+    report = Document()
+
+    # name of the directory and the input files
+    input_directory = 'Inputs'
+    text_input_file = 'Text_input.docx'
+    definitions_file = 'Terms_definitions.docx'
+
+    # path of the input files
+    text_input_path = text_reading.get_path(text_input_file, input_directory)
+    definitions_path = text_reading.get_path(definitions_file, input_directory)
+
+    # load text input files with python-docx
+    text_input = Document(text_input_path)
+    definitions = Document(definitions_path)
 
     # define all styles used in the document
-    layout.define_all_styles(document)
+    layout.define_all_styles(report)
 
     # section1 includes cover page and table of content
-    section1 = document.sections[0]
+    section1 = report.sections[0]
     layout.define_page_format(section1)
 
     # add title
-    title = text_writing.write_title(document, text.title)
+    title = text_writing.write_title(report, text.title)
 
     # add subtitle
-    subtitle = document.add_heading(text.subtitle, 0)
-    subtitle.style = document.styles['Subtitle']
+    subtitle = report.add_heading(text.subtitle, 0)
+    subtitle.style = report.styles['Subtitle']
 
     # create table of the document approval
-    approval_table = document.add_table(rows=4, cols=4)
+    approval_table = report.add_table(rows=4, cols=4)
 
     # approval_table.style = 'Table Grid'
     layout.define_table_style(approval_table)
@@ -54,53 +67,71 @@ def main():
         approval_table.rows[i].cells[1].paragraphs[1].runs[0].font.italic = True
 
     # add a page break
-    document.add_page_break()
+    report.add_page_break()
 
     # add table of content
-    table_of_content = document.add_heading(text.toc_title, 1)
+    table_of_content = report.add_heading(text.toc_title, 1)
 
     # add a new section
-    section2 = document.add_section(WD_SECTION.NEW_PAGE)
+    section2 = report.add_section(WD_SECTION.NEW_PAGE)
     layout.define_page_format(section2)
 
     # add a header
     header = layout.create_header(section2)
     text_writing.write_header(header.paragraphs[0], header.paragraphs[1], text.first_header, text.second_header)
 
-    text_writing.write_chapter(document, text.purpose_title, 1, text.purpose_paragraphs)
+    '''  create and write all the chapters  '''
 
-    text_writing.write_chapter(document, text.background_title, 1, text.background_paragraphs)
+    purpose = Chapter(report, text_input, 'Purpose', 1)
+    purpose.write_chapter()
 
-    text_writing.write_chapter(document, text.scope_title, 1, text.scope_paragraphs)
+    background = Chapter(report, text_input, 'Background', 1)
+    background.write_chapter()
 
-    text_writing.write_definitions_chapter(document, text.definitions_title, text.defined_terms, text.definitions_list,
+    scope = Chapter(report, text_input, 'Scope', 1)
+    scope.write_chapter()
+
+    text_writing.write_definitions_chapter(report, text.definitions_title, text.defined_terms, text.definitions_list,
                                            text.definitions_styles_list)
 
-    text_writing.write_chapter(document, text.ethics_title, 1, text.ethics_paragraphs)
+    ethics = Chapter(report, text_input, 'Ethics statement', 1)
+    ethics.write_chapter()
 
-    text_writing.write_chapter(document, text.device_title, 1, text.device_paragraphs)
+    device = Chapter(report, text_input, 'Device specifications', 1)
+    device.write_chapter()
 
-    document.add_heading(text.procedure_title, 1)
 
-    text_writing.write_chapter(document, text.goal_title, 2, text.goal_paragraphs)
+    # text_writing.write_chapter(report, text.background_title, 1, text.background_paragraphs)
 
-    text_writing.write_chapter(document, text.participants_title, 2, text.participants_paragraphs)
+    # text_writing.write_chapter(report, text.scope_title, 1, text.scope_paragraphs)
 
-    text_writing.write_chapter(document, text.environment_title, 2, text.environment_paragraphs)
 
-    text_writing.write_chapter(document, text.scenarios_title, 2, text.scenarios_paragraphs)
 
-    text_writing.write_chapter(document, text.setup_title, 2, text.setup_paragraphs)
+    # text_writing.write_chapter(report, text.ethics_title, 1, text.ethics_paragraphs)
 
-    text_writing.write_chapter(document, text.results_title, 1, text.results_paragraphs)
+    # text_writing.write_chapter(report, text.device_title, 1, text.device_paragraphs)
 
-    text_writing.write_chapter(document, text.conclusion_title, 1, text.conclusion_paragraphs)
+    report.add_heading(text.procedure_title, 1)
+
+    text_writing.write_chapter(report, text.goal_title, 2, text.goal_paragraphs)
+
+    text_writing.write_chapter(report, text.participants_title, 2, text.participants_paragraphs)
+
+    text_writing.write_chapter(report, text.environment_title, 2, text.environment_paragraphs)
+
+    text_writing.write_chapter(report, text.scenarios_title, 2, text.scenarios_paragraphs)
+
+    text_writing.write_chapter(report, text.setup_title, 2, text.setup_paragraphs)
+
+    text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
+
+    text_writing.write_chapter(report, text.conclusion_title, 1, text.conclusion_paragraphs)
 
     # save the report
-    document.save(filename)
+    report.save(report_file)
 
     # open the report with the default handler for .docx (Word)
-    os.startfile(filename)
+    os.startfile(report_file)
 
 if __name__ == '__main__':
     main()

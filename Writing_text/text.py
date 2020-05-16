@@ -51,7 +51,7 @@ subtitle = tab_report.cell(1, 1).text
 
 
 # table entries of the document approval table
-tab_approval = text_input.tables[4]
+tab_approval = text_input.tables[3]
 name_author = tab_approval.cell(0, 1).text
 function_author = tab_approval.cell(1, 1).text
 name_reviewer = tab_approval.cell(2, 1).text
@@ -81,7 +81,7 @@ header_ID = tab_header.cell(2,1).text
 first_header = '{} \t {} \t {}'.format(header_firm, header_title, header_ID)
 second_header = ' \t \t {}'.format(date_str)
 
-tab_definition = text_input.tables[3]
+tab_definition = text_input.tables[4]
 
 # store all terms that we want to define in a list
 defined_terms =[]
@@ -116,7 +116,7 @@ ethics_title = 'Ethics statement'
 ethics_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, ethics_paragraphs, ethics_title, 'Heading 1')
 
-device_title = 'Device specification'
+device_title = 'Device specifications'
 device_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, device_paragraphs, device_title, 'Heading 1')
 

@@ -25,17 +25,20 @@ class Chapter:
     DEFINITIONS_FILE = 'Terms_definitions.docx'
     INPUTS_DIRECTORY = 'Inputs'
 
-    def __init__(self, title, parameter_table, picture_table):
-        self.text_input = Document(self.TEXT_INPUT_FILE)
-        self.report = Document(self.REPORT_FILE)
+    def __init__(self, report_document, text_input_document, title, heading_level):
+        self.report = report_document
+        self.text_input = text_input_document
         self.title = title
-        self.parameter_table = parameter_table
-        self.picture_table = picture_table
+        self.heading_level = heading_level
+        # self.parameter_table = parameter_table
+        # self.picture_table = picture_table
 
+    '''
     @ property
     def text_input(self):
         text_input = File(self.TEXT_INPUT_FILE, self.INPUTS_DIRECTORY)
         return Document(text_input.path)
+    '''
 
     #  find a heading with his title and style and return the corresponding paragraph index
     def heading_name_index(self):
@@ -69,7 +72,7 @@ class Chapter:
 
         return list_of_paragraphs
 
-    def write_chapter(self, heading_level):
-        self.report.add_heading(self.title, heading_level)
+    def write_chapter(self):
+        self.report.add_heading(self.title, self.heading_level)
         for i in range(len(self.paragraphs)):
             self.report.add_paragraph(self.paragraphs[i].text)
