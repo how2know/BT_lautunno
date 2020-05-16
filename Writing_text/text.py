@@ -155,7 +155,7 @@ text_reading.paragraph_after_heading(text_input.paragraphs, conclusion_paragraph
 
 # read dropdown lists from text input file
 dd_lists_values = []
-text_reading.read_dropdown_lists(text_input_file, dd_lists_values)
+text_reading.read_dropdown_lists(text_input_path, dd_lists_values)
 
 
 
