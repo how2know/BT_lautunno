@@ -82,46 +82,46 @@ def main():
 
     '''  create and write all the chapters  '''
 
-    purpose = Chapter(report, text_input, 'Purpose', 1)
+    purpose = Chapter(report, text_input_path, 'Purpose', 1, 4)
     purpose.write_chapter()
 
-    background = Chapter(report, text_input, 'Background', 1)
+    background = Chapter(report, text_input_path, 'Background', 1, 5)
     background.write_chapter()
 
-    scope = Chapter(report, text_input, 'Scope', 1)
+    scope = Chapter(report, text_input_path, 'Scope', 1, 6)
     scope.write_chapter()
 
     text_writing.write_definitions_chapter(report, text.definitions_title, text.defined_terms, text.definitions_list,
                                            text.definitions_styles_list)
 
-    ethics = Chapter(report, text_input, 'Ethics statement', 1)
+    ethics = Chapter(report, text_input_path, 'Ethics statement', 1, 10)
     ethics.write_chapter()
 
-    device = Chapter(report, text_input, 'Device specifications', 1)
+    device = Chapter(report, text_input_path, 'Device specifications', 1, 11)
     device.write_chapter()
 
     report.add_heading(text.procedure_title, 1)
 
-    goal = Chapter(report, text_input, 'Goal', 2)
+    goal = Chapter(report, text_input_path, 'Goal', 2, 12)
     goal.write_chapter()
 
     # text_writing.write_chapter(report, text.goal_title, 2, text.goal_paragraphs)
 
-    participants = Chapter(report, text_input, 'Participants', 2)
+    participants = Chapter(report, text_input_path, 'Participants', 2, 14)
     participants.write_chapter()
 
-    environment = Chapter(report, text_input, 'Use environment', 2)
+    environment = Chapter(report, text_input_path, 'Use environment', 2, 15)
     environment.write_chapter()
 
-    scenarios = Chapter(report, text_input, 'Use scenarios', 2)
+    scenarios = Chapter(report, text_input_path, 'Use scenarios', 2, 17)
     scenarios.write_chapter()
 
-    setup = Chapter(report, text_input, 'Setup', 2)
+    setup = Chapter(report, text_input_path, 'Setup', 2, 18)
     setup.write_chapter()
 
     text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
 
-    conclusion = Chapter(report, text_input, 'Conclusion', 1)
+    conclusion = Chapter(report, text_input_path, 'Conclusion', 1, 23)
     conclusion.write_chapter()
 
     # save the report

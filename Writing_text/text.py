@@ -81,7 +81,7 @@ header_ID = tab_header.cell(2,1).text
 first_header = '{} \t {} \t {}'.format(header_firm, header_title, header_ID)
 second_header = ' \t \t {}'.format(date_str)
 
-tab_definition = text_input.tables[4]
+tab_definition = text_input.tables[7]
 
 # store all terms that we want to define in a list
 defined_terms =[]

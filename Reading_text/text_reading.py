@@ -85,3 +85,11 @@ def read_dropdown_lists(file_name, list_of_value):
     dd_lists_content = soup.find_all('sdtContent')
     for i in dd_lists_content:
         list_of_value.append(i.find('t').string)
+
+
+#
+def parameters_from_standard_tables(text_input_document, table_index, parameters_dictionary):
+    for row in text_input_document.tables[table_index].rows:
+        key = row.cells[0].text
+        parameters_dictionary[key] = row.cells[1].text
+
