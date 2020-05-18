@@ -148,7 +148,12 @@ def main():
     setup = Chapter(report, text_input_path, 'Setup', tables)
     setup.write_chapter()
 
-    text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
+    report.add_heading(text.results_title, 1)
+
+    effectiveness_analysis = Results(report, text_input_path, 'Effectiveness analysis', tables)
+    effectiveness_analysis.visualization()
+
+    # text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
 
     conclusion = Chapter(report, text_input_path, 'Conclusion', tables)
     conclusion.write_chapter()

@@ -1,7 +1,10 @@
 from docx import Document
+from docx.oxml import parse_xml
+from docx.oxml.ns import nsdecls
 import os
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
+
 
 class File:
     ''' Class that defines a file '''
@@ -143,6 +146,7 @@ class Chapter:
             )
             paragraph.style.name = 'Normal'
 
+    '''
     # read dropdown lists and store their value in a list
     def dropdown_lists_value(self, file_name):
 
@@ -161,10 +165,9 @@ class Chapter:
         dd_lists_content = tables[self.parameter_table_index].find_all('sdtContent')
         for i in dd_lists_content:
             list_of_value.append(i.find('t').string)
+    '''
 
-
-
-
+'''
 class Parameters:
     def __init__(self, text_input_document):
         self.text_input = text_input_document
@@ -173,3 +176,79 @@ class Parameters:
         for row in self.text_input.tables[table_index].rows:
             key = row.cells[0].text
             parameters_dictionary[key] = row.cells[1].text
+'''
+
+class Results:
+    def __init__(self, report_document, text_input_path, title, list_of_tables):
+        self.report = report_document
+        self.text_input_path = text_input_path
+        self.text_input = Document(text_input_path)
+        self.title = title
+        self.list_of_tables = list_of_tables
+
+    def visualization(self):
+        # index of the input tables
+        task_table_index = self.list_of_tables.index('Effectiveness analysis tasks and problems table')
+        problem_table_index = self.list_of_tables.index('Effectiveness analysis problem type table')
+        video_table_index = self.list_of_tables.index('Effectiveness analysis video table')
+
+        # input tables
+        task_table = self.text_input.tables[task_table_index]
+        problem_table = self.text_input.tables[problem_table_index]
+        video_table = self.text_input.tables[video_table_index]
+
+        # color
+        light_grey_10 = 'D0CECE'
+        green = '00B050'
+        red = 'FF0000'
+        orange = 'FFC000'
+        yellow = 'FFFF00'
+
+        # create a table for the results visualization
+        result_table_rows = 6
+        result_table_cols = 11
+        result_table = self.report.add_table(result_table_rows, result_table_cols)
+        result_table.style = 'Table Grid'
+
+        list_of_problem_types = []
+        for i in range(1, result_table_rows):
+            list_of_problem_types.append(problem_table.columns[1].cells[i].text)
+
+        print(list_of_problem_types)
+
+        # color the cells of the first row in light_grey_10 (RGB Hex: D0CECE)
+        for cell in result_table.rows[0].cells:
+            shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), light_grey_10))
+            cell._tc.get_or_add_tcPr().append(shading_elm)
+
+        for i in range(result_table_rows):
+            for j in range(result_table_cols):
+                if i != 0 or j != 0:
+                    result_table.cell(i, j).text = task_table.cell(i, j).text
+
+        # color the cell according to the type of problem
+        for i in range(1, result_table_rows):
+            for j in range(1, result_table_cols):
+                cell = result_table.cell(i, j)
+
+                if cell.text:     # check if the text string is not empty
+                    index = int(cell.text)
+
+                    if list_of_problem_types[index-1] == 'Important problem':
+                        shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), orange))
+                        cell._tc.get_or_add_tcPr().append(shading_elm)
+
+                    if list_of_problem_types[index-1] == 'Marginal problem':
+                        shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), yellow))
+                        cell._tc.get_or_add_tcPr().append(shading_elm)
+
+                    if list_of_problem_types[index-1] == 'Critical problem':
+                        shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), red))
+                        cell._tc.get_or_add_tcPr().append(shading_elm)
+
+                else:
+                    shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), green))
+                    cell._tc.get_or_add_tcPr().append(shading_elm)
+
+
+
