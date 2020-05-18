@@ -93,3 +93,11 @@ def parameters_from_standard_tables(text_input_document, table_index, parameters
         key = row.cells[0].text
         parameters_dictionary[key] = row.cells[1].text
 
+
+#
+def get_parameters_from_tables(text_input_document, list_of_table, parameters_dictionary):
+    for table in ['Report table', 'Study table', 'Header table', 'Approval table']:
+        table_index = list_of_table.index(table)
+        for row in text_input_document.tables[table_index].rows:
+            key = row.cells[0].text
+            parameters_dictionary[key] = row.cells[1].text

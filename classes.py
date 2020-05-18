@@ -217,8 +217,6 @@ class Results:
         for i in range(1, result_table_rows):
             list_of_problem_types.append(problem_table.columns[1].cells[i].text)
 
-        print(list_of_problem_types)
-
         # write the information of the input table in the result table
         for i in range(result_table_rows):
             for j in range(result_table_cols):

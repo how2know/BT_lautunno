@@ -58,6 +58,14 @@ def main():
         'Conclusion parameter table',
     ]
 
+    parameters = {}
+
+    # text_reading.parameters_from_standard_tables(text_input, tables.index('Report table'), parameters)
+
+    text_reading.get_parameters_from_tables(text_input, tables, parameters)
+
+    print(parameters)
+
 
     # define all styles used in the document
     layout.define_all_styles(report)
