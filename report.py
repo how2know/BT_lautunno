@@ -82,6 +82,10 @@ def main():
         for j in range(0, 4):
             approval_table.cell(i, j).text = text.approval_cells[i, j]
 
+    # set the shading of the first row to light_grey_10 (RGB Hex: D0CECE)
+    for cell in approval_table.rows[0].cells:
+        layout.set_cell_shading(cell, 'D0CECE')
+
     # make the first row bold
     for col in approval_table.columns:
         col.cells[0].paragraphs[0].runs[0].font.bold = True

@@ -1,10 +1,13 @@
 from docx import Document
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
+from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 import os
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 
+from Writing_text import layout
 
 class File:
     ''' Class that defines a file '''
@@ -208,7 +211,7 @@ class Results:
         result_table_rows = 6
         result_table_cols = 11
         result_table = self.report.add_table(result_table_rows, result_table_cols)
-        result_table.style = 'Table Grid'
+        layout.define_table_style(result_table)
 
         list_of_problem_types = []
         for i in range(1, result_table_rows):
@@ -216,15 +219,22 @@ class Results:
 
         print(list_of_problem_types)
 
-        # color the cells of the first row in light_grey_10 (RGB Hex: D0CECE)
-        for cell in result_table.rows[0].cells:
-            shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), light_grey_10))
-            cell._tc.get_or_add_tcPr().append(shading_elm)
-
+        # write the information of the input table in the result table
         for i in range(result_table_rows):
             for j in range(result_table_cols):
-                if i != 0 or j != 0:
-                    result_table.cell(i, j).text = task_table.cell(i, j).text
+                if i != 0 or j != 0:     # skip the first cell
+                    cell = result_table.cell(i, j)
+                    cell.text = task_table.cell(i, j).text
+                    cell.paragraphs[0].runs[0].font.bold = True
+
+                    '''
+                    if j != 0:
+                        cell.paragraphs[0].style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    '''
+
+                    # color the cell of the first row and first column in light_grey_10
+                    if i == 0 or j == 0:
+                        layout.set_cell_shading(cell, light_grey_10)
 
         # color the cell according to the type of problem
         for i in range(1, result_table_rows):
@@ -235,20 +245,13 @@ class Results:
                     index = int(cell.text)
 
                     if list_of_problem_types[index-1] == 'Important problem':
-                        shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), orange))
-                        cell._tc.get_or_add_tcPr().append(shading_elm)
+                        layout.set_cell_shading(cell, orange)
 
                     if list_of_problem_types[index-1] == 'Marginal problem':
-                        shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), yellow))
-                        cell._tc.get_or_add_tcPr().append(shading_elm)
+                        layout.set_cell_shading(cell, yellow)
 
                     if list_of_problem_types[index-1] == 'Critical problem':
-                        shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), red))
-                        cell._tc.get_or_add_tcPr().append(shading_elm)
+                        layout.set_cell_shading(cell, red)
 
                 else:
-                    shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), green))
-                    cell._tc.get_or_add_tcPr().append(shading_elm)
-
-
-
+                    layout.set_cell_shading(cell, green)

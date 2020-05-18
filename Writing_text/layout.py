@@ -86,10 +86,16 @@ def make_rows_bold(*rows):
                     run.font.bold = True
 '''
 
+
+def set_cell_shading(cell, color_hex):
+    shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), color_hex))
+    cell._tc.get_or_add_tcPr().append(shading_elm)
+
 # define table style
 def define_table_style(table):
     table.style = 'Table Grid'                            # set the table style
     table.alignment = WD_TABLE_ALIGNMENT.CENTER           # set the table alignment
+    table.autofit = True
 
     # set the vertical and horizontal alignment of all cells
     for row in table.rows:
@@ -97,12 +103,6 @@ def define_table_style(table):
             cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
             # cell.paragraphs[0].style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
             cell.paragraphs[0].style.name = 'Table'
-
-    # set the shading of the first row to light_grey_10 (RGB Hex: D0CECE)
-    # copied from: https://groups.google.com/forum/#!topic/python-docx/-c3OrRHA3qo
-    for cell in table.rows[0].cells:
-        shading_elm = parse_xml(r'<w:shd {} w:fill="D0CECE"/>'.format(nsdecls('w')))
-        cell._tc.get_or_add_tcPr().append(shading_elm)
 
 
 # insert an horizontal border under a given paragraph
