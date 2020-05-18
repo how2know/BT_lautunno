@@ -27,13 +27,14 @@ class Chapter:
     DEFINITIONS_FILE = 'Terms_definitions.docx'
     INPUTS_DIRECTORY = 'Inputs'
 
-    def __init__(self, report_document, text_input_path, title, heading_level, parameter_table_index):
+    def __init__(self, report_document, text_input_path, title, list_of_tables):
         self.report = report_document
         self.text_input_path = text_input_path
         self.text_input = Document(text_input_path)
         self.title = title
-        self.heading_level = heading_level
-        self.parameter_table_index = parameter_table_index
+        self.list_of_tables = list_of_tables
+        # self.heading_level = heading_level
+        # self.parameter_table_index = parameter_table_index
         # self.picture_table = picture_table
 
     '''
@@ -69,13 +70,13 @@ class Chapter:
     def next_heading_index(self, previous_index):
         for i in range(previous_index + 1, len(self.text_input.paragraphs)):
             if self.text_input.paragraphs[i].style.name == 'Heading 1':
-                    return i
+                return i
             elif self.text_input.paragraphs[i].style.name == 'Heading 2':
-                    return i
+                return i
             elif self.text_input.paragraphs[i].style.name == 'Heading 3':
-                    return i
+                return i
             elif self.text_input.paragraphs[i].style.name == 'Heading 4':
-                    return i
+                return i
 
             '''
             if self.text_input.paragraphs[i].style.name == 'Heading {}'.format(1 or 2 or 3 or 4):  # look for paragraphs with corresponding style
@@ -114,9 +115,12 @@ class Chapter:
         # parse the xml data with BeautifulSoup
         soup = BeautifulSoup(xml_data, 'xml')
 
+        # index of the parameter table of the chapter
+        parameter_table_index = self.list_of_tables.index('{} parameter table'.format(self.title))
+
         # look for all values of dropdown lists in the data and store them
         tables = soup.find_all('tbl')
-        dd_lists_content = tables[self.parameter_table_index].find_all('sdtContent')
+        dd_lists_content = tables[parameter_table_index].find_all('sdtContent')
         for i in dd_lists_content:
             list_of_value.append(i.find('t').string)
 
@@ -131,7 +135,8 @@ class Chapter:
         '''
 
     def write_chapter(self):
-        self.report.add_heading(self.title, self.heading_level)
+        heading_style = self.text_input.paragraphs[self.heading_name_index()].style.name
+        self.report.add_paragraph(self.title, heading_style)
         for i in range(len(self.paragraphs)):
             paragraph = self.report.add_paragraph(
                 self.paragraphs[i].text.format(self.parameters[0], self.parameters[1], self.parameters[2])

@@ -30,6 +30,35 @@ def main():
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
+    # list of all tables in text input
+    tables = [
+        'Report table',
+        'Study table',
+        'Header table',
+        'Approval table',
+        'Purpose parameter table',
+        'Background parameter table',
+        'Scope parameter table',
+        'EU Regulation definition table',
+        'IEC 62366-1 definition table',
+        'FDA Guidance definition table',
+        'Ethics statement parameter table',
+        'Device specifications parameter table',
+        'Goal parameter table',
+        'Participants number table',
+        'Participants parameter table',
+        'Use environment parameter table',
+        'Use scenarios number table',
+        'Use scenarios parameter table',
+        'Setup parameter table',
+        'Effectiveness analysis tasks and problems table',
+        'Effectiveness analysis problem type table',
+        'Effectiveness analysis video table',
+        'Time on tasks table',
+        'Conclusion parameter table',
+    ]
+
+
     # define all styles used in the document
     layout.define_all_styles(report)
 
@@ -82,46 +111,46 @@ def main():
 
     '''  create and write all the chapters  '''
 
-    purpose = Chapter(report, text_input_path, 'Purpose', 1, 4)
+    purpose = Chapter(report, text_input_path, 'Purpose', tables)
     purpose.write_chapter()
 
-    background = Chapter(report, text_input_path, 'Background', 1, 5)
+    background = Chapter(report, text_input_path, 'Background', tables)
     background.write_chapter()
 
-    scope = Chapter(report, text_input_path, 'Scope', 1, 6)
+    scope = Chapter(report, text_input_path, 'Scope', tables)
     scope.write_chapter()
 
     text_writing.write_definitions_chapter(report, text.definitions_title, text.defined_terms, text.definitions_list,
                                            text.definitions_styles_list)
 
-    ethics = Chapter(report, text_input_path, 'Ethics statement', 1, 10)
+    ethics = Chapter(report, text_input_path, 'Ethics statement', tables)
     ethics.write_chapter()
 
-    device = Chapter(report, text_input_path, 'Device specifications', 1, 11)
+    device = Chapter(report, text_input_path, 'Device specifications', tables)
     device.write_chapter()
 
     report.add_heading(text.procedure_title, 1)
 
-    goal = Chapter(report, text_input_path, 'Goal', 2, 12)
+    goal = Chapter(report, text_input_path, 'Goal', tables)
     goal.write_chapter()
 
     # text_writing.write_chapter(report, text.goal_title, 2, text.goal_paragraphs)
 
-    participants = Chapter(report, text_input_path, 'Participants', 2, 14)
+    participants = Chapter(report, text_input_path, 'Participants', tables)
     participants.write_chapter()
 
-    environment = Chapter(report, text_input_path, 'Use environment', 2, 15)
+    environment = Chapter(report, text_input_path, 'Use environment', tables)
     environment.write_chapter()
 
-    scenarios = Chapter(report, text_input_path, 'Use scenarios', 2, 17)
+    scenarios = Chapter(report, text_input_path, 'Use scenarios', tables)
     scenarios.write_chapter()
 
-    setup = Chapter(report, text_input_path, 'Setup', 2, 18)
+    setup = Chapter(report, text_input_path, 'Setup', tables)
     setup.write_chapter()
 
     text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
 
-    conclusion = Chapter(report, text_input_path, 'Conclusion', 1, 23)
+    conclusion = Chapter(report, text_input_path, 'Conclusion', tables)
     conclusion.write_chapter()
 
     # save the report
