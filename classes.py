@@ -8,6 +8,7 @@ from zipfile import ZipFile
 from bs4 import BeautifulSoup
 
 from Writing_text import layout
+from Reading_text import text_reading
 
 class File:
     ''' Class that defines a file '''
@@ -33,12 +34,13 @@ class Chapter:
     DEFINITIONS_FILE = 'Terms_definitions.docx'
     INPUTS_DIRECTORY = 'Inputs'
 
-    def __init__(self, report_document, text_input_path, title, list_of_tables):
+    def __init__(self, report_document, text_input_path, title, list_of_tables, parameters_dictionary):
         self.report = report_document
         self.text_input_path = text_input_path
         self.text_input = Document(text_input_path)
         self.title = title
         self.list_of_tables = list_of_tables
+        self.parameters_dictionary = parameters_dictionary
         # self.heading_level = heading_level
         # self.parameter_table_index = parameter_table_index
         # self.picture_table = picture_table
@@ -110,84 +112,46 @@ class Chapter:
 
     @ property
     def parameters(self):
+        """
+        Read the dropdown lists of the parameter table and return their value in a list.
+        """
 
-        list_of_value = []
-
-        # open docx file as a zip file and store its relevant xml data
-        zip_file = ZipFile(self.text_input_path)
-        xml_data = zip_file.read('word/document.xml')
-        zip_file.close()
-
-        # parse the xml data with BeautifulSoup
-        soup = BeautifulSoup(xml_data, 'xml')
-
-        # index of the parameter table of the chapter
-        parameter_table_index = self.list_of_tables.index('{} parameter table'.format(self.title))
-
-        # look for all values of dropdown lists in the data and store them
-        tables = soup.find_all('tbl')
-        dd_lists_content = tables[parameter_table_index].find_all('sdtContent')
-        for i in dd_lists_content:
-            list_of_value.append(i.find('t').string)
-
-        return list_of_value
-
-        '''
-        parameters = []
-        for i in range(1, 4):
-            parameters.append(self.parameter_table.cell(i, 2).text)
-            
-        return parameters
-        '''
+        return text_reading.get_dropdown_list_of_table(self.text_input_path,
+                                                       self.list_of_tables.index('{} parameter table'.format(self.title))
+                                                       )
 
     def write_chapter(self):
+        """
+        Write the heading and the paragraphs of a chapter, including the parameters.
+        """
+
+        # read heading style and write heading
         heading_style = self.text_input.paragraphs[self.heading_name_index()].style.name
         self.report.add_paragraph(self.title, heading_style)
+
+        parameters_values = ['', '', '']
+
+        # stores values of corresponding parameter keys in a list as lower case string
+        for i in range(len(self.parameters)):
+            if self.parameters[i] != '-':
+                parameters_values[i] = self.parameters_dictionary[self.parameters[i]].lower()
+
+        # write paragraphs including values of parameters
         for i in range(len(self.paragraphs)):
             paragraph = self.report.add_paragraph(
-                self.paragraphs[i].text.format(self.parameters[0], self.parameters[1], self.parameters[2])
+                self.paragraphs[i].text.format(parameters_values[0], parameters_values[1], parameters_values[2])
             )
             paragraph.style.name = 'Normal'
 
-    '''
-    # read dropdown lists and store their value in a list
-    def dropdown_lists_value(self, file_name):
-
-        list_of_value = []
-
-        # open docx file as a zip file and store its relevant xml data
-        zip_file = ZipFile(file_name)
-        xml_data = zip_file.read('word/document.xml')
-        zip_file.close()
-
-        # parse the xml data with BeautifulSoup
-        soup = BeautifulSoup(xml_data, 'xml')
-
-        # look for all values of dropdown lists in the data and store them
-        tables = soup.find_all('tbl')
-        dd_lists_content = tables[self.parameter_table_index].find_all('sdtContent')
-        for i in dd_lists_content:
-            list_of_value.append(i.find('t').string)
-    '''
-
-'''
-class Parameters:
-    def __init__(self, text_input_document):
-        self.text_input = text_input_document
-
-    def read_standard_tables(self, parameters_dictionary, table_index):
-        for row in self.text_input.tables[table_index].rows:
-            key = row.cells[0].text
-            parameters_dictionary[key] = row.cells[1].text
-'''
 
 class Results:
-    def __init__(self, report_document, text_input_path, title, list_of_tables):
+    def __init__(self, report_document, text_input_path, title, list_of_tables, parameters_dictionary):
         self.report = report_document
         self.text_input_path = text_input_path
         self.text_input = Document(text_input_path)
         self.title = title
         self.list_of_tables = list_of_tables
+        self.parameters_dictionary = parameters_dictionary
 
     def visualization(self):
         # index of the input tables
@@ -208,31 +172,36 @@ class Results:
         yellow = 'FFFF00'
 
         # create a table for the results visualization
-        result_table_rows = 6
-        result_table_cols = 11
+        result_table_rows = self.parameters_dictionary['Number of critical tasks'] + 1
+        result_table_cols = self.parameters_dictionary['Number of participants'] + 1
         result_table = self.report.add_table(result_table_rows, result_table_cols)
         layout.define_table_style(result_table)
-
-        list_of_problem_types = []
-        for i in range(1, result_table_rows):
-            list_of_problem_types.append(problem_table.columns[1].cells[i].text)
 
         # write the information of the input table in the result table
         for i in range(result_table_rows):
             for j in range(result_table_cols):
-                if i != 0 or j != 0:     # skip the first cell
-                    cell = result_table.cell(i, j)
+                cell = result_table.cell(i, j)
+
+                # skip the first row and first column
+                if i != 0 and j != 0:
                     cell.text = task_table.cell(i, j).text
                     cell.paragraphs[0].runs[0].font.bold = True
 
-                    '''
-                    if j != 0:
-                        cell.paragraphs[0].style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                    '''
+                # first row
+                elif i == 0 and j != 0:
+                    cell.text = task_table.cell(i, j).text
+                    layout.set_cell_shading(cell, light_grey_10)     # color the cell in light_grey_10
+                    cell.paragraphs[0].runs[0].font.bold = True
 
-                    # color the cell of the first row and first column in light_grey_10
-                    if i == 0 or j == 0:
-                        layout.set_cell_shading(cell, light_grey_10)
+                # first column
+                elif i != 0 and j == 0:
+                    cell.text = self.parameters_dictionary['Critical task {} name'.format(i)]
+                    layout.set_cell_shading(cell, light_grey_10)     # color the cell in light_grey_10
+                    cell.paragraphs[0].runs[0].font.bold = True
+
+                # bolds all text
+                if cell.text:
+                    cell.paragraphs[0].runs[0].font.bold = True
 
         # color the cell according to the type of problem
         for i in range(1, result_table_rows):
@@ -242,14 +211,13 @@ class Results:
                 if cell.text:     # check if the text string is not empty
                     index = int(cell.text)
 
-                    if list_of_problem_types[index-1] == 'Important problem':
+                    if self.parameters_dictionary['Problem {} type'.format(index)] == 'Important problem':
                         layout.set_cell_shading(cell, orange)
 
-                    if list_of_problem_types[index-1] == 'Marginal problem':
+                    if self.parameters_dictionary['Problem {} type'.format(index)] == 'Marginal problem':
                         layout.set_cell_shading(cell, yellow)
 
-                    if list_of_problem_types[index-1] == 'Critical problem':
+                    if self.parameters_dictionary['Problem {} type'.format(index)] == 'Critical problem':
                         layout.set_cell_shading(cell, red)
-
                 else:
                     layout.set_cell_shading(cell, green)
