@@ -2,6 +2,8 @@ from docx import Document
 from docx.enum.section import WD_SECTION
 import os
 
+import time
+
 from Writing_text import text, text_writing, layout
 from Reading_text import text_reading
 
@@ -11,6 +13,8 @@ from docx.enum.style import WD_STYLE_TYPE
 from classes import *
 
 def main():
+    start = time.time()
+
     # file name of the report
     report_file = 'report.docx'
 
@@ -179,6 +183,9 @@ def main():
     # open the report with the default handler for .docx (Word)
     os.startfile(report_file)
 
+    end = time.time()
+
+    print(end - start)
 
 if __name__ == '__main__':
     main()

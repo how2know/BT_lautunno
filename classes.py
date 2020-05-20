@@ -131,15 +131,19 @@ class Chapter:
 
         parameters_values = ['', '', '']
 
+        '''Create variables in order to call property only once, and not in a loop.'''
+        parameters = self.parameters
+        paragraphs = self.paragraphs
+
         # stores values of corresponding parameter keys in a list as lower case string
-        for i in range(len(self.parameters)):
-            if self.parameters[i] != '-':
-                parameters_values[i] = self.parameters_dictionary[self.parameters[i]].lower()
+        for i in range(len(parameters)):
+            if parameters[i] != '-':
+                parameters_values[i] = self.parameters_dictionary[parameters[i]].lower()
 
         # write paragraphs including values of parameters
-        for i in range(len(self.paragraphs)):
+        for i in range(len(paragraphs)):
             paragraph = self.report.add_paragraph(
-                self.paragraphs[i].text.format(parameters_values[0], parameters_values[1], parameters_values[2])
+                paragraphs[i].text.format(parameters_values[0], parameters_values[1], parameters_values[2])
             )
             paragraph.style.name = 'Normal'
 
