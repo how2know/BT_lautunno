@@ -6,6 +6,7 @@ from docx import Document
 import os
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
+import time
 
 
 # return the path of a file given its name and the name of its directory
@@ -88,9 +89,13 @@ def read_dropdown_lists(file_name, list_of_value):
         list_of_value.append(i.find('t').string)
 
 
-# return a list of the value of all dropdown lists in a table
-def get_dropdown_list_of_table(text_input_path, table_index):
-    list_of_value = []
+def parse_xml_with_bs4(text_input_path):
+    """
+    Opens a docx file as a zip file, stores the xml data containing the infos about the docx document
+    and return the parsed xml data as BeautifulSoup object.
+
+    This takes some time, that's why it is better to run it once at the beginning and not in a loop.
+    """
 
     # open docx file as a zip file and store its relevant xml data
     zip_file = ZipFile(text_input_path)
@@ -98,10 +103,15 @@ def get_dropdown_list_of_table(text_input_path, table_index):
     zip_file.close()
 
     # parse the xml data with BeautifulSoup
-    soup = BeautifulSoup(xml_data, 'xml')
+    return BeautifulSoup(xml_data, 'xml')
+
+
+# return a list of the value of all dropdown lists in a table
+def get_dropdown_list_of_table(text_input_soup, table_index):
+    list_of_value = []
 
     # look for all values of dropdown lists in the data and store them
-    tables = soup.find_all('tbl')
+    tables = text_input_soup.find_all('tbl')
     dd_lists_content = tables[table_index].find_all('sdtContent')
     for i in dd_lists_content:
         list_of_value.append(i.find('t').string)
@@ -110,7 +120,7 @@ def get_dropdown_list_of_table(text_input_path, table_index):
 
 
 #
-def get_parameters_from_tables(text_input_path, list_of_table, parameters_dictionary):
+def get_parameters_from_tables(text_input_document, text_input_soup, list_of_table, parameters_dictionary):
     '''
     Function that reads all parameters stored in the tables of the text input document and stores them in a dictionary.
 
@@ -127,7 +137,7 @@ def get_parameters_from_tables(text_input_path, list_of_table, parameters_dictio
     :return:
     '''
 
-    text_input_document = Document(text_input_path)
+    # text_input_document = Document(text_input_path)
 
     # tables with two columns having parameters in each row
     # those tables are handled the same way
@@ -184,12 +194,14 @@ def get_parameters_from_tables(text_input_path, list_of_table, parameters_dictio
             '''Cells are not recognized as cells by word if they contain a dropdown list. That is why I had to create 
             a work around to get the values here.'''
 
-            list_of_text = []
+            list_of_text = []     # list of the text of all cells, except those ones containing dropdown list
             stop = False
+
+            number_of_problems = parameters_dictionary['Number of problems']
 
             # stores the text of every relevant cell in a list
             while not stop:
-                for i in range(1, 5 + 1):
+                for i in range(1, number_of_problems + 1):
                     for cell in table.rows[i].cells:
                         text = cell.text
 
@@ -203,7 +215,7 @@ def get_parameters_from_tables(text_input_path, list_of_table, parameters_dictio
             if len(list_of_text) % 2 != 0:
                 list_of_text.pop()
 
-            dropdown_lists_values = get_dropdown_list_of_table(text_input_path, table_index)
+            dropdown_lists_values = get_dropdown_list_of_table(text_input_soup, table_index)
 
             value = 0
 

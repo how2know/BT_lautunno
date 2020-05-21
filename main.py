@@ -7,6 +7,7 @@ import time
 # from classes import *
 from docx_package.chapter import *
 from docx_package.results import *
+from docx_package.definitions import *
 
 
 def main():
@@ -31,6 +32,9 @@ def main():
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
+    #
+    text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
+
     # list of all tables in text input
     tables = [
         'Report table',
@@ -40,9 +44,9 @@ def main():
         'Purpose parameter table',
         'Background parameter table',
         'Scope parameter table',
-        'EU Regulation definition table',
-        'IEC 62366-1 definition table',
-        'FDA Guidance definition table',
+        'EU Regulation 2017/745 definitions table',
+        'IEC 62366-1 definitions table',
+        'FDA Guidance definitions table',
         'Ethics statement parameter table',
         'Device specifications parameter table',
         'Goal parameter table',
@@ -64,12 +68,9 @@ def main():
 
     parameters = {}
 
-    # text_reading.parameters_from_standard_tables(text_input, tables.index('Report table'), parameters)
-
-    text_reading.get_parameters_from_tables(text_input_path, tables, parameters)
+    text_reading.get_parameters_from_tables(text_input, text_input_soup, tables, parameters)
 
     print(parameters)
-
 
     # define all styles used in the document
     layout.define_all_styles(report)
@@ -125,54 +126,59 @@ def main():
     header = layout.create_header(section2)
     text_writing.write_header(header.paragraphs[0], header.paragraphs[1], text.first_header, text.second_header)
 
-    '''  create and write all the chapters  '''
+    '''  create and write all the chapters '''
 
-    purpose = Chapter(report, text_input_path, 'Purpose', tables, parameters)
+    purpose = Chapter(report, text_input, text_input_soup, 'Purpose', tables, parameters)
     purpose.write_chapter()
 
-    background = Chapter(report, text_input_path, 'Background', tables, parameters)
+
+
+    background = Chapter(report, text_input, text_input_soup, 'Background', tables, parameters)
     background.write_chapter()
 
-    scope = Chapter(report, text_input_path, 'Scope', tables, parameters)
+    scope = Chapter(report, text_input, text_input_soup, 'Scope', tables, parameters)
     scope.write_chapter()
 
-    text_writing.write_definitions_chapter(report, text.definitions_title, text.defined_terms, text.definitions_list,
-                                           text.definitions_styles_list)
+    # text_writing.write_definitions_chapter(report, text.definitions_title, text.defined_terms, text.definitions_list, text.definitions_styles_list)
 
-    ethics = Chapter(report, text_input_path, 'Ethics statement', tables, parameters)
+    def_chapter = Definitions(report, text_input, text_input_soup, definitions, 'Terms definitions', tables)
+    def_chapter.write_all_definitions()
+
+    ethics = Chapter(report, text_input, text_input_soup, 'Ethics statement', tables, parameters)
     ethics.write_chapter()
 
-    device = Chapter(report, text_input_path, 'Device specifications', tables, parameters)
+    device = Chapter(report, text_input, text_input_soup, 'Device specifications', tables, parameters)
     device.write_chapter()
 
     report.add_heading(text.procedure_title, 1)
 
-    goal = Chapter(report, text_input_path, 'Goal', tables, parameters)
+    goal = Chapter(report, text_input, text_input_soup, 'Goal', tables, parameters)
     goal.write_chapter()
 
     # text_writing.write_chapter(report, text.goal_title, 2, text.goal_paragraphs)
 
-    participants = Chapter(report, text_input_path, 'Participants', tables, parameters)
+    participants = Chapter(report, text_input, text_input_soup, 'Participants', tables, parameters)
     participants.write_chapter()
 
-    environment = Chapter(report, text_input_path, 'Use environment', tables, parameters)
+    environment = Chapter(report, text_input, text_input_soup, 'Use environment', tables, parameters)
     environment.write_chapter()
 
-    scenarios = Chapter(report, text_input_path, 'Use scenarios', tables, parameters)
+    scenarios = Chapter(report, text_input, text_input_soup, 'Use scenarios', tables, parameters)
     scenarios.write_chapter()
 
-    setup = Chapter(report, text_input_path, 'Setup', tables, parameters)
+    setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, parameters)
     setup.write_chapter()
 
     report.add_heading(text.results_title, 1)
 
-    effectiveness_analysis = Results(report, text_input_path, 'Effectiveness analysis', tables, parameters)
+    effectiveness_analysis = Results(report, text_input, 'Effectiveness analysis', tables, parameters)
     effectiveness_analysis.visualization()
 
     # text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
 
-    conclusion = Chapter(report, text_input_path, 'Conclusion', tables, parameters)
+    conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
     conclusion.write_chapter()
+
 
     # save the report
     report.save(report_file)

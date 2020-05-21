@@ -15,84 +15,46 @@ from docx_package import text_writing, text, text_reading, layout
 class Chapter:
     '''A class that defines a chapter ...'''
 
-    TEXT_INPUT_FILE = 'Text_input.docx'
-    REPORT_FILE = 'Report.docx'
-    DEFINITIONS_FILE = 'Terms_definitions.docx'
-    INPUTS_DIRECTORY = 'Inputs'
-
-    def __init__(self, report_document, text_input_path, title, list_of_tables, parameters_dictionary):
+    def __init__(self, report_document, text_input_document, text_input_soup, title, list_of_tables, parameters_dictionary):
         self.report = report_document
-        self.text_input_path = text_input_path
-        self.text_input = Document(text_input_path)
+        self.text_input = text_input_document
+        self.text_input_soup = text_input_soup
         self.title = title
         self.list_of_tables = list_of_tables
         self.parameters_dictionary = parameters_dictionary
-        # self.heading_level = heading_level
-        # self.parameter_table_index = parameter_table_index
-        # self.picture_table = picture_table
 
-    '''
-    @ property
-    def text_input(self):
-        text_input = File(self.TEXT_INPUT_FILE, self.INPUTS_DIRECTORY)
-        return Document(text_input.path)
-    '''
+    def heading_index(self):
+        """
+        Find the heading of the chapter and return the corresponding paragraph index.
+        """
 
-    #  find a heading given his title and return the corresponding paragraph index
-    def heading_name_index(self):
-        for i in range(len(self.text_input.paragraphs)):
-            if self.text_input.paragraphs[i].style.name == 'Heading 1':
-                if self.text_input.paragraphs[i].text == self.title:
-                    return i
-            elif self.text_input.paragraphs[i].style.name == 'Heading 2':
-                if self.text_input.paragraphs[i].text == self.title:
-                    return i
-            elif self.text_input.paragraphs[i].style.name == 'Heading 3':
-                if self.text_input.paragraphs[i].text == self.title:
-                    return i
-            elif self.text_input.paragraphs[i].style.name == 'Heading 4':
-                if self.text_input.paragraphs[i].text == self.title:
-                    return i
+        for paragraph_index, paragraph in enumerate(self.text_input.paragraphs):
+            if paragraph.text == self.title and 'Heading' in paragraph.style.name:
+                return paragraph_index
 
-            '''
-            if self.text_input.paragraphs[i].style.name == 'Heading {}'.format(1 or 2 or 3 or 4):  # look for paragraphs with corresponding style
-                if self.text_input.paragraphs[i].text == self.title:  # look for paragraphs with corresponding title
-                    return i  # return the index of the paragraphs
-            '''
+    def next_heading_index(self):
+        """
+        Return the index of the heading of the following.
+        """
 
-    # return the index of the next heading corresponding to a style given the index of the previous heading
-    def next_heading_index(self, previous_index):
-        for i in range(previous_index + 1, len(self.text_input.paragraphs)):
-            if self.text_input.paragraphs[i].style.name == 'Heading 1':
-                return i
-            elif self.text_input.paragraphs[i].style.name == 'Heading 2':
-                return i
-            elif self.text_input.paragraphs[i].style.name == 'Heading 3':
-                return i
-            elif self.text_input.paragraphs[i].style.name == 'Heading 4':
-                return i
+        previous_index = self.heading_index()
 
-            '''
-            if self.text_input.paragraphs[i].style.name == 'Heading {}'.format(1 or 2 or 3 or 4):  # look for paragraphs with corresponding style
-                return i  # return the index of the paragraph
-            '''
+        for paragraph_index, paragraph in enumerate(self.text_input.paragraphs[previous_index + 1:]):
+            if 'Heading' in paragraph.style.name:
+                return paragraph_index + previous_index + 1
 
-    # store all paragraphs and their corresponding style between a given heading and the next one
-    def paragraph_after_heading_with_styles(self, list_of_paragraphs, list_of_styles):
-        heading_index = self.heading_name_index()  # index of the given heading
-        next_index = self.next_heading_index(heading_index)  # index of the next heading
-        for i in range(heading_index + 1, next_index):  # loop over all paragraphs between the given heading and the next one
-            list_of_paragraphs.append(self.text_input.paragraphs[i])  # store all paragraphs in a given list
-            list_of_styles.append(self.text_input.paragraphs[i].style.name)  # store all styles in a given list
-
-    # return the paragraphs following the given heading
     @ property
     def paragraphs(self):
+        """
+        Return a list of all paragraphs (as string) of the chapter.
+        """
+
         list_of_paragraphs = []
-        heading_index = self.heading_name_index()  # index of the given heading
-        next_index = self.next_heading_index(heading_index)  # index of the next heading
-        for i in range(heading_index + 1, next_index):  # loop over all paragraphs between the given heading and the next one
-            list_of_paragraphs.append(self.text_input.paragraphs[i])  # store all paragraphs in a given list
+        heading_index = self.heading_index()
+        next_heading_index = self.next_heading_index()
+
+        for paragraph in self.text_input.paragraphs[heading_index + 1: next_heading_index]:
+            list_of_paragraphs.append(paragraph.text)
 
         return list_of_paragraphs
 
@@ -102,7 +64,7 @@ class Chapter:
         Read the dropdown lists of the parameter table and return their value in a list.
         """
 
-        return text_reading.get_dropdown_list_of_table(self.text_input_path,
+        return text_reading.get_dropdown_list_of_table(self.text_input_soup,
                                                        self.list_of_tables.index('{} parameter table'.format(self.title))
                                                        )
 
@@ -112,7 +74,7 @@ class Chapter:
         """
 
         # read heading style and write heading
-        heading_style = self.text_input.paragraphs[self.heading_name_index()].style.name
+        heading_style = self.text_input.paragraphs[self.heading_index()].style.name
         self.report.add_paragraph(self.title, heading_style)
 
         parameters_values = ['', '', '']
@@ -121,14 +83,14 @@ class Chapter:
         parameters = self.parameters
         paragraphs = self.paragraphs
 
-        # stores values of corresponding parameter keys in a list as lower case string
-        for i in range(len(parameters)):
-            if parameters[i] != '-':
-                parameters_values[i] = self.parameters_dictionary[parameters[i]].lower()
+        # stores values of corresponding parameter keys in a list
+        for parameter_index, parameter in enumerate(parameters):
+            if parameter != '-':
+                parameters_values[parameter_index] = self.parameters_dictionary[parameter]
 
         # write paragraphs including values of parameters
-        for i in range(len(paragraphs)):
-            paragraph = self.report.add_paragraph(
-                paragraphs[i].text.format(parameters_values[0], parameters_values[1], parameters_values[2])
+        for paragraph in paragraphs:
+            new_paragraph = self.report.add_paragraph(
+                paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2],)
             )
-            paragraph.style.name = 'Normal'
+            new_paragraph.style.name = 'Normal'

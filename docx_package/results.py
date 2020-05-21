@@ -9,14 +9,11 @@ from bs4 import BeautifulSoup
 
 from docx_package import layout, text_reading, text_writing, text
 
-# from Writing_text import layout
-# from Reading_text import text_reading
 
 class Results:
-    def __init__(self, report_document, text_input_path, title, list_of_tables, parameters_dictionary):
+    def __init__(self, report_document, text_input_document, title, list_of_tables, parameters_dictionary):
         self.report = report_document
-        self.text_input_path = text_input_path
-        self.text_input = Document(text_input_path)
+        self.text_input = text_input_document
         self.title = title
         self.list_of_tables = list_of_tables
         self.parameters_dictionary = parameters_dictionary
