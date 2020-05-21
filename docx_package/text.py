@@ -7,8 +7,8 @@ import numpy as np
 from datetime import date
 from docx import Document
 
-from Reading_text import text_reading
-
+# from Reading_text import text_reading
+from docx_package import layout, text_writing, text_reading
 
 
 # name of the directory and the input files
@@ -23,26 +23,6 @@ definitions_path = text_reading.get_path(definitions_file, input_directory)
 # load text input files with python-docx
 text_input = Document(text_input_path)
 definitions = Document(definitions_path)
-
-'''
-# attribution of all tables in the text input file
-tab_report = text_input.tables[0]
-tab_study = text_input.tables[1]
-tab_header = text_input.tables[2]
-tab_approval = text_input.tables[3]
-tab_purpose_param =
-tab_purpose_pic =
-tab_background_param =
-tab_background_pic =
-tab_scope_param =
-tab_scope_pic =
-tab_ethics_param =
-tab_ethics_pic =
-tab_device_param =
-tab_device_pic =
-tab_goal_param =
-tab_goal_pic =
-'''
 
 # report information table
 tab_report = text_input.tables[0]

@@ -1,4 +1,6 @@
-from Writing_text import layout
+# from Writing_text import layout
+from docx_package import layout, text_reading, text
+
 
 # write the title and return it as a paragraph
 def write_title(document, text):

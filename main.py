@@ -4,13 +4,10 @@ import os
 
 import time
 
-from Writing_text import text, text_writing, layout
-from Reading_text import text_reading
+# from classes import *
+from docx_package.chapter import *
+from docx_package.results import *
 
-
-from docx.enum.style import WD_STYLE_TYPE
-
-from classes import *
 
 def main():
     start = time.time()
