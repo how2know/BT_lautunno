@@ -46,7 +46,7 @@ approval_cells = np.array((['Role', 'Name / Function', 'Date', 'Signature'],
 # table of content title
 toc_title = 'Table of content'
 
-
+'''
 # today's date
 today_date = date.today()
 date_str = today_date.strftime('%d.%m.%Y')
@@ -100,9 +100,13 @@ device_title = 'Device specifications'
 device_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, device_paragraphs, device_title, 'Heading 1')
 
+'''
+
 procedure_title = 'Test procedure'
 procedure_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, procedure_paragraphs, procedure_title, 'Heading 1')
+
+'''
 
 goal_title = 'Goal'
 goal_paragraphs = []
@@ -124,9 +128,13 @@ setup_title = 'Setup'
 setup_paragraphs = []
 text_reading.paragraph_after_heading_different(text_input.paragraphs, setup_paragraphs, setup_title, 'Heading 2', 'Heading 1')
 
+'''
+
 results_title = 'Results'
 results_paragraphs = []
 text_reading.paragraph_after_heading(text_input.paragraphs, results_paragraphs, results_title, 'Heading 1')
+
+'''
 
 conclusion_title = 'Conclusion'
 conclusion_paragraphs = []
@@ -136,7 +144,7 @@ text_reading.paragraph_after_heading(text_input.paragraphs, conclusion_paragraph
 # read dropdown lists from text input file
 dd_lists_values = []
 text_reading.read_dropdown_lists(text_input_path, dd_lists_values)
-
+'''
 
 
 '''

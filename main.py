@@ -8,6 +8,7 @@ import time
 from docx_package.chapter import *
 from docx_package.results import *
 from docx_package.definitions import *
+from docx_package.header_footer import *
 
 
 def main():
@@ -122,9 +123,13 @@ def main():
     section2 = report.add_section(WD_SECTION.NEW_PAGE)
     layout.define_page_format(section2)
 
+    # add a footer with page number
+    footer = Footer(section2)
+    footer.write()
+
     # add a header
-    header = layout.create_header(section2)
-    text_writing.write_header(header.paragraphs[0], header.paragraphs[1], text.first_header, text.second_header)
+    header = Header(section2, parameters)
+    header.write()
 
     '''  create and write all the chapters '''
 

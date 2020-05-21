@@ -55,14 +55,15 @@ def define_all_styles(document):
     style_definition(document, 'Normal', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.JUSTIFY, False, False)
     style_definition(document, 'Table', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.LEFT, False, False)
 
-
+'''
 # add three tab stops (left, center, right)
 def add_tab_stops(paragraph):
     paragraph.paragraph_format.tab_stops.add_tab_stop(Cm(0), WD_TAB_ALIGNMENT.LEFT, WD_TAB_LEADER.SPACES)
     paragraph.paragraph_format.tab_stops.add_tab_stop(Cm(8), WD_TAB_ALIGNMENT.CENTER, WD_TAB_LEADER.SPACES)
     paragraph.paragraph_format.tab_stops.add_tab_stop(Cm(16), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)
+'''
 
-
+'''
 # create a header with two lines for a section and return it
 def create_header(section):
     header = section.header
@@ -74,6 +75,7 @@ def create_header(section):
     add_tab_stops(header_second_line)
 
     return header
+'''
 
 # techniques to make something bold in a table
 # copied from: https://stackoverflow.com/questions/37757203/making-cells-bold-in-a-table-using-python-docx
