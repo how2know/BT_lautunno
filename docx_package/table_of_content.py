@@ -4,7 +4,7 @@ import win32com.client
 import inspect, os
 
 class TableOfContent:
-    def __init__(self, report_document, report_file_name):
+    def __init__(self, report_document):
         self.report = report_document
         # self.report_name = report_file_name
 

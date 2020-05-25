@@ -10,13 +10,14 @@ from docx_package.results import *
 from docx_package.definitions import *
 from docx_package.header_footer import *
 from docx_package.table_of_content import *
+from docx_package.time_on_tasks import TimeOnTasks
 
 
 def main():
     start = time.time()
 
     # file name of the report
-    report_file = 'report.docx'
+    report_file = 'Report.docx'
 
     # create document
     report = Document()
@@ -126,7 +127,6 @@ def main():
 
     table_of_content = TableOfContent(report)
     table_of_content.write()
-    table_of_content.update(report_file_path)
 
     # add a new section
     section2 = report.add_section(WD_SECTION.NEW_PAGE)
@@ -187,6 +187,10 @@ def main():
 
     effectiveness_analysis = Results(report, text_input, 'Effectiveness analysis', tables, parameters)
     effectiveness_analysis.visualization()
+
+    time_on_tasks = TimeOnTasks(report, text_input, tables, parameters)
+    time_on_tasks.insert_plot()
+
 
     # text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
 
