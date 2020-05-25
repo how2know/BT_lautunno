@@ -9,6 +9,7 @@ from docx_package.chapter import *
 from docx_package.results import *
 from docx_package.definitions import *
 from docx_package.header_footer import *
+from docx_package.table_of_content import *
 
 
 def main():
@@ -117,7 +118,15 @@ def main():
     report.add_page_break()
 
     # add table of content
-    table_of_content = report.add_heading(text.toc_title, 1)
+    report.add_heading(text.toc_title, 1)
+
+    # TODO: write this better (function in class TableOfContent)
+    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    report_file_path = os.path.join(script_dir, report_file)
+
+    table_of_content = TableOfContent(report)
+    table_of_content.write()
+    table_of_content.update(report_file_path)
 
     # add a new section
     section2 = report.add_section(WD_SECTION.NEW_PAGE)
@@ -184,9 +193,12 @@ def main():
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
     conclusion.write_chapter()
 
-
     # save the report
     report.save(report_file)
+
+    '''This works but it is very long...'''
+    # update the table of content
+    # table_of_content.update(report_file_path)
 
     # open the report with the default handler for .docx (Word)
     os.startfile(report_file)
