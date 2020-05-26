@@ -12,11 +12,13 @@ from docx.oxml.ns import qn
 from docx.oxml import parse_xml
 from docx.oxml.shared import OxmlElement
 
+
+# TODO: write this in a module
 def capitalize_first_letter(string):
     """
     Capitalizes the first letter of a string to make it look like a title.
     """
-    return ' '.join(word[:1].upper() + word[1:] for word in string.split(' '))
+    return string[:1].upper() + string[1:]
 
 def create_element(name):
     return OxmlElement(name)

@@ -11,6 +11,7 @@ from docx_package.definitions import *
 from docx_package.header_footer import *
 from docx_package.table_of_content import *
 from docx_package.time_on_tasks import TimeOnTasks
+from docx_package.cover_page import CoverPage
 
 
 def main():
@@ -34,6 +35,9 @@ def main():
     # load text input files with python-docx
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
+    
+    listoffiles = os.listdir('Inputs/Pictures')
+    print(listoffiles)
 
     #
     text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
@@ -82,38 +86,8 @@ def main():
     section1 = report.sections[0]
     layout.define_page_format(section1)
 
-    # add title
-    title = text_writing.write_title(report, text.title)
-
-    # add subtitle
-    subtitle = report.add_heading(text.subtitle, 0)
-    subtitle.style = report.styles['Subtitle']
-
-    # create table of the document approval
-    approval_table = report.add_table(rows=4, cols=4)
-
-    # approval_table.style = 'Table Grid'
-    layout.define_table_style(approval_table)
-    for i in range(0, 4):
-        for j in range(0, 4):
-            approval_table.cell(i, j).text = text.approval_cells[i, j]
-
-    # set the shading of the first row to light_grey_10 (RGB Hex: D0CECE)
-    for cell in approval_table.rows[0].cells:
-        layout.set_cell_shading(cell, 'D0CECE')
-
-    # make the first row bold
-    for col in approval_table.columns:
-        col.cells[0].paragraphs[0].runs[0].font.bold = True
-
-    # add the function to the person
-    approval_table.cell(1, 1).add_paragraph(text.function_author)
-    approval_table.cell(2, 1).add_paragraph(text.function_reviewer)
-    approval_table.cell(3, 1).add_paragraph(text.function_approver)
-
-    # make the function italic
-    for i in range(1, 4):
-        approval_table.rows[i].cells[1].paragraphs[1].runs[0].font.italic = True
+    cover_page = CoverPage(report, parameters)
+    cover_page.create()
 
     # add a page break
     report.add_page_break()

@@ -24,6 +24,7 @@ definitions_path = text_reading.get_path(definitions_file, input_directory)
 text_input = Document(text_input_path)
 definitions = Document(definitions_path)
 
+'''
 # report information table
 tab_report = text_input.tables[0]
 title = tab_report.cell(0, 1).text
@@ -42,6 +43,7 @@ approval_cells = np.array((['Role', 'Name / Function', 'Date', 'Signature'],
                            ['Author', name_author, '', ''],
                            ['Reviewer', name_reviewer, '', ''],
                            ['Approver', name_approver, '', '']))
+'''
 
 # table of content title
 toc_title = 'Table of content'

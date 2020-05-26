@@ -47,6 +47,7 @@ def style_definition(document, name, font, size, color, alignment, italic, bold)
 # define all styles used in a document using the function style_definition
 def define_all_styles(document):
     document.styles.add_style('Table', WD_STYLE_TYPE.PARAGRAPH)     # add style 'Table' for the tables entries
+    document.styles.add_style('Picture', WD_STYLE_TYPE.PARAGRAPH)
 
     style_definition(document, 'Title', 'Calibri Light', 32, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)
     style_definition(document, 'Subtitle', 'Calibri Light', 24, black_35, WD_ALIGN_PARAGRAPH.CENTER, False, False)
@@ -54,6 +55,7 @@ def define_all_styles(document):
     style_definition(document, 'Heading 2', 'Calibri Light', 14, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
     style_definition(document, 'Normal', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.JUSTIFY, False, False)
     style_definition(document, 'Table', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.LEFT, False, False)
+    style_definition(document, 'Picture', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)
 
 '''
 # add three tab stops (left, center, right)

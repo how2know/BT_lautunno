@@ -5,7 +5,7 @@ from docx.oxml.ns import qn
 from docx.oxml import parse_xml
 from docx.oxml.shared import OxmlElement
 
-
+'''
 # write the title and return it as a paragraph
 def write_title(document, text):
     title = document.add_paragraph(text, 'Title')
@@ -18,7 +18,7 @@ def write_title(document, text):
 def write_header(first_line, second_line, first_line_content, second_line_content):
     first_line.text = first_line_content
     second_line.text = second_line_content
-
+'''
 
 
 
