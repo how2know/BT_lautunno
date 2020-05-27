@@ -53,6 +53,7 @@ def define_all_styles(document):
     style_definition(document, 'Subtitle', 'Calibri Light', 24, black_35, WD_ALIGN_PARAGRAPH.CENTER, False, False)
     style_definition(document, 'Heading 1', 'Calibri', 16, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
     style_definition(document, 'Heading 2', 'Calibri Light', 14, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
+    style_definition(document, 'Heading 3', 'Calibri Light', 12, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
     style_definition(document, 'Normal', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.JUSTIFY, False, False)
     style_definition(document, 'Table', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.LEFT, False, False)
     style_definition(document, 'Picture', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)

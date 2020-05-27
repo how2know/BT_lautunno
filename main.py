@@ -6,7 +6,7 @@ import time
 
 # from classes import *
 from docx_package.chapter import *
-from docx_package.results import *
+from docx_package.effectiveness_analysis import *
 from docx_package.definitions import *
 from docx_package.header_footer import *
 from docx_package.table_of_content import *
@@ -35,14 +35,12 @@ def main():
     # load text input files with python-docx
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
-    
-    listoffiles = os.listdir('Inputs/Pictures')
-    print(listoffiles)
 
     #
     text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
 
-    # list of all tables in text input
+    # list of all tables in text input document
+    # useful to get the index of a table in the document
     tables = [
         'Report table',
         'Study table',
@@ -69,7 +67,12 @@ def main():
         'Effectiveness analysis problem number table',
         'Effectiveness analysis problem type table',
         'Effectiveness analysis video table',
+        'Effectiveness analysis parameter table',
         'Time on tasks table',
+        'Time on tasks parameter table',
+        'Dwell time and revisits parameter table',
+        'Average fixation parameter table',
+        'Transitions parameter table',
         'Conclusion parameter table',
     ]
 
@@ -159,8 +162,8 @@ def main():
 
     report.add_heading(text.results_title, 1)
 
-    effectiveness_analysis = Results(report, text_input, 'Effectiveness analysis', tables, parameters)
-    effectiveness_analysis.visualization()
+    effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, 'Effectiveness analysis', tables, parameters)
+    effectiveness_analysis.write_chapter()
 
     time_on_tasks = TimeOnTasks(report, text_input, tables, parameters)
     time_on_tasks.insert_plot()

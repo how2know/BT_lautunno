@@ -34,7 +34,7 @@ class Chapter:
 
     def next_heading_index(self):
         """
-        Return the index of the heading of the following.
+        Return the index of the following heading.
         """
 
         previous_index = self.heading_index()
