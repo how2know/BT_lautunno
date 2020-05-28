@@ -1,17 +1,25 @@
 from docx import Document
 from docx.enum.section import WD_SECTION
 import os
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+import win32com.client
+import inspect
 
 import time
 
-# from classes import *
-from docx_package.chapter import *
-from docx_package.effectiveness_analysis import *
-from docx_package.definitions import *
-from docx_package.header_footer import *
-from docx_package.table_of_content import *
+from docx_package import text_reading, layout
+
+from docx_package.chapter import Chapter
+from docx_package.effectiveness_analysis import EffectivenessAnalysis
+from docx_package.definitions import Definitions
+from docx_package.header_footer import Header, Footer
+from docx_package.table_of_content import TableOfContent
 from docx_package.time_on_tasks import TimeOnTasks
 from docx_package.cover_page import CoverPage
+from docx_package.dwell_times_revisits import DwellTimesAndRevisits
+from docx_package.average_fixation import AverageFixation
+from docx_package.transitions import Transitions
 
 
 def main():
@@ -39,7 +47,7 @@ def main():
     #
     text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
 
-    # list of all tables in text input document
+    # list of all tables in the order they appear in the text input document
     # useful to get the index of a table in the document
     tables = [
         'Report table',
@@ -70,7 +78,7 @@ def main():
         'Effectiveness analysis parameter table',
         'Time on tasks table',
         'Time on tasks parameter table',
-        'Dwell time and revisits parameter table',
+        'Dwell times and revisits parameter table',
         'Average fixation parameter table',
         'Transitions parameter table',
         'Conclusion parameter table',
@@ -95,12 +103,16 @@ def main():
     # add a page break
     report.add_page_break()
 
+    # TODO: write this better (do not set it as heading 1)
     # add table of content
-    report.add_heading(text.toc_title, 1)
+    report.add_paragraph('Table of content', 'Heading 1')
 
+    ''' commented out to save time
     # TODO: write this better (function in class TableOfContent)
+    # path to the file needed to update the table of content
     script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     report_file_path = os.path.join(script_dir, report_file)
+    '''
 
     table_of_content = TableOfContent(report)
     table_of_content.write()
@@ -122,15 +134,11 @@ def main():
     purpose = Chapter(report, text_input, text_input_soup, 'Purpose', tables, parameters)
     purpose.write_chapter()
 
-
-
     background = Chapter(report, text_input, text_input_soup, 'Background', tables, parameters)
     background.write_chapter()
 
     scope = Chapter(report, text_input, text_input_soup, 'Scope', tables, parameters)
     scope.write_chapter()
-
-    # text_writing.write_definitions_chapter(report, text.definitions_title, text.defined_terms, text.definitions_list, text.definitions_styles_list)
 
     def_chapter = Definitions(report, text_input, text_input_soup, definitions, 'Terms definitions', tables)
     def_chapter.write_all_definitions()
@@ -141,12 +149,11 @@ def main():
     device = Chapter(report, text_input, text_input_soup, 'Device specifications', tables, parameters)
     device.write_chapter()
 
-    report.add_heading(text.procedure_title, 1)
+    # TODO: write this better
+    report.add_paragraph('Test procedure', 'Heading 2')
 
     goal = Chapter(report, text_input, text_input_soup, 'Goal', tables, parameters)
     goal.write_chapter()
-
-    # text_writing.write_chapter(report, text.goal_title, 2, text.goal_paragraphs)
 
     participants = Chapter(report, text_input, text_input_soup, 'Participants', tables, parameters)
     participants.write_chapter()
@@ -160,16 +167,23 @@ def main():
     setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, parameters)
     setup.write_chapter()
 
-    report.add_heading(text.results_title, 1)
+    # TODO: write this better
+    report.add_paragraph('Results', 'Heading 1')
 
-    effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, 'Effectiveness analysis', tables, parameters)
+    effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, parameters)
     effectiveness_analysis.write_chapter()
 
-    time_on_tasks = TimeOnTasks(report, text_input, tables, parameters)
-    time_on_tasks.insert_plot()
+    time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
+    time_on_tasks.write_chapter()
 
+    dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters)
+    dwell_times_and_revisits.write_chapter()
 
-    # text_writing.write_chapter(report, text.results_title, 1, text.results_paragraphs)
+    average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters)
+    average_fixation.write_chapter()
+
+    transitions = Transitions(report, text_input, text_input_soup, tables, parameters)
+    transitions.write_chapter()
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
     conclusion.write_chapter()
@@ -187,6 +201,7 @@ def main():
     end = time.time()
 
     print(end - start)
+
 
 if __name__ == '__main__':
     main()

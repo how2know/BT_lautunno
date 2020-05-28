@@ -1,7 +1,7 @@
 from docx import Document
 import time
 
-from docx_package import text_writing, text, text_reading, layout
+from docx_package import text_reading, layout
 
 
 class Definitions:

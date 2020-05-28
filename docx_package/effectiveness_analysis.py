@@ -10,7 +10,7 @@ import os
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 
-from docx_package import layout, text_reading, text_writing, text
+from docx_package import layout, text_reading
 from docx_package.results import ResultsChapter
 
 
@@ -82,11 +82,10 @@ class EffectivenessAnalysis:
     ORANGE = 'FFC000'
     YELLOW = 'FFFF00'
 
-    def __init__(self, report_document, text_input_document, text_input_soup, title, list_of_tables, parameters_dictionary):
+    def __init__(self, report_document, text_input_document, text_input_soup, list_of_tables, parameters_dictionary):
         self.report = report_document
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
-        self.title = title
         self.list_of_tables = list_of_tables
         self.parameters_dictionary = parameters_dictionary
 
@@ -240,7 +239,7 @@ class EffectivenessAnalysis:
 
     def write_chapter(self):
 
-        effectiveness_analysis = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.title,
+        effectiveness_analysis = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
                                                 self.list_of_tables, self.parameters_dictionary)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)

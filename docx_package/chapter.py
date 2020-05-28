@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 # from Writing_text import layout
 # from Reading_text import text_reading
 
-from docx_package import text_writing, text, text_reading, layout
+from docx_package import text_reading, layout
 
 class Chapter:
     '''A class that defines a chapter ...'''
