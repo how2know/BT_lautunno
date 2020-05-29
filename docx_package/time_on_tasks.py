@@ -10,8 +10,8 @@ class TimeOnTasks:
 
     TITLE = 'Time on tasks'
     TITLE_STYLE = 'Heading 2'
-    ANALYSIS_TITLE = 'Analysis'
-    ANALYSIS_STYLE = 'Heading 3'
+    DISCUSSION_TITLE = 'Discussion'
+    DISCUSSION_STYLE = 'Heading 3'
 
     FIGURE_NAME = 'Time_on_task.png'
 
@@ -61,7 +61,7 @@ class TimeOnTasks:
         plt.ylabel('Completion time [s]')
         figure = plot.get_figure()
         figure.savefig(self.FIGURE_NAME)
-        plt.show()
+        # plt.show()
 
     def write_chapter(self):
         self.make_plot()
@@ -72,6 +72,6 @@ class TimeOnTasks:
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
         self.report.add_picture(self.FIGURE_NAME)
 
-        self.report.add_paragraph(self.ANALYSIS_TITLE, self.ANALYSIS_STYLE)
+        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()
 

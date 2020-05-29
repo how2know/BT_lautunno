@@ -7,6 +7,11 @@ import os
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 import time
+from itertools import islice
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
 
 
 # return the path of a file given its name and the name of its directory
@@ -177,3 +182,37 @@ def get_parameters_from_tables(text_input_document, text_input_soup, list_of_tab
                     parameters_dictionary[description_key] = description
 
                     value += 1
+
+
+def read_txt(txt_file_path):
+    start_time = 'Start time'
+    end_time = 'End time'
+    fixation_time = 'Fixation time'
+    label = 'Label'
+
+    start_times_list = []
+    end_times_list = []
+    labels_list = []
+
+    with open(txt_file_path, 'r') as file:
+        for line in islice(file, 1, None):
+            start_times_list.append(float(line.split()[0]))
+            end_times_list.append(float(line.split()[1]))
+            labels_list.append(line.split()[2])
+    file.close()
+
+    start_times_vector = np.array(start_times_list)
+    end_times_vector = np.array(end_times_list)
+    fixation_times_vector = end_times_vector - start_times_vector
+
+    data = pd.DataFrame(index=labels_list, columns=[start_time, end_time, fixation_time, label])
+
+    data[start_time] = start_times_list
+    data[end_time] = end_times_list
+    data[fixation_time] = fixation_times_vector
+    data[label] = labels_list
+
+    print(data)
+    return data
+
+

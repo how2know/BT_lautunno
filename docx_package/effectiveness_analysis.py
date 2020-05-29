@@ -72,8 +72,8 @@ class EffectivenessAnalysis:
     TITLE_STYLE = 'Heading 2'
     DESCRIPTION_TITLE = 'Problems description'
     DESCRIPTION_STYLE = 'Heading 3'
-    ANALYSIS_TITLE = 'Analysis'
-    ANALYSIS_STYLE = 'Heading 3'
+    DISCUSSION_TITLE = 'Discussion'
+    DISCUSSION_STYLE = 'Heading 3'
 
     # color for cell shading
     LIGHT_GREY_10 = 'D0CECE'
@@ -105,7 +105,7 @@ class EffectivenessAnalysis:
         result_table_rows = self.parameters_dictionary['Number of critical tasks'] + 1
         result_table_cols = self.parameters_dictionary['Number of participants'] + 1
         result_table = self.report.add_table(result_table_rows, result_table_cols)
-        layout.define_table_style(result_table)
+        layout.define_table_style(result_table)      # TODO: do we need this line
 
         # write the information of the input table in the result table
         for i in range(result_table_rows):
@@ -249,6 +249,6 @@ class EffectivenessAnalysis:
         self.report.add_paragraph(self.DESCRIPTION_TITLE, self.DESCRIPTION_STYLE)
         self.add_problem_description()
 
-        self.report.add_paragraph(self.ANALYSIS_TITLE, self.ANALYSIS_STYLE)
+        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         effectiveness_analysis.write_chapter()
 

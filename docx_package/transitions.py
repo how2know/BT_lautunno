@@ -5,8 +5,8 @@ class Transitions:
 
     TITLE = 'Transitions'
     TITLE_STYLE = 'Heading 2'
-    ANALYSIS_TITLE = 'Analysis'
-    ANALYSIS_STYLE = 'Heading 3'
+    DISCUSSION_TITLE = 'Discussion'
+    DISCUSSION_STYLE = 'Heading 3'
 
     def __init__(self, report_document, text_input_document, text_input_soup, list_of_tables, parameters_dictionary):
         self.report = report_document
@@ -21,5 +21,5 @@ class Transitions:
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
-        self.report.add_paragraph(self.ANALYSIS_TITLE, self.ANALYSIS_STYLE)
+        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()
