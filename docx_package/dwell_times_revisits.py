@@ -1,7 +1,11 @@
-from docx_package.results import ResultsChapter
 from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
 
 from docx_package import layout
+from docx_package.results import ResultsChapter
 
 
 class DwellTimesAndRevisits:
@@ -40,7 +44,33 @@ class DwellTimesAndRevisits:
 
         return areas_of_interest
 
+    def dwell_times(self):
+        aois = self.areas_of_interest
+        dwell_times_vector = np.zeros(len(aois))
 
+        '''
+        for index, aoi in enumerate(aois):
+            for line in self.txt_data.iterrows():
+                if line[0] == aoi:
+                    print(line['Fixation time'])
+                    # dwell_times_vector[index] += line[3]
+        '''
+        '''
+        for index, aoi in enumerate(aois):
+            for idx, line in self.txt_data.iterrows():
+
+                print(line.index)
+        '''
+        '''
+                if line[0] == aoi:
+                    print(line['Fixation time'])
+                    # dwell_times_vector[index] += line[3]
+                '''
+
+
+        print(dwell_times_vector)
+
+        print(dwell_times_vector)
 
     def add_table(self):
         aois = self.areas_of_interest
@@ -67,7 +97,6 @@ class DwellTimesAndRevisits:
                 # cell.paragraphs[0].style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
                 # cell.paragraphs[0].style.name = 'Table'
 
-
     def write_chapter(self):
         time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
                                        self.tables, self.parameters)
@@ -75,6 +104,8 @@ class DwellTimesAndRevisits:
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
         self.add_table()
+
+        self.dwell_times()
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()
