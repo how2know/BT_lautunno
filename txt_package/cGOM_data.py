@@ -54,7 +54,10 @@ def make_dataframe(txt_file_path):
 def make_dataframes_list(parameters):
     """
     Creates a data frame from the cGOM data of each participant and returns a list of the data frames.
+    The files containing the data must be named Participant<Number>.txt, e.g. 'Participant3.txt', and stored in
+    the Inputs/Data directory.
     """
+    # path to the .txt files
     directory_path = 'Inputs/Data/Participant{}.txt'
 
     participants_number = parameters['Number of participants']
@@ -64,8 +67,10 @@ def make_dataframes_list(parameters):
     for i in range(1, participants_number + 1):
         txt_file_path = directory_path.format(str(i))
 
-        dataframes_list.append(make_dataframe(txt_file_path))
-
-    print(dataframes_list)
+        # stores a data frame in the list or passes if the file is not provided
+        try:
+            dataframes_list.append(make_dataframe(txt_file_path))
+        except FileNotFoundError:
+            pass
 
     return dataframes_list

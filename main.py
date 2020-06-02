@@ -46,7 +46,7 @@ def main():
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
-    txt_file_path = 'Inputs/Data/hilti_project.txt'
+    txt_file_path = 'Inputs/Data/Participant1.txt'
 
     txt_file_data = text_reading.read_txt(txt_file_path)
 
@@ -185,7 +185,7 @@ def main():
     time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
     time_on_tasks.write_chapter()
 
-    dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters, txt_file_data)
+    dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
     dwell_times_and_revisits.write_chapter()
 
     average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters)
