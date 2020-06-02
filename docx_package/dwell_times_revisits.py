@@ -44,33 +44,37 @@ class DwellTimesAndRevisits:
 
         return areas_of_interest
 
+    @ property
     def dwell_times(self):
         aois = self.areas_of_interest
         dwell_times_vector = np.zeros(len(aois))
 
-        '''
-        for index, aoi in enumerate(aois):
-            for line in self.txt_data.iterrows():
-                if line[0] == aoi:
-                    print(line['Fixation time'])
-                    # dwell_times_vector[index] += line[3]
-        '''
-        '''
-        for index, aoi in enumerate(aois):
-            for idx, line in self.txt_data.iterrows():
-
-                print(line.index)
-        '''
-        '''
-                if line[0] == aoi:
-                    print(line['Fixation time'])
-                    # dwell_times_vector[index] += line[3]
-                '''
-
+        for idx, aoi in enumerate(aois):
+            data_of_aoi = self.txt_data[self.txt_data.index == aoi]
+            print(data_of_aoi)
+            dwell_times = data_of_aoi['Fixation time'].sum()
+            print(dwell_times)
+            dwell_times_vector[idx] = dwell_times
 
         print(dwell_times_vector)
 
-        print(dwell_times_vector)
+        return dwell_times_vector
+
+    @ property
+    def revisits(self):
+        aois = self.areas_of_interest
+        revisits_list = []
+
+        for idx, aoi in enumerate(aois):
+            data_of_aoi = self.txt_data[self.txt_data.index == aoi]
+            print(data_of_aoi)
+            revisits = len(data_of_aoi['Fixation time']) - 1
+            print(revisits)
+            revisits_list.append(revisits)
+
+        print(revisits_list)
+
+        return revisits_list
 
     def add_table(self):
         aois = self.areas_of_interest
@@ -86,9 +90,17 @@ class DwellTimesAndRevisits:
             layout.set_cell_shading(cell, self.LIGHT_GREY_10)  # color the cell in light_grey_10
             cell.paragraphs[0].runs[0].font.bold = True
 
-        for index, aoi in enumerate(aois):
-            cell = table.columns[0].cells[index+1]
+        for idx, aoi in enumerate(aois):
+            cell = table.columns[0].cells[idx+1]
             cell.text = aoi
+
+        for idx, dwell_times in enumerate(self.dwell_times):
+            cell = table.columns[1].cells[idx+1]
+            cell.text = str(round(dwell_times, 4))
+
+        for idx, revisits in enumerate(self.revisits):
+            cell = table.columns[2].cells[idx+1]
+            cell.text = str(revisits)
 
         # set the vertical and horizontal alignment of all cells
         for row in table.rows:
@@ -104,8 +116,6 @@ class DwellTimesAndRevisits:
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
         self.add_table()
-
-        self.dwell_times()
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()

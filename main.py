@@ -44,7 +44,7 @@ def main():
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
-    txt_file_path = 'Inputs/Data/new_file.txt'
+    txt_file_path = 'Inputs/Data/hilti_project.txt'
 
     txt_file_data = text_reading.read_txt(txt_file_path)
 
