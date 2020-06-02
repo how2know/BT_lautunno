@@ -21,6 +21,8 @@ from docx_package.dwell_times_revisits import DwellTimesAndRevisits
 from docx_package.average_fixation import AverageFixation
 from docx_package.transitions import Transitions
 
+from txt_package import cGOM_data
+
 
 def main():
     start = time.time()
@@ -94,6 +96,8 @@ def main():
     text_reading.get_parameters_from_tables(text_input, text_input_soup, tables, parameters)
 
     print(parameters)
+
+    cGOM_dataframes = cGOM_data.make_dataframes_list(parameters)
 
     # define all styles used in the document
     layout.define_all_styles(report)

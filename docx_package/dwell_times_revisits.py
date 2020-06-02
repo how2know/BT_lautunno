@@ -51,12 +51,8 @@ class DwellTimesAndRevisits:
 
         for idx, aoi in enumerate(aois):
             data_of_aoi = self.txt_data[self.txt_data.index == aoi]
-            print(data_of_aoi)
             dwell_times = data_of_aoi['Fixation time'].sum()
-            print(dwell_times)
             dwell_times_vector[idx] = dwell_times
-
-        print(dwell_times_vector)
 
         return dwell_times_vector
 
@@ -67,12 +63,8 @@ class DwellTimesAndRevisits:
 
         for idx, aoi in enumerate(aois):
             data_of_aoi = self.txt_data[self.txt_data.index == aoi]
-            print(data_of_aoi)
             revisits = len(data_of_aoi['Fixation time']) - 1
-            print(revisits)
             revisits_list.append(revisits)
-
-        print(revisits_list)
 
         return revisits_list
 
