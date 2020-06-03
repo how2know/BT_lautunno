@@ -188,8 +188,10 @@ def main():
     dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
     dwell_times_and_revisits.write_chapter()
 
-    average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters)
+    average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
     average_fixation.write_chapter()
+    average_fixation.make_plot()
+    # average_fixation.average_fixation_stat()
 
     transitions = Transitions(report, text_input, text_input_soup, tables, parameters)
     transitions.write_chapter()
