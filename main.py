@@ -182,6 +182,9 @@ def main():
     effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, parameters)
     effectiveness_analysis.write_chapter()
 
+    # average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
+    # average_fixation.write_chapter()
+
     time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
     time_on_tasks.write_chapter()
 
@@ -190,8 +193,6 @@ def main():
 
     average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
     average_fixation.write_chapter()
-    average_fixation.make_plot()
-    # average_fixation.average_fixation_stat()
 
     transitions = Transitions(report, text_input, text_input_soup, tables, parameters)
     transitions.write_chapter()

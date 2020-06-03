@@ -61,7 +61,7 @@ class TimeOnTasks:
         plt.ylabel('Completion time [s]')
         figure = plot.get_figure()
         figure.savefig(self.FIGURE_NAME)
-        # plt.show()
+        plt.show()
 
     def write_chapter(self):
         self.make_plot()
