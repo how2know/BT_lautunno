@@ -179,11 +179,9 @@ def main():
     # TODO: write this better
     report.add_paragraph('Results', 'Heading 1')
 
+    '''
     effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, parameters)
     effectiveness_analysis.write_chapter()
-
-    # average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
-    # average_fixation.write_chapter()
 
     time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
     time_on_tasks.write_chapter()
@@ -193,9 +191,11 @@ def main():
 
     average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
     average_fixation.write_chapter()
+    '''
 
-    transitions = Transitions(report, text_input, text_input_soup, tables, parameters)
+    transitions = Transitions(report, text_input, text_input_soup, tables, parameters, txt_file_data, cGOM_dataframes)
     transitions.write_chapter()
+    transitions.transitions_stat()
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
     conclusion.write_chapter()
