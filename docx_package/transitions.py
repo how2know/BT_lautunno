@@ -13,20 +13,21 @@ class Transitions:
     DISCUSSION_TITLE = 'Discussion'
     DISCUSSION_STYLE = 'Heading 3'
 
+    FIGURE_NAME = 'Transitions.png'
+
     # TODO: delete txt data
-    def __init__(self, report_document, text_input_document, text_input_soup, list_of_tables, parameters_dictionary, txt_data, list_of_dataframes):
+    def __init__(self, report_document, text_input_document, text_input_soup, list_of_tables, parameters_dictionary, list_of_dataframes):
         self.report = report_document
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
         self.tables = list_of_tables
         self.parameters = parameters_dictionary
-        self.txt_data = txt_data
         self.cGOM_dataframes = list_of_dataframes
 
     # TODO: write % somewhere
     def make_plot(self, data_frame, title, save_path):
         plot = sns.heatmap(data=data_frame,
-                           vmin=0, vmax=100,
+                           vmin=0, vmax=1,
                            annot=True,
                            linewidths=.5,
                            cmap='YlOrRd',
@@ -98,19 +99,23 @@ class Transitions:
                        'Transitions1.png'
                        )
 
+        print(transitions_stat1.to_numpy().sum())
+
         transitions_stat2 = pd.DataFrame()
         for idx, aoi in enumerate(all_aois):
             data_of_aoi = all_transitions[all_transitions.index == aoi]
 
-            mean = data_of_aoi.mean()
+            transitions_mean = data_of_aoi.mean().to_numpy()
 
-            print(mean)
+            transitions_mean_df = pd.DataFrame(index=[aoi],
+                                               columns=all_transitions.columns,
+                                               data=[transitions_mean]
+                                               )
 
-            transitions_stat2 = transitions_stat2.append(mean, ignore_index=True)
+            transitions_stat2 = transitions_stat2.append(transitions_mean_df)
 
-            transitions_stat2.rename(index={idx: str(aoi)})
+        print(transitions_stat2.to_numpy().sum())
 
-        print(transitions_stat2)
         self.make_plot(transitions_stat2,
                        'Transitions main graph 2',
                        'Transitions2.png'
@@ -121,6 +126,10 @@ class Transitions:
                                        self.tables, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
+        # self.report.add_picture(self.FIGURE_NAME)
+        self.report.add_picture('Transitions1.png')
+        self.report.add_picture('Transitions2.png')
+
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()

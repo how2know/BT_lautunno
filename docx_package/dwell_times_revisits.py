@@ -25,13 +25,12 @@ class DwellTimesAndRevisits:
     # color for cell shading
     LIGHT_GREY_10 = 'D0CECE'
 
-    def __init__(self, report_document, text_input_document, text_input_soup, list_of_tables, parameters_dictionary, txt_data, list_of_dataframes):
+    def __init__(self, report_document, text_input_document, text_input_soup, list_of_tables, parameters_dictionary, list_of_dataframes):
         self.report = report_document
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
         self.tables = list_of_tables
         self.parameters = parameters_dictionary
-        self.txt_data = txt_data
         self.cGOM_dataframes = list_of_dataframes
 
     def areas_of_interest(self, dataframe):
