@@ -24,7 +24,6 @@ class Transitions:
         self.parameters = parameters_dictionary
         self.cGOM_dataframes = list_of_dataframes
 
-    # TODO: write % somewhere
     def make_plot(self, data_frame, title, save_path):
         plot = sns.heatmap(data=data_frame,
                            vmin=0, vmax=1,

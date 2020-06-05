@@ -58,6 +58,10 @@ def parse_xml_with_bs4(text_input_path):
 
 # return a list of the value of all dropdown lists in a table
 def get_dropdown_list_of_table(text_input_soup, table_index):
+    '''
+
+    '''
+
     list_of_value = []
 
     # look for all values of dropdown lists in the data and store them

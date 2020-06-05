@@ -1,16 +1,19 @@
+#TODO: comment
 #####     LAYOUT DEFINITION     #####
 
 # Some functions that define the layout and formatting of the report are implemented in this module.
 # It includes: document layout, header, footer, styles, tables, ...
-
+from docx.text.paragraph import Paragraph
+from docx.table import _Row, _Column, _Cell
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_TAB_LEADER
 from docx.enum.section import WD_SECTION, WD_ORIENT
 from docx.shared import Pt, Cm, RGBColor
-from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
+from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT_RULE
 from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml.ns import nsdecls, qn
 from docx.oxml import parse_xml
 from docx.oxml.shared import OxmlElement
+
 
 # define some colors
 black = RGBColor(0, 0, 0)                  # Hex: 000000
@@ -96,6 +99,7 @@ def set_cell_shading(cell, color_hex):
     shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), color_hex))
     cell._tc.get_or_add_tcPr().append(shading_elm)
 
+
 # define table style
 def define_table_style(table):
     table.style = 'Table Grid'                            # set the table style
@@ -111,7 +115,8 @@ def define_table_style(table):
 
 
 # insert an horizontal border under a given paragraph
-def insert_horizontal_border(paragraph):
+def insert_horizontal_border(paragraph: Paragraph):
+
     p = paragraph._p                    # p is the <w:p> XML element
     pPr = p.get_or_add_pPr()
     pBdr = OxmlElement('w:pBdr')
@@ -130,3 +135,77 @@ def insert_horizontal_border(paragraph):
     bottom.set(qn('w:space'), '1')
     bottom.set(qn('w:color'), 'auto')
     pBdr.append(bottom)
+
+
+def set_row_height(row: _Row, height: float):
+    """
+    Set the height of a table row.
+
+    Args:
+        row: Row whose height is to be changed.
+        size: Height of the column in cm.
+    """
+
+    row.height_rule = WD_ROW_HEIGHT_RULE.EXACTLY
+    row.height = Cm(size)
+
+
+def set_column_width(column: _Column, width: float):
+    """
+    Set the width of a table column.
+
+    Note:
+        To make it work, the autofit of the corresponding table must be disabled beforehand (table.autofit = False).
+
+    Args:
+        column: Column whose width is to be changed.
+        size: Width of the column in cm.
+    """
+
+    for cell in column.cells:
+        cell.width = Cm(width)
+
+
+def set_cell_border(cell: _Cell, **kwargs):
+    """
+    Set the border of a cell.
+
+    Usage example:
+    set_cell_border(cell,
+                    top={"sz": 12, "val": "single", "color": "#FF0000", "space": "0"},     # top border
+                    bottom={"sz": 12, "color": "#00FF00", "val": "single"},     # bottom border
+                    start={"sz": 24, "val": "dashed", "shadow": "true"},     # left border
+                    end={"sz": 12, "val": "dashed"}     # right border
+                    )
+
+    Available attributes can be found here: http://officeopenxml.com/WPtableBorders.php
+
+    Args:
+        cell: Cell with borders to be changed.
+    """
+
+    tc = cell._tc
+    tcPr = tc.get_or_add_tcPr()
+
+    # check for tag existence, if none found, then create one
+    tcBorders = tcPr.first_child_found_in("w:tcBorders")
+    if tcBorders is None:
+        tcBorders = OxmlElement('w:tcBorders')
+        tcPr.append(tcBorders)
+
+    # list over all available tags
+    for edge in ('start', 'top', 'end', 'bottom', 'insideH', 'insideV'):
+        edge_data = kwargs.get(edge)
+        if edge_data:
+            tag = 'w:{}'.format(edge)
+
+            # check for tag existence, if none found, then create one
+            element = tcBorders.find(qn(tag))
+            if element is None:
+                element = OxmlElement(tag)
+                tcBorders.append(element)
+
+            # looks like order of attributes is important
+            for key in ["sz", "val", "color", "space", "shadow"]:
+                if key in edge_data:
+                    element.set(qn('w:{}'.format(key)), str(edge_data[key]))
