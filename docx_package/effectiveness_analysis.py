@@ -23,7 +23,7 @@ class EffectivenessAnalysis:
     Class that represents the 'Effectiveness analysis' chapter and the visualization of its results.
     """
 
-    # name of the tables as they appear in the tables list
+    # name of tables as they appear in the tables list
     TASK_TABLE_NAME = 'Effectiveness analysis tasks and problems table'
     PROBLEM_TABLE_NAME = 'Effectiveness analysis problem type table'
     VIDEO_TABLE_NAME = 'Effectiveness analysis video table'

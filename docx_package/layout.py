@@ -143,11 +143,11 @@ def set_row_height(row: _Row, height: float):
 
     Args:
         row: Row whose height is to be changed.
-        size: Height of the column in cm.
+        height: Height of the column in cm.
     """
 
     row.height_rule = WD_ROW_HEIGHT_RULE.EXACTLY
-    row.height = Cm(size)
+    row.height = Cm(height)
 
 
 def set_column_width(column: _Column, width: float):
@@ -159,7 +159,7 @@ def set_column_width(column: _Column, width: float):
 
     Args:
         column: Column whose width is to be changed.
-        size: Width of the column in cm.
+        width: Width of the column in cm.
     """
 
     for cell in column.cells:
