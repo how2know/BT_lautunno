@@ -3,6 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
+import time
+
 
 def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=None):
     """
@@ -20,7 +22,8 @@ def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
 
     plot = sns.barplot(data=data_frame,
                        capsize=0.1,
-                       errwidth=2)
+                       errwidth=1.5
+                       )
 
     if title:
         plot.set_title(title)

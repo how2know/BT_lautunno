@@ -86,6 +86,7 @@ def main():
         'Effectiveness analysis video table',
         'Effectiveness analysis parameter table',
         'Time on tasks table',
+        'Time on tasks plot type table',
         'Time on tasks parameter table',
         'Dwell times and revisits parameter table',
         'Average fixation parameter table',
@@ -179,22 +180,35 @@ def main():
     # TODO: write this better
     report.add_paragraph('Results', 'Heading 1')
 
+    start1 = time.time()
     effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, parameters)
     effectiveness_analysis.write_chapter()
+    end1 = time.time()
+    print('Effectiveness analysis: ', end1-start1)
 
+    start2 = time.time()
     time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
     time_on_tasks.write_chapter()
+    end2 = time.time()
+    print('Time on tasks: ', end2-start2)
 
-    '''
+    start3 = time.time()
     dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
     dwell_times_and_revisits.write_chapter()
+    end3 = time.time()
+    print('Dwell times: ', end3-start3)
 
+    start4 = time.time()
     average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
     average_fixation.write_chapter()
+    end4 = time.time()
+    print('Average fixation: ', end4-start4)
 
+    start5 = time.time()
     transitions = Transitions(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
     transitions.write_chapter()
-    '''
+    end5 = time.time()
+    print('Transitions: ', end5-start5)
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
     conclusion.write_chapter()

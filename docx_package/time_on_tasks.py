@@ -6,7 +6,9 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+import time
 
+from docx_package import text_reading
 from docx_package.results import ResultsChapter
 from txt_package import plot
 
@@ -18,6 +20,7 @@ class TimeOnTasks:
 
     # name of table as it appears in the tables list
     TIME_ON_TASK_TABLE_NAME = 'Time on tasks table'
+    PLOT_TYPE_TABLE = 'Time on tasks plot type table'
 
     # parameter keys as they appear in the parameters dictionary
     PARTICIPANTS_NUMBER_KEY = 'Number of participants'
@@ -31,7 +34,8 @@ class TimeOnTasks:
 
     # path to plot image files
     PARTICIPANT_FIGURE_PATH = 'Outputs/Time_on_task_participant{}.png'
-    MAIN_FIGURE_PATH = 'Outputs/Time_on_task.png'
+    BAR_PLOT_FIGURE_PATH = 'Outputs/Time_on_task_bar_plot.png'
+    BOX_PLOT_FIGURE_PATH = 'Outputs/Time_on_task_box_plot.png'
 
     def __init__(self, report_document: Document,
                  text_input_document: Document,
@@ -96,43 +100,89 @@ class TimeOnTasks:
         # return the transposed matrix to have participants as rows and tasks as columns
         return times.transpose()
 
-    #TODO: check if pd.DataFrame = pandas.core.frame.DataFrame which is the type of the return value here
+    # TODO: check if pd.DataFrame = pandas.core.frame.DataFrame which is the type of the return value here
     @ property
-    def times_df(self) -> pd.DataFrame:
+    def task_times_df(self) -> pd.DataFrame:
         """
         Returns:
             Data frame of tasks completion times with participants as index and task names as columns
         """
 
+        start = time.time()
+
         data_frame = pd.DataFrame(self.times, index=self.participants, columns=self.tasks)
+
+        end = time.time()
+
+        print('times_df in ', end - start)
+
         return data_frame
 
+    @ property
+    def plot_type(self) -> str:
+        """
+        Returns:
+            Dropdown list value of the parameter table corresponding to the plot type,
+            i.e. 'Bar plot' or 'Box plot'.
+        """
+
+        plot_type_list = text_reading.get_dropdown_list_of_table(self.text_input_soup,
+                                                                 self.tables.index(self.PLOT_TYPE_TABLE)
+                                                                 )
+        return plot_type_list[0]
+
     def make_plots(self):
-        for participant in self.participants:
-            participant_times = self.times_df.loc[participant].to_numpy()
+        """
+        Create plots with the time on tasks values.
+
+        One bar plot for each participant is created.
+        One bar plot showing a confidence interval of 95% and one box plot with the data of
+        all participants are created.
+        """
+
+        task_times_df = self.task_times_df
+
+        # create a bar plot for each participant
+        for idx, participant in enumerate(self.participants):
+            participant_times = task_times_df.loc[participant].to_numpy()
             participant_times_df = pd.DataFrame(data=[participant_times],
-                                                columns=self.times_df.columns)
+                                                columns=task_times_df.columns)
 
             plot.make_barplot(data_frame=participant_times_df,
-                              figure_save_path='Time_on_task_{}.png'.format(participant),
+                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
                               title='Time on task {}'.format(participant),
                               ylabel='Completion time [s]')
 
+        # create a bar plot the data of all participants
+        plot.make_barplot(data_frame=task_times_df,
+                          figure_save_path=self.BAR_PLOT_FIGURE_PATH,
+                          title='Time on task',
+                          ylabel='Completion time [s]'
+                          )
 
+        # create a box plot the data of all participants
+        plot.make_boxplot(data_frame=task_times_df,
+                          figure_save_path=self.BOX_PLOT_FIGURE_PATH,
+                          title='Time on task',
+                          ylabel='Completion time [s]'
+                          )
 
     def write_chapter(self):
-        # plot.make_barplot(self.times_df, self.FIGURE_NAME, ylabel='Completion time [s]')
-        # plot.make_boxplot(self.times_df, 'Outputs/Hey39.png', title='Hey', ylabel='Completion time [s]')
+        """
+        Write the whole chapter 'Time on tasks', including the chosen plot.
+        """
 
-        self.times_df
         self.make_plots()
 
         time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
                                        self.tables, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
-        self.report.add_picture(self.MAIN_FIGURE_PATH)
-        self.report.add_picture('Outputs/Hey39.png')
+
+        if self.plot_type == 'Bar plot':
+            self.report.add_picture(self.BAR_PLOT_FIGURE_PATH)
+        if self.plot_type == 'Box plot':
+            self.report.add_picture(self.BOX_PLOT_FIGURE_PATH)
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()

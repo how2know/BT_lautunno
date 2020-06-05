@@ -80,6 +80,7 @@ class EffectivenessAnalysis:
         Returns:
             Table of the input .docx file where the description of the problems are written.
         """
+
         problem_table_index = self.tables.index(self.PROBLEM_TABLE_NAME)
         return self.text_input.tables[problem_table_index]
 
