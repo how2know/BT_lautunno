@@ -74,3 +74,75 @@ def make_dataframes_list(parameters):
             pass
 
     return dataframes_list
+
+
+def areas_of_interest(dataframe):
+    labels_list = dataframe.index.values.tolist()
+    areas_of_interest = []
+
+    for label in labels_list:
+        if label not in areas_of_interest:
+            areas_of_interest.append(label)
+
+    return areas_of_interest
+
+
+def transitions(self, aois, dataframe):
+    table = pd.DataFrame(index=aois,
+                         columns=aois,
+                         data=np.zeros((len(aois), len(aois)))
+                         )
+
+    all_fixations = dataframe.index.values.tolist()
+
+    last_fixation = all_fixations[0]
+
+    for fixation in all_fixations[1:]:
+        # table.at[last_fixation, fixation] += 1
+        table.loc[last_fixation].at[fixation] += 1
+
+        last_fixation = fixation
+
+    transitions_number = table.to_numpy().sum()
+
+    table = table.div(transitions_number)
+    # table = table.mul(100)
+
+    return table
+
+
+def dwell_times(aois, dataframe):
+    dwell_times_vector = np.zeros(len(aois))
+
+    for idx, aoi in enumerate(aois):
+        data_of_aoi = dataframe[dataframe.index == aoi]
+        dwell_times = data_of_aoi['Fixation time'].sum()
+        dwell_times_vector[idx] = dwell_times
+
+    return dwell_times_vector
+
+
+def revisits(aois, dataframe):
+    revisits_list = []
+
+    for idx, aoi in enumerate(aois):
+        data_of_aoi = dataframe[dataframe.index == aoi]
+        revisits = len(data_of_aoi['Fixation time']) - 1
+        revisits_list.append(revisits)
+
+    return revisits_list
+
+
+def fixations(aois, dataframe):
+    participant_fixations_df = pd.DataFrame()
+
+    for idx, aoi in enumerate(aois):
+        data_of_aoi = dataframe[dataframe.index == aoi]
+        fixations = data_of_aoi['Fixation time'].to_numpy()
+        aoi_fixations = pd.DataFrame(columns=[aoi], data=fixations)
+
+        participant_fixations_df = participant_fixations_df.append(aoi_fixations, ignore_index=True)
+
+    return participant_fixations_df
+
+

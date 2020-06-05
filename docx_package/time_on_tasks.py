@@ -37,7 +37,8 @@ class TimeOnTasks:
     BAR_PLOT_FIGURE_PATH = 'Outputs/Time_on_task_bar_plot.png'
     BOX_PLOT_FIGURE_PATH = 'Outputs/Time_on_task_box_plot.png'
 
-    def __init__(self, report_document: Document,
+    def __init__(self,
+                 report_document: Document,
                  text_input_document: Document,
                  text_input_soup: BeautifulSoup,
                  list_of_tables: List[str],
