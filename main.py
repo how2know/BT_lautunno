@@ -20,6 +20,7 @@ from docx_package.cover_page import CoverPage
 from docx_package.dwell_times_revisits import DwellTimesAndRevisits
 from docx_package.average_fixation import AverageFixation
 from docx_package.transitions import Transitions
+from docx_package.parameters import Parameters
 
 from txt_package import cGOM_data
 
@@ -92,11 +93,9 @@ def main():
         'Conclusion parameter table',
     ]
 
-    parameters = {}
+    parameters = Parameters.get_all(text_input, text_input_soup, tables)
 
-    text_reading.get_parameters_from_tables(text_input, text_input_soup, tables, parameters)
-
-    print(parameters)
+    print(parameters)   # TODO: delete this line
 
     cGOM_dataframes = cGOM_data.make_dataframes_list(parameters)
 
@@ -186,6 +185,7 @@ def main():
     time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
     time_on_tasks.write_chapter()
 
+    '''
     dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
     dwell_times_and_revisits.write_chapter()
 
@@ -194,7 +194,7 @@ def main():
 
     transitions = Transitions(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
     transitions.write_chapter()
-    transitions.transitions_stat()
+    '''
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
     conclusion.write_chapter()

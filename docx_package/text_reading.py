@@ -72,10 +72,10 @@ def get_dropdown_list_of_table(text_input_soup, table_index):
 
     return list_of_value
 
-
+'''
 #
 def get_parameters_from_tables(text_input_document, text_input_soup, list_of_table, parameters_dictionary):
-    '''
+    """
     Function that reads all parameters stored in the tables of the text input document and stores them in a dictionary.
 
     Standard tables that define the parameters have two columns, which contain the key and the value of parameters.
@@ -89,7 +89,7 @@ def get_parameters_from_tables(text_input_document, text_input_soup, list_of_tab
     :param list_of_table:
     :param parameters_dictionary:
     :return:
-    '''
+    """
 
     # text_input_document = Document(text_input_path)
 
@@ -145,8 +145,8 @@ def get_parameters_from_tables(text_input_document, text_input_soup, list_of_tab
             table_index = list_of_table.index(table_name)
             table = text_input_document.tables[table_index]
 
-            '''Cells are not recognized as cells by word if they contain a dropdown list. That is why I had to create 
-            a work around to get the values here.'''
+            """Cells are not recognized as cells by word if they contain a dropdown list. That is why I had to create 
+            a work around to get the values here."""
 
             list_of_text = []     # list of the text of all cells, except those ones containing dropdown list
             stop = False
@@ -186,8 +186,9 @@ def get_parameters_from_tables(text_input_document, text_input_soup, list_of_tab
                     parameters_dictionary[description_key] = description
 
                     value += 1
+'''
 
-
+'''
 def read_txt(txt_file_path):
     start_time = 'Start time'
     end_time = 'End time'
@@ -218,5 +219,5 @@ def read_txt(txt_file_path):
 
     print(data)
     return data
-
+'''
 
