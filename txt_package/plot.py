@@ -5,6 +5,7 @@ import pandas as pd
 
 import time
 
+
 def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=None):
     """
     Create a barplot out of a data frame and save its figure.

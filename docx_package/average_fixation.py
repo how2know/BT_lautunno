@@ -9,7 +9,7 @@ import pandas as pd
 
 from docx_package.results import ResultsChapter
 from docx_package import text_reading
-from txt_package import plot
+from txt_package import plot, eye_tracking
 
 
 class AverageFixation:
@@ -56,60 +56,6 @@ class AverageFixation:
         self.parameters = parameters_dictionary
         self.cGOM_dataframes = list_of_dataframes
 
-    def areas_of_interest(self, dataframe):
-        labels_list = dataframe.index.values.tolist()
-        areas_of_interest = []
-
-        for label in labels_list:
-            if label not in areas_of_interest:
-                areas_of_interest.append(label)
-
-        return areas_of_interest
-
-    def fixations(self, aois, dataframe):
-        participant_fixations_df = pd.DataFrame()
-
-        for idx, aoi in enumerate(aois):
-            data_of_aoi = dataframe[dataframe.index == aoi]
-            fixations = data_of_aoi['Fixation time'].to_numpy()
-            aoi_fixations = pd.DataFrame(columns=[aoi], data=fixations)
-
-            participant_fixations_df = participant_fixations_df.append(aoi_fixations, ignore_index=True)
-
-        return participant_fixations_df
-
-    def average_fixation_stat(self) -> pd.DataFrame:
-        """
-        Create a data frame with the fixations and a box plot for each participant,
-        and return a data frame containing all fixations.
-
-        Returns:
-            Data frame of all fixations of all participants with AOI names as columns.
-        """
-
-        # main fixation times data frame
-        average_fixation_df = pd.DataFrame()
-
-        # create a data frame with the fixation times for each participant, create a box plot with it,
-        # and append it to the main data frame
-        for idx, dataframe in enumerate(self.cGOM_dataframes):
-            aois = self.areas_of_interest(dataframe)
-            participant_fixations = self.fixations(aois, dataframe)
-            # TODO: choose which plot to make and complete docstring according to the choice
-            plot.make_boxplot(data_frame=participant_fixations,
-                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
-                              title='Average fixation: participant {}'.format(idx+1),
-                              ylabel='Fixation time [s]')
-            '''
-            plot.make_barplot(data_frame=participant_fixations,
-                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
-                              title='Average fixation: participant {}'.format(idx+1),
-                              ylabel='Fixation time [s]')
-            '''
-            average_fixation_df = average_fixation_df.append(participant_fixations, ignore_index=True)
-
-        return average_fixation_df
-
     @ property
     def plot_type(self) -> str:
         """
@@ -123,28 +69,55 @@ class AverageFixation:
                                                                  )
         return plot_type_list[0]
 
-    def write_chapter(self):
+    def make_plots(self):
         """
-        Create plots and write the whole chapter 'Average fixation', including the chosen plot.
+        Create plots to visualize the fixation durations.
 
+        One box plot for each participant is created.
         One bar plot showing a confidence interval of 95% and one box plot with the data of
         all participants are created.
         """
 
-        time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                       self.tables, self.parameters)
+        # main fixation times data frame
+        average_fixation_df = pd.DataFrame()
 
-        average_fixations_df = self.average_fixation_stat()
+        # create a data frame with the fixation times for each participant, create a box plot with it,
+        # and append it to the main data frame
+        for idx, dataframe in enumerate(self.cGOM_dataframes):
+            aois = eye_tracking.areas_of_interest(dataframe)
+            participant_fixations = eye_tracking.fixations(aois, dataframe)
+            # TODO: choose which plot to make and complete docstring according to the choice
+            plot.make_boxplot(data_frame=participant_fixations,
+                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
+                              title='Average fixation: participant {}'.format(idx+1),
+                              ylabel='Fixation time [s]')
+            '''
+            plot.make_barplot(data_frame=participant_fixations,
+                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
+                              title='Average fixation: participant {}'.format(idx+1),
+                              ylabel='Fixation time [s]')
+            '''
+            average_fixation_df = average_fixation_df.append(participant_fixations, ignore_index=True)
 
         # create a bar plot and a box plot with the fixations of all participants
-        plot.make_boxplot(data_frame=average_fixations_df,
+        plot.make_boxplot(data_frame=average_fixation_df,
                           figure_save_path=self.BOX_PLOT_FIGURE_PATH,
                           title='Average fixation',
                           ylabel='Fixation time [s]')
-        plot.make_barplot(data_frame=average_fixations_df,
+        plot.make_barplot(data_frame=average_fixation_df,
                           figure_save_path=self.BAR_PLOT_FIGURE_PATH,
                           title='Average fixation',
                           ylabel='Fixation time [s]')
+
+    def write_chapter(self):
+        """
+        Write the whole chapter 'Time on tasks', including the chosen plot.
+        """
+
+        self.make_plots()
+
+        time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
+                                       self.tables, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 

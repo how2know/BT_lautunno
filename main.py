@@ -181,7 +181,6 @@ def main():
     # TODO: write this better
     report.add_paragraph('Results', 'Heading 1')
 
-    '''
     start1 = time.time()
     effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, parameters)
     effectiveness_analysis.write_chapter()
@@ -205,7 +204,6 @@ def main():
     average_fixation.write_chapter()
     end4 = time.time()
     print('Average fixation: ', end4-start4)
-    '''
 
     start5 = time.time()
     transitions = Transitions(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)

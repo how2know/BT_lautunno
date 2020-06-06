@@ -109,14 +109,7 @@ class TimeOnTasks:
             Data frame of tasks completion times with participants as index and task names as columns.
         """
 
-        start = time.time()
-
         data_frame = pd.DataFrame(self.times, index=self.participants, columns=self.tasks)
-
-        end = time.time()
-
-        print('times_df in ', end - start)
-
         return data_frame
 
     @ property

@@ -10,6 +10,7 @@ import pandas as pd
 
 from docx_package import layout
 from docx_package.results import ResultsChapter
+from txt_package import plot, eye_tracking
 
 
 class DwellTimesAndRevisits:
@@ -54,37 +55,6 @@ class DwellTimesAndRevisits:
         self.parameters = parameters_dictionary
         self.cGOM_dataframes = list_of_dataframes
 
-    def areas_of_interest(self, dataframe):
-
-        labels_list = dataframe.index.values.tolist()
-        areas_of_interest = []
-
-        for label in labels_list:
-            if label not in areas_of_interest:
-                areas_of_interest.append(label)
-
-        return areas_of_interest
-
-    def dwell_times(self, aois, dataframe):
-        dwell_times_vector = np.zeros(len(aois))
-
-        for idx, aoi in enumerate(aois):
-            data_of_aoi = dataframe[dataframe.index == aoi]
-            dwell_times = data_of_aoi['Fixation time'].sum()
-            dwell_times_vector[idx] = dwell_times
-
-        return dwell_times_vector
-
-    def revisits(self, aois, dataframe):
-        revisits_list = []
-
-        for idx, aoi in enumerate(aois):
-            data_of_aoi = dataframe[dataframe.index == aoi]
-            revisits = len(data_of_aoi['Fixation time']) - 1
-            revisits_list.append(revisits)
-
-        return revisits_list
-
     def dwell_times_stat(self) -> pd.DataFrame:
         """
         Returns:
@@ -97,8 +67,8 @@ class DwellTimesAndRevisits:
 
         # create a data frame with the dwell times for each participant and append it to the main data frame
         for idx, dataframe in enumerate(self.cGOM_dataframes):
-            aois = self.areas_of_interest(dataframe)
-            dwell_times = self.dwell_times(aois, dataframe)
+            aois = eye_tracking.areas_of_interest(dataframe)
+            dwell_times = eye_tracking.dwell_times(aois, dataframe)
             participant_dwell_times = pd.DataFrame(index=['Participant {}'.format(idx+1)],
                                                    columns=aois,
                                                    data=dwell_times.reshape(1, -1)
@@ -127,8 +97,8 @@ class DwellTimesAndRevisits:
 
         # create a data frame with the revisits for each participant and append it to the main data frame
         for idx, dataframe in enumerate(self.cGOM_dataframes):
-            aois = self.areas_of_interest(dataframe)
-            revisits = self.revisits(aois, dataframe)
+            aois = eye_tracking.areas_of_interest(dataframe)
+            revisits = eye_tracking.revisits(aois, dataframe)
             participant_revisits = pd.DataFrame(index=['Participant {}'.format(idx + 1)],
                                                 columns=aois,
                                                 data=[revisits]
