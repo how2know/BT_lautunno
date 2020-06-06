@@ -130,7 +130,7 @@ class AverageFixation:
         One bar plot showing a confidence interval of 95% and one box plot with the data of
         all participants are created.
         """
-        
+
         time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
                                        self.tables, self.parameters)
 
