@@ -89,6 +89,7 @@ def main():
         'Time on tasks plot type table',
         'Time on tasks parameter table',
         'Dwell times and revisits parameter table',
+        'Average fixation plot type table',
         'Average fixation parameter table',
         'Transitions parameter table',
         'Conclusion parameter table',

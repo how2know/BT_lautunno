@@ -80,7 +80,7 @@ class TimeOnTasks:
             List of participants, i.e. [Participant 1, Participant 2, ...].
         """
 
-        participants = ['participant {}'.format(i) for i in range(1, self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1)]
+        participants = ['Participant {}'.format(i) for i in range(1, self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1)]
         return participants
 
     @ property
@@ -106,7 +106,7 @@ class TimeOnTasks:
     def task_times_df(self) -> pd.DataFrame:
         """
         Returns:
-            Data frame of tasks completion times with participants as index and task names as columns
+            Data frame of tasks completion times with participants as index and task names as columns.
         """
 
         start = time.time()
@@ -151,17 +151,15 @@ class TimeOnTasks:
 
             plot.make_barplot(data_frame=participant_times_df,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
-                              title='Time on task {}'.format(participant),
+                              title='Time on task: participant {}'.format(idx+1),
                               ylabel='Completion time [s]')
 
-        # create a bar plot the data of all participants
+        # create a bar plot and a box plot with the data of all participants
         plot.make_barplot(data_frame=task_times_df,
                           figure_save_path=self.BAR_PLOT_FIGURE_PATH,
                           title='Time on task',
                           ylabel='Completion time [s]'
                           )
-
-        # create a box plot the data of all participants
         plot.make_boxplot(data_frame=task_times_df,
                           figure_save_path=self.BOX_PLOT_FIGURE_PATH,
                           title='Time on task',
@@ -180,6 +178,7 @@ class TimeOnTasks:
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
+        # add bar plot or box plot depending on the choice of plot type
         if self.plot_type == 'Bar plot':
             self.report.add_picture(self.BAR_PLOT_FIGURE_PATH)
         if self.plot_type == 'Box plot':

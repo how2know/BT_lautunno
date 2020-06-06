@@ -22,7 +22,8 @@ def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
 
     plot = sns.barplot(data=data_frame,
                        capsize=0.1,
-                       errwidth=1.5
+                       errwidth=1.5,
+                       ci=95
                        )
 
     if title:
