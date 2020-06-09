@@ -43,6 +43,7 @@ class CoverPage:
         """
         Args:
             report_document: .docx file where the report is written.
+            picture_paths_list: List of the path of all input pictures.
             parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value).
         """
 
@@ -116,7 +117,6 @@ class CoverPage:
         except IndexError:
             pass
 
-    # TODO: add function to detect image file
     def add_picture(self) -> bool:
         """
         Load a picture from the input files and add it to the report.

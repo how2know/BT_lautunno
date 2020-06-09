@@ -143,40 +143,40 @@ def main():
 
     '''  create and write all the chapters '''
 
-    purpose = Chapter(report, text_input, text_input_soup, 'Purpose', tables, parameters)
+    purpose = Chapter(report, text_input, text_input_soup, 'Purpose', tables, picture_paths, parameters)
     purpose.write_chapter()
 
-    background = Chapter(report, text_input, text_input_soup, 'Background', tables, parameters)
+    background = Chapter(report, text_input, text_input_soup, 'Background', tables, picture_paths, parameters)
     background.write_chapter()
 
-    scope = Chapter(report, text_input, text_input_soup, 'Scope', tables, parameters)
+    scope = Chapter(report, text_input, text_input_soup, 'Scope', tables, picture_paths, parameters)
     scope.write_chapter()
 
     def_chapter = Definitions(report, text_input, text_input_soup, definitions, 'Terms definitions', tables)
     def_chapter.write_all_definitions()
 
-    ethics = Chapter(report, text_input, text_input_soup, 'Ethics statement', tables, parameters)
+    ethics = Chapter(report, text_input, text_input_soup, 'Ethics statement', tables, picture_paths, parameters)
     ethics.write_chapter()
 
-    device = Chapter(report, text_input, text_input_soup, 'Device specifications', tables, parameters)
+    device = Chapter(report, text_input, text_input_soup, 'Device specifications', tables, picture_paths, parameters)
     device.write_chapter()
 
     # TODO: write this better
     report.add_paragraph('Test procedure', 'Heading 2')
 
-    goal = Chapter(report, text_input, text_input_soup, 'Goal', tables, parameters)
+    goal = Chapter(report, text_input, text_input_soup, 'Goal', tables, picture_paths, parameters)
     goal.write_chapter()
 
-    participants = Chapter(report, text_input, text_input_soup, 'Participants', tables, parameters)
+    participants = Chapter(report, text_input, text_input_soup, 'Participants', tables, picture_paths, parameters)
     participants.write_chapter()
 
-    environment = Chapter(report, text_input, text_input_soup, 'Use environment', tables, parameters)
+    environment = Chapter(report, text_input, text_input_soup, 'Use environment', tables, picture_paths, parameters)
     environment.write_chapter()
 
-    scenarios = Chapter(report, text_input, text_input_soup, 'Use scenarios', tables, parameters)
+    scenarios = Chapter(report, text_input, text_input_soup, 'Use scenarios', tables, picture_paths, parameters)
     scenarios.write_chapter()
 
-    setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, parameters)
+    setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, picture_paths, parameters)
     setup.write_chapter()
 
     # TODO: write this better
@@ -214,7 +214,7 @@ def main():
     print('Transitions: ', end5-start5)
     '''
 
-    conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
+    conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, picture_paths, parameters)
     conclusion.write_chapter()
 
     # save the report
