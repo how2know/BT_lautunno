@@ -83,23 +83,33 @@ def create_header(section):
     return header
 '''
 
-# techniques to make something bold in a table
-# copied from: https://stackoverflow.com/questions/37757203/making-cells-bold-in-a-table-using-python-docx
-'''
-def make_rows_bold(*rows):
-    for row in rows:
-        for cell in row.cells:
-            for paragraph in cell.paragraphs:
-                for run in paragraph.runs:
-                    run.font.bold = True
-'''
+
+def capitalize_first_letter(string: str) -> str:
+    """
+    Args:
+        string: String whose first letter must be capitalized.
+
+    Returns:
+        String with a capital first letter.
+    """
+
+    return string[:1].upper() + string[1:]
 
 
-def set_cell_shading(cell, color_hex):
+def set_cell_shading(cell: _Cell, color_hex: str):
+    """
+    Color a cell.
+
+    Args:
+        cell: Cell that must be colored.
+        color_hex: Hexadecimal representation of the color.
+    """
+
     shading_elm = parse_xml(r'<w:shd {0} w:fill="{1}"/>'.format(nsdecls('w'), color_hex))
     cell._tc.get_or_add_tcPr().append(shading_elm)
 
 
+# TODO: do we need this
 # define table style
 def define_table_style(table):
     table.style = 'Table Grid'                            # set the table style
@@ -114,21 +124,26 @@ def define_table_style(table):
             cell.paragraphs[0].style.name = 'Table'
 
 
-# insert an horizontal border under a given paragraph
 def insert_horizontal_border(paragraph: Paragraph):
+    """
+    Add an horizontal border under a paragraph.
+
+    Args:
+        paragraph: Paragraph under which you want to add an horizontal border.
+    """
 
     p = paragraph._p                    # p is the <w:p> XML element
     pPr = p.get_or_add_pPr()
     pBdr = OxmlElement('w:pBdr')
     pPr.insert_element_before(pBdr,
-        'w:shd', 'w:tabs', 'w:suppressAutoHyphens', 'w:kinsoku', 'w:wordWrap',
-        'w:overflowPunct', 'w:topLinePunct', 'w:autoSpaceDE', 'w:autoSpaceDN',
-        'w:bidi', 'w:adjustRightInd', 'w:snapToGrid', 'w:spacing', 'w:ind',
-        'w:contextualSpacing', 'w:mirrorIndents', 'w:suppressOverlap', 'w:jc',
-        'w:textDirection', 'w:textAlignment', 'w:textboxTightWrap',
-        'w:outlineLvl', 'w:divId', 'w:cnfStyle', 'w:rPr', 'w:sectPr',
-        'w:pPrChange'
-    )
+                              'w:shd', 'w:tabs', 'w:suppressAutoHyphens', 'w:kinsoku', 'w:wordWrap',
+                              'w:overflowPunct', 'w:topLinePunct', 'w:autoSpaceDE', 'w:autoSpaceDN',
+                              'w:bidi', 'w:adjustRightInd', 'w:snapToGrid', 'w:spacing', 'w:ind',
+                              'w:contextualSpacing', 'w:mirrorIndents', 'w:suppressOverlap', 'w:jc',
+                              'w:textDirection', 'w:textAlignment', 'w:textboxTightWrap',
+                              'w:outlineLvl', 'w:divId', 'w:cnfStyle', 'w:rPr', 'w:sectPr',
+                              'w:pPrChange'
+                              )
     bottom = OxmlElement('w:bottom')
     bottom.set(qn('w:val'), 'single')
     bottom.set(qn('w:sz'), '6')

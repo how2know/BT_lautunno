@@ -47,11 +47,12 @@ def main():
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
-    '''
-    txt_file_path = 'Inputs/Data/Participant1.txt'
-
-    txt_file_data = text_reading.read_txt(txt_file_path)
-    '''
+    pictures_directory_path = 'Inputs/Pictures'
+    pictures = os.listdir('Inputs/Pictures')
+    picture_paths = []
+    for picture in pictures:
+        path = 'Inputs/Pictures/{}'.format(picture)
+        picture_paths.append(path)
 
     #
     text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
@@ -108,7 +109,7 @@ def main():
     section1 = report.sections[0]
     layout.define_page_format(section1)
 
-    cover_page = CoverPage(report, parameters)
+    cover_page = CoverPage(report, picture_paths, parameters)
     cover_page.create()
 
     # add a page break
@@ -181,6 +182,7 @@ def main():
     # TODO: write this better
     report.add_paragraph('Results', 'Heading 1')
 
+    '''
     start1 = time.time()
     effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, parameters)
     effectiveness_analysis.write_chapter()
@@ -210,6 +212,7 @@ def main():
     transitions.write_chapter()
     end5 = time.time()
     print('Transitions: ', end5-start5)
+    '''
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, parameters)
     conclusion.write_chapter()

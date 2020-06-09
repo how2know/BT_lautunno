@@ -36,7 +36,7 @@ class EffectivenessAnalysis:
     DISCUSSION_TITLE = 'Discussion'
     DISCUSSION_STYLE = 'Heading 3'
 
-    # color for cell shading
+    # hexadecimals of colors for cell shading
     LIGHT_GREY_10 = 'D0CECE'
     GREEN = '00B050'
     RED = 'FF0000'
