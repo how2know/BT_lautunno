@@ -16,7 +16,8 @@ from PIL import Image, UnidentifiedImageError
 # from Writing_text import layout
 # from Reading_text import text_reading
 
-from docx_package import text_reading, layout
+from docx_package import text_reading, layout, picture
+from docx_package.picture import Picture
 
 
 class Chapter:
@@ -93,7 +94,7 @@ class Chapter:
         return list_of_paragraphs
 
     @ property
-    def parameters(self) -> List[str]:
+    def chapter_parameters(self) -> List[str]:
         """
         Returns:
             List of parameters needed to be writen in the chapter.
@@ -127,53 +128,64 @@ class Chapter:
         for i in range(1, 4):
             numbered_picture_name = self.picture_name + str(i)
 
-            # find the files that are relevant for the cover page
+            Picture.add_picture_and_caption(self.report,
+                                            self.picture_paths,
+                                            numbered_picture_name,
+                                            numbered_picture_name,
+                                            width=Cm(10)
+                                            )
+
+
+            """# find the files that are relevant for the cover page
             for picture_path in self.picture_paths:
                 if numbered_picture_name in picture_path:
+
+                    '''
                     print(numbered_picture_name)
                     print(picture_path)
 
                     picture = Image.open(picture_path)
                     print(picture.width)
                     print(picture.height)
-
-
-
+                    '''
 
                     picture_paragraph = self.report.add_paragraph(style='Picture')
+                    picture_paragraph.add_run().add_picture(picture_path, width=Cm(10))
 
+                    picture.add_picture_caption(self.report, numbered_picture_name)
+
+                    '''
                     if picture.width < 378:
                         picture_paragraph.add_run().add_picture(picture_path)
                     else:
                         picture_paragraph.add_run().add_picture(picture_path, width=Cm(10))
-
+                    '''"""
 
 
     def write_chapter(self):
         """
-        Write the heading and the paragraphs of a chapter, including the parameters.
+        Write the whole chapter.
+
+        Write the heading, the paragraphs, including the parameters, and the pictures of a chapter.
         """
 
-        # read heading style and write heading
+        # write heading with the corresponding style
         heading_style = self.text_input.paragraphs[self.heading_index()].style.name
         self.report.add_paragraph(self.title, heading_style)
 
-        parameters_values = ['', '', '']
-
-        '''Create variables in order to call property only once, and not in a loop.'''
-        parameters = self.parameters
-        paragraphs = self.paragraphs
-
         # stores values of corresponding parameter keys in a list
-        for parameter_index, parameter in enumerate(parameters):
+        parameters_values = ['', '', '']
+        for parameter_index, parameter in enumerate(self.chapter_parameters):
             if parameter != '-':
                 parameters_values[parameter_index] = self.parameters_dictionary[parameter]
 
         # write paragraphs including values of parameters
-        for paragraph in paragraphs:
+        for paragraph in self.paragraphs:
             new_paragraph = self.report.add_paragraph(
                 paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2],)
             )
             new_paragraph.style.name = 'Normal'
 
         self.add_picture()
+
+

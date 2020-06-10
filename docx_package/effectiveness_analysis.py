@@ -43,7 +43,8 @@ class EffectivenessAnalysis:
     ORANGE = 'FFC000'
     YELLOW = 'FFFF00'
 
-    def __init__(self, report_document: Document,
+    def __init__(self,
+                 report_document: Document,
                  text_input_document: Document,
                  text_input_soup: BeautifulSoup,
                  list_of_tables: List[str],

@@ -33,7 +33,7 @@ def define_page_format(section):
 
 
 # define the characteristics of a style of a document
-def style_definition(document, name, font, size, color, alignment, italic, bold):
+def define_style(document, name, font, size, color, alignment, italic, bold):
     style = document.styles[name]                                   # name of the style you want to define
     try:
         style.element.xpath('w:rPr/w:rFonts')[0].attrib.clear()     # this let us modify the font of some styles that are kind of "blocked"
@@ -52,14 +52,15 @@ def define_all_styles(document):
     document.styles.add_style('Table', WD_STYLE_TYPE.PARAGRAPH)     # add style 'Table' for the tables entries
     document.styles.add_style('Picture', WD_STYLE_TYPE.PARAGRAPH)
 
-    style_definition(document, 'Title', 'Calibri Light', 32, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)
-    style_definition(document, 'Subtitle', 'Calibri Light', 24, black_35, WD_ALIGN_PARAGRAPH.CENTER, False, False)
-    style_definition(document, 'Heading 1', 'Calibri', 16, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
-    style_definition(document, 'Heading 2', 'Calibri Light', 14, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
-    style_definition(document, 'Heading 3', 'Calibri Light', 12, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
-    style_definition(document, 'Normal', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.JUSTIFY, False, False)
-    style_definition(document, 'Table', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.LEFT, False, False)
-    style_definition(document, 'Picture', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)
+    define_style(document, 'Title', 'Calibri Light', 32, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)
+    define_style(document, 'Subtitle', 'Calibri Light', 24, black_35, WD_ALIGN_PARAGRAPH.CENTER, False, False)
+    define_style(document, 'Heading 1', 'Calibri', 16, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
+    define_style(document, 'Heading 2', 'Calibri Light', 14, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
+    define_style(document, 'Heading 3', 'Calibri Light', 12, black, WD_ALIGN_PARAGRAPH.LEFT, False, True)
+    define_style(document, 'Normal', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.JUSTIFY, False, False)
+    define_style(document, 'Table', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.LEFT, False, False)
+    define_style(document, 'Picture', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)
+    define_style(document, 'Caption', 'Calibri', 9, black, WD_ALIGN_PARAGRAPH.CENTER, False, True)
 
 '''
 # add three tab stops (left, center, right)

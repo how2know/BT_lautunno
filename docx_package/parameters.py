@@ -112,7 +112,7 @@ class Parameters:
 
                 value += 1
 
-    @classmethod
+    @ classmethod
     def get_all(cls, text_input_document, text_input_soup, list_of_table):
 
         parameters = cls(text_input_document, text_input_soup, list_of_table)

@@ -8,7 +8,7 @@ import inspect
 
 import time
 
-from docx_package import text_reading, layout
+from docx_package import text_reading, layout, picture
 
 from docx_package.chapter import Chapter
 from docx_package.effectiveness_analysis import EffectivenessAnalysis
@@ -21,6 +21,7 @@ from docx_package.dwell_times_revisits import DwellTimesAndRevisits
 from docx_package.average_fixation import AverageFixation
 from docx_package.transitions import Transitions
 from docx_package.parameters import Parameters
+from docx_package.picture import Picture
 
 from txt_package import cGOM_data
 
@@ -50,8 +51,8 @@ def main():
     pictures_directory_path = 'Inputs/Pictures'
     pictures = os.listdir('Inputs/Pictures')
     picture_paths = []
-    for picture in pictures:
-        path = 'Inputs/Pictures/{}'.format(picture)
+    for pic in pictures:
+        path = 'Inputs/Pictures/{}'.format(pic)
         picture_paths.append(path)
 
     #
@@ -216,6 +217,11 @@ def main():
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, picture_paths, parameters)
     conclusion.write_chapter()
+
+    # add a page break
+    report.add_page_break()
+
+    Picture.add_figures_list(report)
 
     # save the report
     report.save(report_file)

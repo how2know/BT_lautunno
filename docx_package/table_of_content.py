@@ -3,6 +3,7 @@ from docx.oxml import OxmlElement
 import win32com.client
 import inspect, os
 
+
 class TableOfContent:
     def __init__(self, report_document):
         self.report = report_document
@@ -20,7 +21,7 @@ class TableOfContent:
         fldChar2 = OxmlElement('w:fldChar')
         fldChar2.set(qn('w:fldCharType'), 'separate')
         fldChar3 = OxmlElement('w:t')
-        fldChar3.text = "Right-click to update field."
+        fldChar3.text = 'Press "Ctrl + A" to select everything and then "F9" to update fields.'
         fldChar2.append(fldChar3)
 
         fldChar4 = OxmlElement('w:fldChar')
