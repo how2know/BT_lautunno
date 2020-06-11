@@ -52,7 +52,7 @@ class Chapter:
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
         self.title = title
-        self.list_of_tables = list_of_tables
+        self.tables = list_of_tables
         self.picture_paths = picture_paths_list
         self.parameters_dictionary = parameters_dictionary
 
@@ -101,7 +101,7 @@ class Chapter:
         """
 
         return text_reading.get_dropdown_list_of_table(self.text_input_soup,
-                                                       self.list_of_tables.index('{} parameter table'.format(self.title))
+                                                       self.tables.index('{} parameter table'.format(self.title))
                                                        )
 
     @ property
@@ -112,6 +112,17 @@ class Chapter:
         """
 
         return self.title.replace(' ', '_')
+
+    @ property
+    def picture_captions(self):
+        captions_list = []
+        table_index = self.tables.index('{} caption table'.format(self.title))
+        table = self.text_input.tables[table_index]
+        for i in range(1, 4):
+            cell = table.cell(i, 1)
+            captions_list.append(cell.text)
+
+        return captions_list
 
     def add_picture(self):
         """
@@ -125,42 +136,16 @@ class Chapter:
 
         picture_added = False
 
-        for i in range(1, 4):
-            numbered_picture_name = self.picture_name + str(i)
+        captions = self.picture_captions
+        picture_name = self.picture_name
 
+        for i in range(0, 3):
             Picture.add_picture_and_caption(self.report,
                                             self.picture_paths,
-                                            numbered_picture_name,
-                                            numbered_picture_name,
+                                            picture_name + str(i+1),
+                                            captions[i],
                                             width=Cm(10)
                                             )
-
-
-            """# find the files that are relevant for the cover page
-            for picture_path in self.picture_paths:
-                if numbered_picture_name in picture_path:
-
-                    '''
-                    print(numbered_picture_name)
-                    print(picture_path)
-
-                    picture = Image.open(picture_path)
-                    print(picture.width)
-                    print(picture.height)
-                    '''
-
-                    picture_paragraph = self.report.add_paragraph(style='Picture')
-                    picture_paragraph.add_run().add_picture(picture_path, width=Cm(10))
-
-                    picture.add_picture_caption(self.report, numbered_picture_name)
-
-                    '''
-                    if picture.width < 378:
-                        picture_paragraph.add_run().add_picture(picture_path)
-                    else:
-                        picture_paragraph.add_run().add_picture(picture_path, width=Cm(10))
-                    '''"""
-
 
     def write_chapter(self):
         """

@@ -48,12 +48,16 @@ def main():
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
+    '''
     pictures_directory_path = 'Inputs/Pictures'
     pictures = os.listdir('Inputs/Pictures')
     picture_paths = []
     for pic in pictures:
         path = 'Inputs/Pictures/{}'.format(pic)
         picture_paths.append(path)
+    '''
+
+    picture_paths = Picture.get_picture_paths()
 
     #
     text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
@@ -65,36 +69,53 @@ def main():
         'Study table',
         'Header table',
         'Approval table',
+        'Cover page table',
         'Purpose parameter table',
+        'Purpose caption table',
         'Background parameter table',
+        'Background caption table',
         'Scope parameter table',
+        'Scope caption table',
         'EU Regulation 2017/745 definitions table',
         'IEC 62366-1 definitions table',
         'FDA Guidance definitions table',
         'Ethics statement parameter table',
+        'Ethics statement caption table',
         'Device specifications parameter table',
+        'Device specifications caption table',
         'Goal parameter table',
+        'Goal caption table',
         'Participants number table',
         'Participants description table',
         'Participants parameter table',
+        'Participants caption table',
         'Use environment parameter table',
+        'Use environment caption table',
         'Critical tasks number table',
         'Critical tasks description table',
         'Use scenarios parameter table',
+        'Use scenarios caption table',
         'Setup parameter table',
+        'Setup caption table',
         'Effectiveness analysis tasks and problems table',
         'Effectiveness analysis problem number table',
         'Effectiveness analysis problem type table',
         'Effectiveness analysis video table',
         'Effectiveness analysis parameter table',
+        'Effectiveness analysis caption table',
         'Time on tasks table',
         'Time on tasks plot type table',
         'Time on tasks parameter table',
+        'Time on tasks caption table',
         'Dwell times and revisits parameter table',
+        'Dwell times and revisits caption table',
         'Average fixation plot type table',
         'Average fixation parameter table',
+        'Average fixation caption table',
         'Transitions parameter table',
+        'Transitions caption table',
         'Conclusion parameter table',
+        'Conclusion caption table',
     ]
 
     parameters = Parameters.get_all(text_input, text_input_soup, tables)
@@ -110,7 +131,7 @@ def main():
     section1 = report.sections[0]
     layout.define_page_format(section1)
 
-    cover_page = CoverPage(report, picture_paths, parameters)
+    cover_page = CoverPage(report, text_input, tables, picture_paths, parameters)
     cover_page.create()
 
     # add a page break
@@ -217,6 +238,8 @@ def main():
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, picture_paths, parameters)
     conclusion.write_chapter()
+
+    Picture.error_message(picture_paths)
 
     # add a page break
     report.add_page_break()

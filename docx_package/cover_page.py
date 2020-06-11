@@ -12,12 +12,16 @@ import numpy as np
 from PIL import Image, UnidentifiedImageError
 
 from docx_package import layout
+from docx_package.picture import Picture
 
 
 class CoverPage:
     """
     Class that represents and creates the cover page of the report.
     """
+
+    # cover page table for the picture caption
+    COVER_PAGE_TABLE = 'Cover page table'
 
     # title and subtitle parameter key
     TITLE_KEY = 'Title'
@@ -37,17 +41,27 @@ class CoverPage:
     # picture file name without the extension
     PICTURE_NAME = 'Cover_page'
 
-    def __init__(self, report_document: Document,
+    # width of the picture of the cover page
+    PICTURE_WIDTH = Cm(14)
+
+    def __init__(self,
+                 report_document: Document,
+                 text_input_document: Document,
+                 list_of_tables: List[str],
                  picture_paths_list: List[str],
                  parameters_dictionary: Dict[str, Union[str, int]]):
         """
         Args:
             report_document: .docx file where the report is written.
+            text_input_document: .docx file where all inputs are written.
+            list_of_tables: List of all table names.
             picture_paths_list: List of the path of all input pictures.
             parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value).
         """
 
         self.report = report_document
+        self.text_input = text_input_document
+        self.tables = list_of_tables
         self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
 
@@ -117,6 +131,20 @@ class CoverPage:
         except IndexError:
             pass
 
+    @ property
+    def picture_caption(self) -> str:
+        """
+        Returns:
+            The text of the caption of the cover page picture.
+        """
+
+        # find the text in the corresponding table in the text input document
+        table_index = self.tables.index(self.COVER_PAGE_TABLE)
+        table = self.text_input.tables[table_index]
+        caption = table.cell(1, 1).text
+
+        return caption
+
     def add_picture(self) -> bool:
         """
         Load a picture from the input files and add it to the report.
@@ -129,62 +157,64 @@ class CoverPage:
             True if a picture was added, and False if not.
         """
 
-        picture_added = False
-
-        # find the files that are relevant for the cover page
+        # find the files that correspond to the picture file name
         for picture_path in self.picture_paths:
             if self.PICTURE_NAME in picture_path:
 
-                # if no picture was added yet, add one
-                if not picture_added:
-                    try:
-                        picture = Image.open(picture_path)
+                try:
+                    picture = Image.open(picture_path)
 
-                        # find the longest side and set it to 14 cm when adding the picture
-                        # case where the width is the longest side
-                        if picture.width >= picture.height:
-                            picture_paragraph = self.report.add_paragraph(style='Picture')
+                    # find the longest side and set it to 14 cm when adding the picture
+                    # case where the width is the longest side
+                    if picture.width >= picture.height:
 
-                            # set the spacing before and after the picture according the height/width ratio
-                            if picture.height / picture.width * 14 < 5:
-                                space = 5
-                            elif picture.height / picture.width * 14 < 10:
-                                space = 3
-                            elif picture.height / picture.width * 14 < 14:
-                                space = 1
-                            picture_paragraph.paragraph_format.space_before = Cm(space)
-                            picture_paragraph.paragraph_format.space_after = Cm(space)
+                        # set the spacing before and after the picture according the height/width ratio
+                        if picture.height / picture.width * 14 < 5:
+                            space = Cm(5)
+                        elif picture.height / picture.width * 14 < 10:
+                            space = Cm(3)
+                        elif picture.height / picture.width * 14 < 14:
+                            space = Cm(1)
 
-                            # add the picture
-                            picture_paragraph.add_run().add_picture(picture_path, width=Cm(14))
+                        # add the picture and its caption
+                        Picture.add_picture_and_caption(self.report,
+                                                        self.picture_paths,
+                                                        self.PICTURE_NAME,
+                                                        self.picture_caption,
+                                                        width=self.PICTURE_WIDTH,
+                                                        space_before=space,
+                                                        space_after=space
+                                                        )
 
-                        # case where the height is the longest side
-                        else:
-                            picture_paragraph = self.report.add_paragraph(style='Picture')
+                    # case where the height is the longest side
+                    else:
+                        # spacing before and after the picture is always 1 cm because height is always 14 cm
+                        space = Cm(1)
 
-                            # spacing before and after the picture is always 1 cm because height is always 14 cm
-                            space = 1
-                            picture_paragraph.paragraph_format.space_before = Cm(space)
-                            picture_paragraph.paragraph_format.space_after = Cm(space)
+                        # add the picture and its caption
+                        Picture.add_picture_and_caption(self.report,
+                                                        self.picture_paths,
+                                                        self.PICTURE_NAME,
+                                                        self.picture_caption,
+                                                        width=self.PICTURE_WIDTH,
+                                                        space_before=space,
+                                                        space_after=space
+                                                        )
 
-                            # add the picture
-                            picture_paragraph.add_run().add_picture(picture_path, height=Cm(14))
+                    # terminate because a picture was added and return True
+                    return True
 
-                        picture_added = True
+                # do nothing if the file is not an image
+                except UnidentifiedImageError:
+                    pass
 
-                    # print an error message if a input file is not an image
-                    except UnidentifiedImageError:
-                        print(picture_path, 'is not an picture file.')
-
-                # if a picture was already added, print an error message if another file is given for the cover page
-                else:
-                    print('Too many input images for the cover page!')
-
-        return picture_added
+        # return False because no picture was added
+        return False
 
     def create(self):
         """
-        Create the cover page with a title, a subtitle, a picture and a table for the approval of the report.
+        Create the cover page with a title, a subtitle, a picture and its caption
+        and a table for the approval of the report.
         """
 
         # add title, subtitle, picture (if an image file is provided) and approval table
