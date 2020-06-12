@@ -76,7 +76,7 @@ class Picture:
 
     def add_picture(self) -> bool:
         """
-        Add a picture to the report. The picture is centered w.r.t. the margin.
+        Add a picture to the report, that is centered w.r.t. the margin.
 
         Returns:
             True if a picture was added, and False if not.
@@ -133,7 +133,7 @@ class Picture:
         instrText = OxmlElement('w:instrText')
         instrText.text = 'SEQ Figure \\* ARABIC'
         r.append(instrText)
-        
+
         fldChar = OxmlElement('w:fldChar')
         fldChar.set(qn('w:fldCharType'), 'end')
         r.append(fldChar)

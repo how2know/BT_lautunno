@@ -25,7 +25,7 @@ class Chapter:
     Class that represents a chapter.
 
     Every classic chapter are represented by this class, i.e. all chapters except
-    the 'Terms definitions' one and those of the 'Results' section.
+    'Terms definitions' and those of the 'Results' section.
     """
 
     def __init__(self,
@@ -114,7 +114,13 @@ class Chapter:
         return self.title.replace(' ', '_')
 
     @ property
-    def picture_captions(self):
+    def picture_captions(self) -> List[str]:
+        """
+        Returns:
+            List of the captions of the pictures.
+        """
+
+        # read the caption text from the corresponding table in text input and append it to a list
         captions_list = []
         table_index = self.tables.index('{} caption table'.format(self.title))
         table = self.text_input.tables[table_index]
@@ -126,19 +132,13 @@ class Chapter:
 
     def add_picture(self):
         """
-        Load a picture from the input files and add it to the report.
-
-
-
-        Returns:
-            True if a picture was added, and False if not.
+        Add max. 3 pictures to the chapter.
         """
-
-        picture_added = False
 
         captions = self.picture_captions
         picture_name = self.picture_name
 
+        # add pictures that correspond to the given picture file names with the corresponding captions
         for i in range(0, 3):
             Picture.add_picture_and_caption(self.report,
                                             self.picture_paths,
@@ -151,7 +151,7 @@ class Chapter:
         """
         Write the whole chapter.
 
-        Write the heading, the paragraphs, including the parameters, and the pictures of a chapter.
+        Write the heading, the paragraphs including the parameters, the pictures and their caption.
         """
 
         # write heading with the corresponding style
@@ -171,6 +171,7 @@ class Chapter:
             )
             new_paragraph.style.name = 'Normal'
 
+        # add pictures and their caption at the end of the chapter
         self.add_picture()
 
 
