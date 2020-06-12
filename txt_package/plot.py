@@ -5,6 +5,7 @@ import pandas as pd
 
 import time
 
+# TODO: add type to argument
 
 def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=None):
     """
@@ -94,6 +95,31 @@ def make_heatmap(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
         plt.xlabel(xlabel)
     if ylabel:
         plt.ylabel(ylabel)
+
+    figure = plot.get_figure()
+    figure.savefig(figure_save_path)
+
+    plt.show()
+
+
+# TODO: write better and make more beautiful plot
+# TODO: is this better with pd.DataFrame.plot.pie
+def make_pieplot(data_vector, labels_list, figure_save_path, title=None):
+    """
+    Create a pie plot out of a vector and a list of labels and save its figure.
+
+    Args:
+        data_vector: Vector containing the data from which the plot will be made.
+        labels_list: List containing the labels that corresponds to the data.
+        figure_save_path: Path where the figure of the plot will be saved.
+        title (optional): Plot title written on the figure.
+    """
+
+    plot = plt.pie(data=data_vector,
+                   labels=labels_list)
+
+    if title:
+        plot.set_title(title)
 
     figure = plot.get_figure()
     figure.savefig(figure_save_path)

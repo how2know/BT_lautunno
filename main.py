@@ -48,15 +48,6 @@ def main():
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
-    '''
-    pictures_directory_path = 'Inputs/Pictures'
-    pictures = os.listdir('Inputs/Pictures')
-    picture_paths = []
-    for pic in pictures:
-        path = 'Inputs/Pictures/{}'.format(pic)
-        picture_paths.append(path)
-    '''
-
     picture_paths = Picture.get_picture_paths()
 
     #
@@ -216,6 +207,7 @@ def main():
     time_on_tasks.write_chapter()
     end2 = time.time()
     print('Time on tasks: ', end2-start2)
+    '''
 
     start3 = time.time()
     dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
@@ -223,6 +215,7 @@ def main():
     end3 = time.time()
     print('Dwell times: ', end3-start3)
 
+    '''
     start4 = time.time()
     average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
     average_fixation.write_chapter()
