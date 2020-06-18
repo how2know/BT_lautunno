@@ -115,13 +115,31 @@ def make_pieplot(data_vector, labels_list, figure_save_path, title=None):
         title (optional): Plot title written on the figure.
     """
 
-    plot = plt.pie(data=data_vector,
-                   labels=labels_list)
+    '''
+    patches = plt.pie(x=data_vector,
+                   labels=labels_list,     # labels of each wedges
+                   autopct='%1.1f%%',     # formatting of the annotation
+                   startangle=0     # start angle of the first wedge
+                   )
+    '''
+
+    # add a pie plot
+    patches, texts = plt.pie(x=data_vector,
+                             startangle=0     # start angle of the first wedge
+                             )
+
+    # add a list of the labels with their corresponding percentage
+    percent = data_vector / data_vector.sum()
+    labels = ['{0} - {1:.1%}'.format(i, j) for i, j in zip(labels_list, percent)]
+    plt.legend(patches,
+               labels,
+               loc='center left',
+               bbox_to_anchor=(1, 0.5)
+               )
 
     if title:
-        plot.set_title(title)
+        plt.title(title)
 
-    figure = plot.get_figure()
-    figure.savefig(figure_save_path)
+    plt.savefig(figure_save_path, bbox_inches='tight')
 
     plt.show()

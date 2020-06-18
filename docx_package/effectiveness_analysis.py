@@ -182,6 +182,7 @@ class EffectivenessAnalysis:
         layout.set_row_height(description_table.rows[1], 0.2)
         layout.set_row_height(description_table.rows[2], 0.5)
 
+        # TODO: write this with a list of widths
         # set width of columns
         layout.set_column_width(description_table.columns[0], 2)
         layout.set_column_width(description_table.columns[1], 0.5)

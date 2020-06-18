@@ -13,6 +13,7 @@ from PIL import Image, UnidentifiedImageError
 import time
 
 
+# TODO: maybe add a option to treat the path one know
 # TODO: add update function
 class Picture:
     """
