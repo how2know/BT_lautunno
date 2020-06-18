@@ -121,7 +121,7 @@ class Transitions:
                                         [self.HEAT_MAP_FIGURE_PATH],
                                         self.HEAT_MAP_FIGURE_PATH,
                                         self.CAPTION,
-                                        width=Cm(10)
+                                        width=Cm(12)
                                         )
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)

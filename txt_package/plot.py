@@ -35,7 +35,7 @@ def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
         plt.ylabel(ylabel)
 
     figure = plot.get_figure()
-    figure.savefig(figure_save_path)
+    figure.savefig(figure_save_path, bbox_inches='tight')
 
     plt.show()
 
@@ -63,7 +63,7 @@ def make_boxplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
         plt.ylabel(ylabel)
 
     figure = plot.get_figure()
-    figure.savefig(figure_save_path)
+    figure.savefig(figure_save_path, bbox_inches='tight')
 
     plt.show()
 
@@ -115,9 +115,12 @@ def make_pieplot(data_vector, labels_list, figure_save_path, title=None):
         title (optional): Plot title written on the figure.
     """
 
+    explode = np.full(len(data_vector), 0.001)
+
     # add a pie plot
     patches, texts = plt.pie(x=data_vector,
-                             startangle=0     # start angle of the first wedge
+                             startangle=0,     # start angle of the first wedge
+                             explode=explode
                              )
 
     # add a list of the labels with their corresponding percentage

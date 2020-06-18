@@ -7,9 +7,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
+from docx.shared import Pt, Cm, RGBColor
 
 from docx_package import text_reading
 from docx_package.results import ResultsChapter
+from docx_package.picture import Picture
 from txt_package import plot
 
 
@@ -36,6 +38,10 @@ class TimeOnTasks:
     PARTICIPANT_FIGURE_PATH = 'Outputs/Time_on_task_participant{}.png'
     BAR_PLOT_FIGURE_PATH = 'Outputs/Time_on_task_bar_plot.png'
     BOX_PLOT_FIGURE_PATH = 'Outputs/Time_on_task_box_plot.png'
+
+    # caption of the pie plot figure
+    BAR_PLOT_CAPTION = 'Bar plot showing the mean of the time on tasks and the 95% confidence interval.'
+    BOX_PLOT_CAPTION = 'Box plot showing the mean, the 25% and 75% quartiles and the distribution of the time on tasks.'
 
     def __init__(self,
                  report_document: Document,
@@ -173,9 +179,19 @@ class TimeOnTasks:
 
         # add bar plot or box plot depending on the choice of plot type
         if self.plot_type == 'Bar plot':
-            self.report.add_picture(self.BAR_PLOT_FIGURE_PATH)
+            Picture.add_picture_and_caption(self.report,
+                                            [self.BAR_PLOT_FIGURE_PATH],
+                                            self.BAR_PLOT_FIGURE_PATH,
+                                            self.BAR_PLOT_CAPTION,
+                                            width=Cm(12)
+                                            )
         if self.plot_type == 'Box plot':
-            self.report.add_picture(self.BOX_PLOT_FIGURE_PATH)
+            Picture.add_picture_and_caption(self.report,
+                                            [self.BOX_PLOT_FIGURE_PATH],
+                                            self.BOX_PLOT_FIGURE_PATH,
+                                            self.BOX_PLOT_CAPTION,
+                                            width=Cm(12)
+                                            )
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()
