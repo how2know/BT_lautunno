@@ -174,8 +174,8 @@ def transitions(aois: List[str], dataframe: pd.DataFrame) -> pd.DataFrame:
         dataframe: Data frame that have AOIs as index.
 
     Returns:
-        Data frame that have AOIs as indexes and columns and the fixation ratio for all AOIs as entries.
-
+        Data frame that have AOIs as indexes and columns and the number of transitions
+        from an AOI to another as entries.
     """
 
     # create a data frame with the AOIs as columns and indexes and zeros as entries
@@ -192,10 +192,6 @@ def transitions(aois: List[str], dataframe: pd.DataFrame) -> pd.DataFrame:
     for fixation_aoi in all_fixations_aoi[1:]:
         transitions_table.loc[last_fixation_aoi].at[fixation_aoi] += 1
         last_fixation_aoi = fixation_aoi
-
-    # divide all entries by the total number of fixations to get a ratio (or percentage)
-    transitions_number = transitions_table.to_numpy().sum()
-    transitions_table = transitions_table.div(transitions_number)
 
     return transitions_table
 

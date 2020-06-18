@@ -97,7 +97,7 @@ def make_heatmap(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
         plt.ylabel(ylabel)
 
     figure = plot.get_figure()
-    figure.savefig(figure_save_path)
+    figure.savefig(figure_save_path, bbox_inches='tight')
 
     plt.show()
 
@@ -114,14 +114,6 @@ def make_pieplot(data_vector, labels_list, figure_save_path, title=None):
         figure_save_path: Path where the figure of the plot will be saved.
         title (optional): Plot title written on the figure.
     """
-
-    '''
-    patches = plt.pie(x=data_vector,
-                   labels=labels_list,     # labels of each wedges
-                   autopct='%1.1f%%',     # formatting of the annotation
-                   startangle=0     # start angle of the first wedge
-                   )
-    '''
 
     # add a pie plot
     patches, texts = plt.pie(x=data_vector,

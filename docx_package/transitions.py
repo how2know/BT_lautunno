@@ -6,7 +6,9 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+from docx.shared import Pt, Cm, RGBColor
 
+from docx_package.picture import Picture
 from docx_package.results import ResultsChapter
 from txt_package import plot, eye_tracking
 
@@ -25,6 +27,9 @@ class Transitions:
     # path to plot image files
     PARTICIPANT_FIGURE_PATH = 'Outputs/Transitions_participant{}.png'
     HEAT_MAP_FIGURE_PATH = 'Outputs/Transitions_heat_map.png'
+
+    # caption of the pie plot figure
+    CAPTION = 'Amount of transitions from an area of interest to another.'
 
     def __init__(self,
                  report_document: Document,
@@ -59,66 +64,47 @@ class Transitions:
         One heat map with the data of all participants are created.
         """
 
-        # TODO: choose which kind of data we take for the main heat map
-
         # main data frame that will contain the data from the data frames from all participants
         all_transitions = pd.DataFrame()
 
-        # main data frame that will contain the transitions percentage of all participants
-        all_data = pd.DataFrame()
-
-        # create a data frame with the transitions percentage for each participant, create a heat map with it,
-        # and append it to the main data frame
+        # create a data frame with the number of transitions for each participant and append it to the main data frame
         for idx, dataframe in enumerate(self.cGOM_dataframes):
             aois = eye_tracking.areas_of_interest(dataframe)
             participant_transitions = eye_tracking.transitions(aois, dataframe)
+            all_transitions = all_transitions.append(participant_transitions)
+
+            # calculate the ratios and create a heat map that shows the transition percentage
+            transitions_number = participant_transitions.to_numpy().sum()
+            participant_transitions = participant_transitions.div(transitions_number)
             plot.make_heatmap(data_frame=participant_transitions,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(str(idx + 1)),
                               title='Transitions: participant {}'.format(str(idx + 1)),
                               xlabel='AOI destination (to)',
                               ylabel='AOI source (from)'
                               )
-            all_transitions = all_transitions.append(participant_transitions)
-            '''all_data = all_data.append(dataframe)'''
 
-        # create a data frame with the mean of transitions for each AOI and append it
-        # to a data frame that will contain all means, and then create a heat map with all means
-        # Problem: The sum of all percentage is not equal to 1.
+        # create a data frame with the total amount of transitions for each AOI and append it
+        # to a data frame that will contain all transitions from all participants
         all_aois = all_transitions.columns.tolist()
         transitions_stat = pd.DataFrame()
         for idx, aoi in enumerate(all_aois):
             data_of_aoi = all_transitions[all_transitions.index == aoi]
-            transitions_mean = data_of_aoi.mean().to_numpy()
+            transitions_sum = data_of_aoi.sum().to_numpy()
             transitions_mean_df = pd.DataFrame(index=[aoi],
-                                               columns=all_transitions.columns,
-                                               data=[transitions_mean]
+                                               columns=all_aois,
+                                               data=[transitions_sum]
                                                )
             transitions_stat = transitions_stat.append(transitions_mean_df)
 
+        # calculate the ratios and create a heat map that shows the transition percentage
+        transitions_number = transitions_stat.to_numpy().sum()
+        transitions_stat = transitions_stat.div(transitions_number)
         plot.make_heatmap(transitions_stat,
                           figure_save_path=self.HEAT_MAP_FIGURE_PATH,
                           title='Transitions',
                           xlabel='AOI destination (to)',
                           ylabel='AOI source (from)'
                           )
-
-        '''print(transitions_stat.to_numpy().sum())     # sum of all percentage != 1'''
-
-        '''
-        # create a data frame with the transitions of all participants and a heat map out of it
-        # Problem: The data of all participants is consecutively contained in a list. 
-        #          A transition will therefore be added from the last AOI of one participant 
-        #          to the first AOI of the next participant, and this is not correct.
-        all_aois = self.areas_of_interest(all_data)
-        transitions_stat = eye_tracking.transitions(all_aois, all_data)
-        plot.make_heatmap(transitions_stat,
-                          figure_save_path=self.HEAT_MAP_FIGURE_PATH,
-                          title='Transitions',
-                          xlabel='AOI destination (to)',
-                          ylabel='AOI source (from)'
-                          )
-        print(transitions_stat.to_numpy().sum())     # sum of all percentage = 1
-        '''
 
     def write_chapter(self):
         """
@@ -131,7 +117,12 @@ class Transitions:
                                      self.tables, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
-        self.report.add_picture(self.HEAT_MAP_FIGURE_PATH)
+        Picture.add_picture_and_caption(self.report,
+                                        [self.HEAT_MAP_FIGURE_PATH],
+                                        self.HEAT_MAP_FIGURE_PATH,
+                                        self.CAPTION,
+                                        width=Cm(10)
+                                        )
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         transitions.write_chapter()
