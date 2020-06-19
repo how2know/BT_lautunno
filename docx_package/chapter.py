@@ -1,22 +1,9 @@
-from docx import Document
 from docx.document import Document
-from docx.table import Table
-from bs4 import BeautifulSoup
+from docx.shared import Cm
 from typing import List, Dict, Union
-from docx.oxml import parse_xml
-from docx.oxml.ns import nsdecls
-from docx.shared import Pt, Cm, RGBColor
-from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-import os
-from zipfile import ZipFile
 from bs4 import BeautifulSoup
-from PIL import Image, UnidentifiedImageError
 
-# from Writing_text import layout
-# from Reading_text import text_reading
-
-from docx_package import text_reading, layout, picture
+from docx_package import text_reading
 from docx_package.picture import Picture
 
 
@@ -45,7 +32,7 @@ class Chapter:
             title: Title of the chapter.
             list_of_tables: List of all table names.
             picture_paths_list: List of the path of all input pictures.
-            parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value)
+            parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value).
         """
 
         self.report = report_document
@@ -61,6 +48,7 @@ class Chapter:
         Returns:
             Paragraph index of the chapter heading in the text input document.
         """
+
         for paragraph_index, paragraph in enumerate(self.text_input.paragraphs):
             if paragraph.text == self.title and 'Heading' in paragraph.style.name:
                 return paragraph_index
@@ -173,5 +161,3 @@ class Chapter:
 
         # add pictures and their caption at the end of the chapter
         self.add_picture()
-
-

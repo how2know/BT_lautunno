@@ -1,23 +1,15 @@
-from docx import Document
 from docx.document import Document
 from docx.table import Table
-from docx.oxml import parse_xml
-from docx.oxml.ns import nsdecls
-from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT_RULE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt, Cm, RGBColor
-from docx.oxml import OxmlElement
-from docx.oxml.ns import qn
-import os
-from zipfile import ZipFile
+from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT_RULE
+from docx.shared import Pt
 from bs4 import BeautifulSoup
 from typing import List, Dict, Union
 
-from docx_package import layout, text_reading
+from docx_package import layout
 from docx_package.results import ResultsChapter
 
 
-# TODO: improve comments
 class EffectivenessAnalysis:
     """
     Class that represents the 'Effectiveness analysis' chapter and the visualization of its results.
@@ -42,6 +34,10 @@ class EffectivenessAnalysis:
     RED = 'FF0000'
     ORANGE = 'FFC000'
     YELLOW = 'FFFF00'
+
+    # list of the colors table columns width and table rows height
+    COLORS_TABLE_WIDTHS = [2, 0.5, 3.8, 1.6, 1.7, 0.5, 3.8, 2]
+    COLORS_TABLE_HEIGHTS = [0.5, 0.2, 0.5]
 
     def __init__(self,
                  report_document: Document,
@@ -95,22 +91,22 @@ class EffectivenessAnalysis:
         video_table_index = self.tables.index(self.VIDEO_TABLE_NAME)
         return self.text_input.tables[video_table_index]
 
-    # TODO: why is the table too large
-    # TODO: make rows the same height and text appears in the middle
     def make_result_table(self):
         """
         Create a table for the visualization of the effectiveness analysis.
         """
 
         # create a table for the results visualization
-        result_table_rows = self.parameters['Number of critical tasks'] + 1
-        result_table_cols = self.parameters['Number of participants'] + 1
-        result_table = self.report.add_table(result_table_rows, result_table_cols)
-        layout.define_table_style(result_table)      # TODO: do we need this line
+        rows_number = self.parameters['Number of critical tasks'] + 1
+        cols_number = self.parameters['Number of participants'] + 1
+        result_table = self.report.add_table(rows_number, cols_number)
+        result_table.style = 'Table Grid'
+        result_table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        result_table.autofit = False
 
         # write the information of the input table in the result table
-        for i in range(result_table_rows):
-            for j in range(result_table_cols):
+        for i in range(rows_number):
+            for j in range(cols_number):
                 cell = result_table.cell(i, j)
 
                 # skip the first row and first column
@@ -122,6 +118,7 @@ class EffectivenessAnalysis:
                 elif i == 0 and j != 0:
                     cell.text = self.task_table.cell(i, j).text
                     layout.set_cell_shading(cell, self.LIGHT_GREY_10)     # color the cell in light_grey_10
+                    cell.paragraphs[0].runs[0].font.size = Pt(9)
                     cell.paragraphs[0].runs[0].font.bold = True
 
                 # first column
@@ -135,8 +132,8 @@ class EffectivenessAnalysis:
                     cell.paragraphs[0].runs[0].font.bold = True
 
         # color the cell according to the type of problem
-        for i in range(1, result_table_rows):
-            for j in range(1, result_table_cols):
+        for i in range(1, rows_number):
+            for j in range(1, cols_number):
                 cell = result_table.cell(i, j)
 
                 if cell.text:     # check if the text string is not empty
@@ -159,12 +156,56 @@ class EffectivenessAnalysis:
                                start={"color": "#FFFFFF"}
                                )
 
-        # set text vertical alignment of all cells to center
+        # set the vertical and horizontal alignment of all cells
         for row in result_table.rows:
             for cell in row.cells:
                 cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+        for i in range(len(result_table.rows)):
+            for j in range(1, len(result_table.columns)):
+                result_table.cell(i, j).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-    def make_description_table(self):
+        # set the width of the columns
+        layout.set_column_width(result_table.columns[0], 2.4)
+        for j in range(1, cols_number):
+            width = (15.9 - 2.4) / (cols_number - 1)
+            layout.set_column_width(result_table.columns[j], width)
+
+        # set the height of the rows
+        layout.set_row_height(result_table.rows[0], 0.5)
+        for i in range(1, rows_number):
+            layout.set_row_height(result_table.rows[i], 1.1, rule=WD_ROW_HEIGHT_RULE.AT_LEAST)
+
+    @ staticmethod
+    def add_color_description(table: Table, cell_row: int, cell_column: int, color: str, description: str):
+        """
+        Color the cell of a table and add a description in the following cell.
+
+        Args:
+            table: Table that will contain the colors and their description.
+            cell_row: Row in which the color cell is located.
+            cell_column: Column in which the color cell is located.
+            color: Color of the cell.
+            description: Description / meaning of the color.
+        """
+
+        color_cell = table.cell(cell_row, cell_column)
+        description_cell = table.cell(cell_row, cell_column + 1)
+
+        # color the cell and set its borders
+        layout.set_cell_shading(color_cell, color)
+        layout.set_cell_border(color_cell,
+                               top={"sz": 4, "val": "single", "color": "#000000"},
+                               bottom={"sz": 4, "val": "single", "color": "#000000"},
+                               start={"sz": 4, "val": "single", "color": "#000000"},
+                               end={"sz": 4, "val": "single", "color": "#000000"},
+                               )
+
+        # write description next to the color cell and set the font size
+        description_cell.text = description
+        description_cell.paragraphs[0].runs[0].font.size = Pt(9)
+        description_cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+
+    def make_colors_table(self):
         """
         Create a table that describes the color of the effectiveness analysis table.
         """
@@ -174,70 +215,22 @@ class EffectivenessAnalysis:
         separation_line.runs[0].font.size = Pt(5)
 
         # create table
-        description_table = self.report.add_table(3, 8)
-        description_table.autofit = False
+        colors_table = self.report.add_table(3, 8)
+        colors_table.autofit = False
 
-        # set height of rows
-        layout.set_row_height(description_table.rows[0], 0.5)
-        layout.set_row_height(description_table.rows[1], 0.2)
-        layout.set_row_height(description_table.rows[2], 0.5)
+        # set the height of all rows
+        for idx, row in enumerate(colors_table.rows):
+            layout.set_row_height(row, self.COLORS_TABLE_HEIGHTS[idx])
 
-        # TODO: write this with a list of widths
-        # set width of columns
-        layout.set_column_width(description_table.columns[0], 2)
-        layout.set_column_width(description_table.columns[1], 0.5)
-        layout.set_column_width(description_table.columns[2], 3.8)
-        layout.set_column_width(description_table.columns[3], 1.6)
-        layout.set_column_width(description_table.columns[4], 1.7)
-        layout.set_column_width(description_table.columns[5], 0.5)
-        layout.set_column_width(description_table.columns[6], 3.8)
-        layout.set_column_width(description_table.columns[7], 2)
+        # set the width of all columns
+        for idx, column in enumerate(colors_table.columns):
+            layout.set_column_width(column, self.COLORS_TABLE_WIDTHS[idx])
 
-        # TODO: maybe make a function for this
-        # color four cells and set their borders
-        layout.set_cell_shading(description_table.cell(0, 1), self.GREEN)
-        layout.set_cell_shading(description_table.cell(0, 5), self.ORANGE)
-        layout.set_cell_shading(description_table.cell(2, 1), self.YELLOW)
-        layout.set_cell_shading(description_table.cell(2, 5), self.RED)
-        layout.set_cell_border(description_table.cell(0, 1),
-                               top={"sz": 4, "val": "single", "color": "#000000"},
-                               bottom={"sz": 4, "val": "single", "color": "#000000"},
-                               start={"sz": 4, "val": "single", "color": "#000000"},
-                               end={"sz": 4, "val": "single", "color": "#000000"},
-                               )
-        layout.set_cell_border(description_table.cell(0, 5),
-                               top={"sz": 4, "val": "single", "color": "#000000"},
-                               bottom={"sz": 4, "val": "single", "color": "#000000"},
-                               start={"sz": 4, "val": "single", "color": "#000000"},
-                               end={"sz": 4, "val": "single", "color": "#000000"},
-                               )
-        layout.set_cell_border(description_table.cell(2, 1),
-                               top={"sz": 4, "val": "single", "color": "#000000"},
-                               bottom={"sz": 4, "val": "single", "color": "#000000"},
-                               start={"sz": 4, "val": "single", "color": "#000000"},
-                               end={"sz": 4, "val": "single", "color": "#000000"},
-                               )
-        layout.set_cell_border(description_table.cell(2, 5),
-                               top={"sz": 4, "val": "single", "color": "#000000"},
-                               bottom={"sz": 4, "val": "single", "color": "#000000"},
-                               start={"sz": 4, "val": "single", "color": "#000000"},
-                               end={"sz": 4, "val": "single", "color": "#000000"},
-                               )
-
-        # write description next to the four cells and set font size
-        description_table.cell(0, 2).text = 'No problem found'
-        description_table.cell(0, 6).text = 'Important problem found'
-        description_table.cell(2, 2).text = 'Marginal problem found'
-        description_table.cell(2, 6).text = 'Critical problem found'
-        description_table.cell(0, 2).paragraphs[0].runs[0].font.size = Pt(9)
-        description_table.cell(0, 6).paragraphs[0].runs[0].font.size = Pt(9)
-        description_table.cell(2, 2).paragraphs[0].runs[0].font.size = Pt(9)
-        description_table.cell(2, 6).paragraphs[0].runs[0].font.size = Pt(9)
-
-        # set text vertical alignment of all cells to center
-        for row in description_table.rows:
-            for cell in row.cells:
-                cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+        # add the color description to the table in the corresponding cells
+        self.add_color_description(colors_table, 0, 1, self.GREEN, 'No problem found')
+        self.add_color_description(colors_table, 0, 5, self.ORANGE, 'Important problem found')
+        self.add_color_description(colors_table, 2, 1, self.YELLOW, 'Marginal problem found')
+        self.add_color_description(colors_table, 2, 5, self.RED, 'Critical problem found')
 
     def write_problem_description(self):
         """
@@ -258,11 +251,10 @@ class EffectivenessAnalysis:
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
         self.make_result_table()
-        self.make_description_table()
+        self.make_colors_table()
 
         self.report.add_paragraph(self.DESCRIPTION_TITLE, self.DESCRIPTION_STYLE)
         self.write_problem_description()
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         effectiveness_analysis.write_chapter()
-

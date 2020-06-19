@@ -192,6 +192,7 @@ def main():
     setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, picture_paths, parameters)
     setup.write_chapter()
 
+
     # TODO: write this better
     report.add_paragraph('Results', 'Heading 1')
 
@@ -200,6 +201,7 @@ def main():
     effectiveness_analysis.write_chapter()
     end1 = time.time()
     print('Effectiveness analysis: ', end1-start1)
+
 
     start2 = time.time()
     time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
@@ -224,6 +226,7 @@ def main():
     transitions.write_chapter()
     end5 = time.time()
     print('Transitions: ', end5-start5)
+
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, picture_paths, parameters)
     conclusion.write_chapter()

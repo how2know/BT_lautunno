@@ -1,13 +1,10 @@
 from docx.document import Document
-from docx.table import Table
-from bs4 import BeautifulSoup
-from typing import List, Dict, Union
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
-from docx.shared import Pt, Cm, RGBColor
+from docx.shared import Cm
+from bs4 import BeautifulSoup
+from typing import List, Dict, Union
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from docx_package import layout
@@ -162,7 +159,6 @@ class DwellTimesAndRevisits:
 
         return revisits_df
 
-    # TODO: write better and comment
     def add_table(self):
         """
         Create the table with the statistics of the dwell times and revisits,

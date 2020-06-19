@@ -125,19 +125,19 @@ class Picture:
 
         # add XML elements and set their attributes so that the caption is considered as a caption and can be updated
         run = caption_paragraph.add_run()
-        r = run._r
+        r_element = run._r
 
         fldChar = OxmlElement('w:fldChar')
         fldChar.set(qn('w:fldCharType'), 'begin')
-        r.append(fldChar)
+        r_element.append(fldChar)
 
         instrText = OxmlElement('w:instrText')
         instrText.text = 'SEQ Figure \\* ARABIC'
-        r.append(instrText)
+        r_element.append(instrText)
 
         fldChar = OxmlElement('w:fldChar')
         fldChar.set(qn('w:fldCharType'), 'end')
-        r.append(fldChar)
+        r_element.append(fldChar)
 
         # add the text of the caption
         caption_paragraph.add_run(': {}'.format(self.caption))
@@ -187,6 +187,7 @@ class Picture:
         Args:
             report_document: .docx file where the report is written.
         """
+
         # add the heading of the list of figures
         heading = report_document.add_paragraph('List of figures', 'Heading 2')
 

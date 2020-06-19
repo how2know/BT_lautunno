@@ -1,12 +1,8 @@
 from docx.document import Document
-from docx.table import Table
+from docx.shared import Cm
 from bs4 import BeautifulSoup
 from typing import List, Dict, Union
-import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
-from docx.shared import Pt, Cm, RGBColor
-
 
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
@@ -117,7 +113,7 @@ class AverageFixation:
 
     def write_chapter(self):
         """
-        Write the whole chapter 'Time on tasks', including the chosen plot.
+        Write the whole chapter 'Average fixation', including the chosen plot.
         """
 
         self.make_plots()

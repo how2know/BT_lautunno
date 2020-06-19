@@ -1,13 +1,8 @@
 from docx.document import Document
 from docx.text.paragraph import Paragraph
-from docx.table import Table
-from bs4 import BeautifulSoup
+from docx.enum.table import WD_ALIGN_VERTICAL
+from docx.shared import Cm
 from typing import List, Dict, Union
-from docx.oxml.ns import nsdecls, qn
-from docx.oxml import parse_xml
-from docx.oxml.shared import OxmlElement
-from docx.shared import Pt, Cm, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_TAB_LEADER
 import numpy as np
 from PIL import Image, UnidentifiedImageError
 
@@ -86,6 +81,7 @@ class CoverPage:
         subtitle = self.report.add_paragraph(subtitle_text, 'Subtitle')
         return subtitle
 
+    # TODO: set column size
     def add_approval_table(self):
         """
         Add a table for the approval of the document.
@@ -104,7 +100,10 @@ class CoverPage:
 
         # create table, define its style and fill it
         approval_table = self.report.add_table(rows=4, cols=4)
-        layout.define_table_style(approval_table)
+        # layout.define_table_style(approval_table)
+        approval_table.style = 'Table Grid'
+        # approval_table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        approval_table.autofit = True
         for i in range(0, 4):
             for j in range(0, 4):
                 approval_table.cell(i, j).text = approval_cells_text[i, j]
@@ -130,6 +129,12 @@ class CoverPage:
                 approval_table.rows[i].cells[1].paragraphs[1].runs[0].font.italic = True
         except IndexError:
             pass
+
+        # set the vertical alignment of all cells
+        for row in approval_table.rows:
+            for cell in row.cells:
+                cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+
 
     @ property
     def picture_caption(self) -> str:

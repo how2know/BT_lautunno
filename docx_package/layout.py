@@ -62,28 +62,6 @@ def define_all_styles(document):
     define_style(document, 'Picture', 'Calibri', 11, black, WD_ALIGN_PARAGRAPH.CENTER, False, False)
     define_style(document, 'Caption', 'Calibri', 9, black, WD_ALIGN_PARAGRAPH.CENTER, False, True)
 
-'''
-# add three tab stops (left, center, right)
-def add_tab_stops(paragraph):
-    paragraph.paragraph_format.tab_stops.add_tab_stop(Cm(0), WD_TAB_ALIGNMENT.LEFT, WD_TAB_LEADER.SPACES)
-    paragraph.paragraph_format.tab_stops.add_tab_stop(Cm(8), WD_TAB_ALIGNMENT.CENTER, WD_TAB_LEADER.SPACES)
-    paragraph.paragraph_format.tab_stops.add_tab_stop(Cm(16), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)
-'''
-
-'''
-# create a header with two lines for a section and return it
-def create_header(section):
-    header = section.header
-    header.is_linked_to_previous = False                         # the header of this section is not linked to the previous section
-    header_first_line = header.paragraphs[0]
-    header_second_line = header.add_paragraph()
-    header_first_line.paragraph_format.tab_stops.clear_all()     # clear all existing tab stops in the first line
-    add_tab_stops(header_first_line)
-    add_tab_stops(header_second_line)
-
-    return header
-'''
-
 
 def capitalize_first_letter(string: str) -> str:
     """
@@ -110,6 +88,7 @@ def set_cell_shading(cell: _Cell, color_hex: str):
     cell._tc.get_or_add_tcPr().append(shading_elm)
 
 
+'''
 # TODO: do we need this
 # define table style
 def define_table_style(table):
@@ -123,6 +102,8 @@ def define_table_style(table):
             cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
             # cell.paragraphs[0].style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
             cell.paragraphs[0].style.name = 'Table'
+
+'''
 
 
 def insert_horizontal_border(paragraph: Paragraph):
@@ -153,16 +134,17 @@ def insert_horizontal_border(paragraph: Paragraph):
     pBdr.append(bottom)
 
 
-def set_row_height(row: _Row, height: float):
+def set_row_height(row: _Row, height: float, rule=WD_ROW_HEIGHT_RULE.EXACTLY):
     """
     Set the height of a table row.
 
     Args:
         row: Row whose height is to be changed.
         height: Height of the column in cm.
+        rule (optional): Rule for determining the height of a table row, e.g. rule=WD_ROW_HEIGHT_RULE.AT_LEAST.
     """
 
-    row.height_rule = WD_ROW_HEIGHT_RULE.EXACTLY
+    row.height_rule = rule
     row.height = Cm(height)
 
 
