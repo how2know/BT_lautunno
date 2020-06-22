@@ -10,7 +10,7 @@ from docx.shared import Pt, Cm, RGBColor
 
 from docx_package.picture import Picture
 from docx_package.results import ResultsChapter
-from txt_package import plot, eye_tracking
+from eye_tracking_package import plot, eye_tracking
 
 
 class Transitions:

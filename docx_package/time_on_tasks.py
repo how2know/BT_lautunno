@@ -12,7 +12,7 @@ from docx.shared import Pt, Cm, RGBColor
 from docx_package import text_reading
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
-from txt_package import plot
+from eye_tracking_package import plot
 
 
 class TimeOnTasks:

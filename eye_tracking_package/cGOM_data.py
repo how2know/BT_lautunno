@@ -58,6 +58,7 @@ def make_dataframes_list(parameters):
     The files containing the data must be named Participant<Number>.txt, e.g. 'Participant3.txt', and stored in
     the Inputs/Data directory.
     """
+
     # path to the .txt files
     directory_path = 'Inputs/Data/Participant{}.txt'
 

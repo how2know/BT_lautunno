@@ -7,7 +7,7 @@ import pandas as pd
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
 from docx_package import text_reading
-from txt_package import plot, eye_tracking
+from eye_tracking_package import plot, eye_tracking
 
 
 class AverageFixation:

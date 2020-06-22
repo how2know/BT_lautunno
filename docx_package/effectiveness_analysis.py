@@ -5,6 +5,10 @@ from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT
 from docx.shared import Pt
 from bs4 import BeautifulSoup
 from typing import List, Dict, Union
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
 
 from docx_package import layout
 from docx_package.results import ResultsChapter
@@ -19,6 +23,11 @@ class EffectivenessAnalysis:
     TASK_TABLE_NAME = 'Effectiveness analysis tasks and problems table'
     PROBLEM_TABLE_NAME = 'Effectiveness analysis problem type table'
     VIDEO_TABLE_NAME = 'Effectiveness analysis video table'
+
+    # parameter keys
+    TASKS_NUMBER_KEY = 'Number of critical tasks'
+    PARTICIPANTS_NUMBER_KEY = 'Number of participants'
+    PROBLEMS_NUMBER_KEY = 'Number of problems'
 
     # information about the headings of this chapter
     TITLE = 'Effectiveness analysis'
@@ -91,14 +100,39 @@ class EffectivenessAnalysis:
         video_table_index = self.tables.index(self.VIDEO_TABLE_NAME)
         return self.text_input.tables[video_table_index]
 
+    '''
+    def problems_dataframe(self):
+        # dataframe = pd.DataFrame()
+
+        rows_number = self.parameters[self.TASKS_NUMBER_KEY] + 1
+        cols_number = self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1
+
+        problems_number = self.parameters[self.PROBLEMS_NUMBER_KEY]
+
+        dataframe = pd.DataFrame(columns=['Participant{}'.format(i) for i in range(1, cols_number)],
+                                 index=['Problem{}'.format(i) for i in range(1, problems_number + 1)])
+
+        for i in range(rows_number):
+            for j in range(cols_number):
+
+                # skip the first row and first column
+                if i != 0 and j != 0:
+                    problem = self.task_table.cell(i, j).text
+
+                    if problem:
+                        dataframe.loc['Problem{}'.format(problem)].at['Participant{}'.format(j)] = 'Yes'
+
+        print(dataframe)
+    '''
+
     def make_result_table(self):
         """
         Create a table for the visualization of the effectiveness analysis.
         """
 
         # create a table for the results visualization
-        rows_number = self.parameters['Number of critical tasks'] + 1
-        cols_number = self.parameters['Number of participants'] + 1
+        rows_number = self.parameters[self.TASKS_NUMBER_KEY] + 1
+        cols_number = self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1
         result_table = self.report.add_table(rows_number, cols_number)
         result_table.style = 'Table Grid'
         result_table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -258,3 +292,5 @@ class EffectivenessAnalysis:
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         effectiveness_analysis.write_chapter()
+
+        '''self.problems_dataframe()'''
