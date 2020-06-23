@@ -7,7 +7,7 @@ from typing import List, Dict, Union
 import numpy as np
 import pandas as pd
 
-from docx_package import layout
+from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
 from eye_tracking_package import plot, eye_tracking
@@ -183,7 +183,7 @@ class DwellTimesAndRevisits:
         for index, label in enumerate(self.TABLE_FIRST_ROW):
             cell = table.rows[0].cells[index]
             cell.text = label
-            layout.set_cell_shading(cell, self.LIGHT_GREY_10)  # color the cell in light_grey_10
+            Layout.set_cell_shading(cell, self.LIGHT_GREY_10)  # color the cell in light_grey_10
             cell.paragraphs[0].runs[0].font.bold = True
 
         # write the first column with the name of the areas of interest
@@ -212,7 +212,7 @@ class DwellTimesAndRevisits:
 
         # set the widths of all columns
         for idx, column in enumerate(table.columns):
-            layout.set_column_width(column, self.WIDTHS[idx])
+            Layout.set_column_width(column, self.WIDTHS[idx])
 
     def write_chapter(self):
         """

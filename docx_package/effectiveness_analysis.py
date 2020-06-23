@@ -10,7 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from docx_package import layout
+from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
 
 
@@ -151,14 +151,14 @@ class EffectivenessAnalysis:
                 # first row
                 elif i == 0 and j != 0:
                     cell.text = self.task_table.cell(i, j).text
-                    layout.set_cell_shading(cell, self.LIGHT_GREY_10)     # color the cell in light_grey_10
+                    Layout.set_cell_shading(cell, self.LIGHT_GREY_10)     # color the cell in light_grey_10
                     cell.paragraphs[0].runs[0].font.size = Pt(9)
                     cell.paragraphs[0].runs[0].font.bold = True
 
                 # first column
                 elif i != 0 and j == 0:
                     cell.text = self.parameters['Critical task {} name'.format(i)]
-                    layout.set_cell_shading(cell, self.LIGHT_GREY_10)     # color the cell in light_grey_10
+                    Layout.set_cell_shading(cell, self.LIGHT_GREY_10)     # color the cell in light_grey_10
                     cell.paragraphs[0].runs[0].font.bold = True
 
                 # bolds all text
@@ -174,18 +174,18 @@ class EffectivenessAnalysis:
                     problem_index = int(cell.text)
 
                     if self.parameters['Problem {} type'.format(problem_index)] == 'Important problem':
-                        layout.set_cell_shading(cell, self.ORANGE)
+                        Layout.set_cell_shading(cell, self.ORANGE)
 
                     if self.parameters['Problem {} type'.format(problem_index)] == 'Marginal problem':
-                        layout.set_cell_shading(cell, self.YELLOW)
+                        Layout.set_cell_shading(cell, self.YELLOW)
 
                     if self.parameters['Problem {} type'.format(problem_index)] == 'Critical problem':
-                        layout.set_cell_shading(cell, self.RED)
+                        Layout.set_cell_shading(cell, self.RED)
                 else:
-                    layout.set_cell_shading(cell, self.GREEN)
+                    Layout.set_cell_shading(cell, self.GREEN)
 
         # color the top left cell borders in white
-        layout.set_cell_border(result_table.cell(0, 0),
+        Layout.set_cell_border(result_table.cell(0, 0),
                                top={"color": "#FFFFFF"},
                                start={"color": "#FFFFFF"}
                                )
@@ -199,15 +199,15 @@ class EffectivenessAnalysis:
                 result_table.cell(i, j).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
         # set the width of the columns
-        layout.set_column_width(result_table.columns[0], 2.4)
+        Layout.set_column_width(result_table.columns[0], 2.4)
         for j in range(1, cols_number):
             width = (15.9 - 2.4) / (cols_number - 1)
-            layout.set_column_width(result_table.columns[j], width)
+            Layout.set_column_width(result_table.columns[j], width)
 
         # set the height of the rows
-        layout.set_row_height(result_table.rows[0], 0.5)
+        Layout.set_row_height(result_table.rows[0], 0.5)
         for i in range(1, rows_number):
-            layout.set_row_height(result_table.rows[i], 1.1, rule=WD_ROW_HEIGHT_RULE.AT_LEAST)
+            Layout.set_row_height(result_table.rows[i], 1.1, rule=WD_ROW_HEIGHT_RULE.AT_LEAST)
 
     @ staticmethod
     def add_color_description(table: Table, cell_row: int, cell_column: int, color: str, description: str):
@@ -226,8 +226,8 @@ class EffectivenessAnalysis:
         description_cell = table.cell(cell_row, cell_column + 1)
 
         # color the cell and set its borders
-        layout.set_cell_shading(color_cell, color)
-        layout.set_cell_border(color_cell,
+        Layout.set_cell_shading(color_cell, color)
+        Layout.set_cell_border(color_cell,
                                top={"sz": 4, "val": "single", "color": "#000000"},
                                bottom={"sz": 4, "val": "single", "color": "#000000"},
                                start={"sz": 4, "val": "single", "color": "#000000"},
@@ -254,11 +254,11 @@ class EffectivenessAnalysis:
 
         # set the height of all rows
         for idx, row in enumerate(colors_table.rows):
-            layout.set_row_height(row, self.COLORS_TABLE_HEIGHTS[idx])
+            Layout.set_row_height(row, self.COLORS_TABLE_HEIGHTS[idx])
 
         # set the width of all columns
         for idx, column in enumerate(colors_table.columns):
-            layout.set_column_width(column, self.COLORS_TABLE_WIDTHS[idx])
+            Layout.set_column_width(column, self.COLORS_TABLE_WIDTHS[idx])
 
         # add the color description to the table in the corresponding cells
         self.add_color_description(colors_table, 0, 1, self.GREEN, 'No problem found')
@@ -273,7 +273,7 @@ class EffectivenessAnalysis:
 
         for i in range(1, self.parameters['Number of problems'] + 1):
             self.report.add_paragraph(self.parameters['Problem {} description'.format(i)],
-                                      'List Number')
+                                      'List Number 2')
 
     def write_chapter(self):
         """

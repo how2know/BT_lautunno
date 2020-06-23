@@ -165,10 +165,12 @@ class Picture:
             picture_paths: List of paths of all input pictures.
             picture_name: Name of the picture file without the extension.
             caption: Text of the picture caption.
-            width: Width of the picture as it appears in the report.
-            height: Height of the picture as it appears in the report.
-            space_before: Space before the paragraph of the picture.
-            space_after: Space after the paragraph of the caption.
+            width (optional): Width of the picture as it appears in the report.
+            height (optional): Height of the picture as it appears in the report.
+            space_before (optional): Space before the paragraph of the picture.
+                                     None if inherited from the style hierarchy.
+            space_after (optional): Space after the paragraph of the caption.
+                                    None if inherited from the style hierarchy.
         """
 
         picture = cls(report_document, picture_paths, picture_name, caption, width, height, space_before, space_after)

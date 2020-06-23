@@ -6,7 +6,7 @@ from typing import List, Dict, Union
 import numpy as np
 from PIL import Image, UnidentifiedImageError
 
-from docx_package import layout
+from docx_package.layout import Layout
 from docx_package.picture import Picture
 
 
@@ -65,9 +65,9 @@ class CoverPage:
         Create and add a title with a first capital letter and border below it.
         """
 
-        title_text = layout.capitalize_first_letter(self.parameters[self.TITLE_KEY])
+        title_text = Layout.capitalize_first_letter(self.parameters[self.TITLE_KEY])
         title = self.report.add_paragraph(title_text, 'Title')
-        layout.insert_horizontal_border(title)
+        Layout.insert_horizontal_border(title)
 
     def write_subtitle(self) -> Paragraph:
         """
@@ -77,7 +77,7 @@ class CoverPage:
             Paragraph of the subtitle.
         """
 
-        subtitle_text = layout.capitalize_first_letter(self.parameters[self.SUBTITLE_KEY])
+        subtitle_text = Layout.capitalize_first_letter(self.parameters[self.SUBTITLE_KEY])
         subtitle = self.report.add_paragraph(subtitle_text, 'Subtitle')
         return subtitle
 
@@ -110,13 +110,13 @@ class CoverPage:
 
         # set the shading of the first row to light_grey_10 and make it bold
         for cell in approval_table.rows[0].cells:
-            layout.set_cell_shading(cell, self.LIGHT_GREY_10)
+            Layout.set_cell_shading(cell, self.LIGHT_GREY_10)
             cell.paragraphs[0].runs[0].font.bold = True
 
         # function of the different persons
-        author_function = layout.capitalize_first_letter(self.parameters[self.AUTHOR_FUNCTION_KEY])
-        reviewer_function = layout.capitalize_first_letter(self.parameters[self.REVIEWER_FUNCTION_KEY].capitalize())
-        approver_function = layout.capitalize_first_letter(self.parameters[self.APPROVER_FUNCTION_KEY].capitalize())
+        author_function = Layout.capitalize_first_letter(self.parameters[self.AUTHOR_FUNCTION_KEY])
+        reviewer_function = Layout.capitalize_first_letter(self.parameters[self.REVIEWER_FUNCTION_KEY].capitalize())
+        approver_function = Layout.capitalize_first_letter(self.parameters[self.APPROVER_FUNCTION_KEY].capitalize())
 
         # add the function to the person
         approval_table.cell(1, 1).add_paragraph(author_function)
@@ -134,7 +134,6 @@ class CoverPage:
         for row in approval_table.rows:
             for cell in row.cells:
                 cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
-
 
     @ property
     def picture_caption(self) -> str:

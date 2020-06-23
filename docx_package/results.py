@@ -1,4 +1,4 @@
-from docx_package import text_reading, layout
+from docx_package import text_reading
 
 class ResultsChapter:
 

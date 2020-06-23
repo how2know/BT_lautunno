@@ -8,7 +8,7 @@ from docx.oxml.shared import OxmlElement
 from datetime import date
 from typing import Dict, Union
 
-from docx_package import layout
+from docx_package.layout import Layout
 
 
 class Header:
@@ -69,9 +69,9 @@ class Header:
         self.add_tab_stops(second_line)
 
         # create the entries of the header
-        firm = layout.capitalize_first_letter(self.parameters[self.FIRM_KEY])
-        title = layout.capitalize_first_letter(self.parameters[self.HEADER_TITLE_KEY])
-        version = layout.capitalize_first_letter(self.parameters[self.VERSION_KEY])
+        firm = Layout.capitalize_first_letter(self.parameters[self.FIRM_KEY])
+        title = Layout.capitalize_first_letter(self.parameters[self.HEADER_TITLE_KEY])
+        version = Layout.capitalize_first_letter(self.parameters[self.VERSION_KEY])
         today_date = date.today()
         date_string = today_date.strftime('%d.%m.%Y')
 
@@ -113,21 +113,23 @@ class Footer:
             run: Run in which the page number will be added.
         """
 
-        # add XML elements and set their attributes so that the page number correspond to a real page number
-        r_element = run._r
+        # access to XML run element <w:r>
+        r = run._r
 
+        # create new XML elements, set their attributes and add them to the run element
+        # so that the page number correspond to a real page number
         fldChar1 = OxmlElement('w:fldChar')
         fldChar1.set(qn('w:fldCharType'), 'begin')
-        r_element.append(fldChar1)
+        r.append(fldChar1)
 
         instrText = OxmlElement('w:instrText')
         instrText.set(qn('xml:space'), 'preserve')
         instrText.text = 'PAGE'
-        r_element.append(instrText)
+        r.append(instrText)
 
         fldChar2 = OxmlElement('w:fldChar')
         fldChar2.set(qn('w:fldCharType'), 'end')
-        r_element.append(fldChar2)
+        r.append(fldChar2)
 
     def write(self):
         """
