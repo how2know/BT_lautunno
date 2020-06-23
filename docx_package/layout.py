@@ -1,17 +1,12 @@
-# TODO: comment
-#####     LAYOUT DEFINITION     #####
-
-# Some functions that define the layout and formatting of the report are implemented in this module.
-# It includes: document layout, header, footer, styles, tables, ...
 from docx.document import Document
 from docx.section import Section
 from docx.text.paragraph import Paragraph
 from docx.table import _Row, _Column, _Cell
 from docx.enum.base import EnumValue
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_TAB_LEADER
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.section import WD_SECTION, WD_ORIENT
 from docx.shared import Pt, Cm, RGBColor
-from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT_RULE
+from docx.enum.table import WD_ROW_HEIGHT_RULE
 from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml.ns import nsdecls, qn
 from docx.oxml import parse_xml
@@ -23,8 +18,7 @@ class Layout:
     Class that represents and defines the layout and formatting of the report.
     """
 
-    # TODO: use this
-    # define some colors
+    # colors used for font
     BLACK = RGBColor(0, 0, 0)  # Hex: 000000
     BLACK_35 = RGBColor(90, 90, 90)  # Hex: 5A5A5A
     LIGHT_GREY_10 = RGBColor(208, 206, 206)  # Hex: D0CECE
