@@ -15,7 +15,10 @@ from docx.oxml.shared import OxmlElement
 
 class Layout:
     """
-    Class that represents and defines the layout and formatting of the report.
+    Class that represents and defines everything that have something to do
+    with the layout and formatting of the report,
+    i.e. defining the styles, configuring tables features like row height,
+    column width or cell shading and borders, inserting border or capitalizing letters.
     """
 
     # colors used for font

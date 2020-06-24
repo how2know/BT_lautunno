@@ -193,45 +193,38 @@ class Picture:
         # add the heading of the list of figures
         heading = report_document.add_paragraph('List of figures', 'Heading 2')
 
-        # add XML elements and set their attributes so that the caption is considered as a caption and can be updated
+        # access to XML run element <w:r>
         paragraph = report_document.add_paragraph()
         run = paragraph.add_run()
-        r_element = run._r
+        r = run._r
 
+        # create new XML elements, set their attributes and add them to the run element
+        # so that the caption is considered as a caption and can be updated
         fldChar = OxmlElement('w:fldChar')
         fldChar.set(qn('w:fldCharType'), 'begin')
-        r_element.append(fldChar)
+        r.append(fldChar)
 
         instrText = OxmlElement('w:instrText')
         instrText.set(qn('xml:space'), 'preserve')
         instrText.text = 'TOC \\h \\z \\c \"Figure\"'
-        r_element.append(instrText)
+        r.append(instrText)
 
         fldChar2 = OxmlElement('w:fldChar')
         fldChar2.set(qn('w:fldCharType'), 'separate')
         fldChar3 = OxmlElement('w:t')
         fldChar3.text = 'Press "Ctrl + A" to select everything and then "F9" to update fields.'
         fldChar2.append(fldChar3)
-        r_element.append(fldChar2)
+        r.append(fldChar2)
 
         fldChar4 = OxmlElement('w:fldChar')
         fldChar4.set(qn('w:fldCharType'), 'end')
-        r_element.append(fldChar4)
-
-        '''
-        r_element = run._r
-        r_element.append(fldChar)
-        r_element.append(instrText)
-        r_element.append(fldChar2)
-        r_element.append(fldChar4)
-        p_element = paragraph._p
-        '''
+        r.append(fldChar4)
 
     @ staticmethod
     def error_message(picture_paths):
         """
         Print an error message that show the path of the pictures that were not added to the report
-        and give some possible problems that might have occured.
+        and give some possible problems that might have occurred.
 
         Args:
             picture_paths: List of paths of all remaining input pictures.
