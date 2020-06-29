@@ -5,10 +5,6 @@ from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT, WD_ROW_HEIGHT
 from docx.shared import Pt
 from bs4 import BeautifulSoup
 from typing import List, Dict, Union
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
 
 from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
@@ -22,7 +18,7 @@ class EffectivenessAnalysis:
     # name of tables as they appear in the tables list
     TASK_TABLE_NAME = 'Effectiveness analysis tasks and problems table'
     PROBLEM_TABLE_NAME = 'Effectiveness analysis problem type table'
-    VIDEO_TABLE_NAME = 'Effectiveness analysis video table'
+    '''VIDEO_TABLE_NAME = 'Effectiveness analysis video table' '''
 
     # parameter keys
     TASKS_NUMBER_KEY = 'Number of critical tasks'
@@ -53,6 +49,7 @@ class EffectivenessAnalysis:
                  text_input_document: Document,
                  text_input_soup: BeautifulSoup,
                  list_of_tables: List[str],
+                 picture_paths_list: List[str],
                  parameters_dictionary: Dict[str, Union[str, int]]
                  ):
         """
@@ -61,6 +58,7 @@ class EffectivenessAnalysis:
             text_input_document: .docx file where all inputs are written.
             text_input_soup: BeautifulSoup of the xml of the input .docx file.
             list_of_tables: List of all table names.
+            picture_paths_list: List of the path of all input pictures.
             parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value)
         """
 
@@ -68,6 +66,7 @@ class EffectivenessAnalysis:
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
         self.tables = list_of_tables
+        self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
 
     @ property
@@ -90,6 +89,7 @@ class EffectivenessAnalysis:
         problem_table_index = self.tables.index(self.PROBLEM_TABLE_NAME)
         return self.text_input.tables[problem_table_index]
 
+    '''
     @ property
     def video_table(self) -> Table:
         """
@@ -99,30 +99,6 @@ class EffectivenessAnalysis:
 
         video_table_index = self.tables.index(self.VIDEO_TABLE_NAME)
         return self.text_input.tables[video_table_index]
-
-    '''
-    def problems_dataframe(self):
-        # dataframe = pd.DataFrame()
-
-        rows_number = self.parameters[self.TASKS_NUMBER_KEY] + 1
-        cols_number = self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1
-
-        problems_number = self.parameters[self.PROBLEMS_NUMBER_KEY]
-
-        dataframe = pd.DataFrame(columns=['Participant{}'.format(i) for i in range(1, cols_number)],
-                                 index=['Problem{}'.format(i) for i in range(1, problems_number + 1)])
-
-        for i in range(rows_number):
-            for j in range(cols_number):
-
-                # skip the first row and first column
-                if i != 0 and j != 0:
-                    problem = self.task_table.cell(i, j).text
-
-                    if problem:
-                        dataframe.loc['Problem{}'.format(problem)].at['Participant{}'.format(j)] = 'Yes'
-
-        print(dataframe)
     '''
 
     def make_result_table(self):
@@ -281,7 +257,7 @@ class EffectivenessAnalysis:
         """
 
         effectiveness_analysis = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                                self.tables, self.parameters)
+                                                self.tables, self.picture_paths, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
         self.make_result_table()
@@ -292,5 +268,3 @@ class EffectivenessAnalysis:
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         effectiveness_analysis.write_chapter()
-
-        '''self.problems_dataframe()'''

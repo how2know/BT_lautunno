@@ -93,7 +93,6 @@ def main():
         'Effectiveness analysis tasks and problems table',
         'Effectiveness analysis problem number table',
         'Effectiveness analysis problem type table',
-        'Effectiveness analysis video table',
         'Effectiveness analysis parameter table',
         'Effectiveness analysis caption table',
         'Time on tasks table',
@@ -117,7 +116,10 @@ def main():
 
     cGOM_dataframes = cGOM_data.make_dataframes_list(parameters)
 
-    '''tobii_data = TobiiData.make_dataframe('Inputs/Data/Participant1.tsv')'''
+    # tobii_data = TobiiData.make_dataframe('Inputs/Data/Participant1.tsv')
+    # tobii_data2 = TobiiData.make_dataframe('Inputs/Data/All_participants.tsv')
+
+    tobii_data3 = TobiiData.make_main_dataframe(parameters)
 
     # define all styles used in the document
     # layout.define_all_styles(report)
@@ -202,31 +204,31 @@ def main():
     report.add_paragraph('Results', 'Heading 1')
 
     start1 = time.time()
-    effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, parameters)
+    effectiveness_analysis = EffectivenessAnalysis(report, text_input, text_input_soup, tables, picture_paths, parameters)
     effectiveness_analysis.write_chapter()
     end1 = time.time()
     print('Effectiveness analysis: ', end1-start1)
 
     start2 = time.time()
-    time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, parameters)
+    time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, picture_paths, parameters, tobii_data3)
     time_on_tasks.write_chapter()
     end2 = time.time()
     print('Time on tasks: ', end2-start2)
 
     start3 = time.time()
-    dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
+    dwell_times_and_revisits = DwellTimesAndRevisits(report, text_input, text_input_soup, tables, picture_paths, parameters, cGOM_dataframes)
     dwell_times_and_revisits.write_chapter()
     end3 = time.time()
     print('Dwell times: ', end3-start3)
     
     start4 = time.time()
-    average_fixation = AverageFixation(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
+    average_fixation = AverageFixation(report, text_input, text_input_soup, tables, picture_paths, parameters, cGOM_dataframes)
     average_fixation.write_chapter()
     end4 = time.time()
     print('Average fixation: ', end4-start4)
 
     start5 = time.time()
-    transitions = Transitions(report, text_input, text_input_soup, tables, parameters, cGOM_dataframes)
+    transitions = Transitions(report, text_input, text_input_soup, tables, picture_paths, parameters, cGOM_dataframes)
     transitions.write_chapter()
     end5 = time.time()
     print('Transitions: ', end5-start5)

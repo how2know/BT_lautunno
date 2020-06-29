@@ -1,16 +1,10 @@
-from docx.document import Document
-from docx.text.paragraph import Paragraph
-from docx.table import Table
-from bs4 import BeautifulSoup
-from typing import List, Dict, Union
+from typing import List, Union
 from docx import Document
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.image.exceptions import UnrecognizedImageError
-from docx.shared import Pt, Cm, RGBColor
+from docx.shared import Cm
 from os import listdir
 from PIL import Image, UnidentifiedImageError
-import time
 
 
 # TODO: maybe add a option to treat the path one know
@@ -20,6 +14,8 @@ class Picture:
     Class that represents everything that have something to do with the pictures in the report,
     i.e. creating list of picture paths, adding pictures, adding captions,
     adding list of figures or printing error message regarding pictures.
+
+    Pictures must be saved in the 'Inputs/Pictures' directory in image format (e.g. .jpg, .jpeg, .png, .gif, ...).
     """
 
     # information for the caption
@@ -64,7 +60,7 @@ class Picture:
             List of paths of all pictures given as input.
         """
 
-        # list of names of all files contained in the directory 'Inputs/Pictures'
+        # list of names of all files stored in the directory 'Inputs/Pictures'
         pictures = listdir('Inputs/Pictures')
 
         # create a list of paths to all files
@@ -102,7 +98,6 @@ class Picture:
                     self.picture_paths.pop(index)
 
                     # terminate because a picture was added and return True
-                    # picture_added = True
                     return True
 
                 # do nothing if the file is not an image
@@ -191,7 +186,7 @@ class Picture:
         """
 
         # add the heading of the list of figures
-        heading = report_document.add_paragraph('List of figures', 'Heading 2')
+        report_document.add_paragraph('List of figures', 'Heading 2')
 
         # access to XML run element <w:r>
         paragraph = report_document.add_paragraph()

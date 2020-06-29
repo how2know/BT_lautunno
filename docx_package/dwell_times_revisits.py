@@ -51,6 +51,7 @@ class DwellTimesAndRevisits:
                  text_input_document: Document,
                  text_input_soup: BeautifulSoup,
                  list_of_tables: List[str],
+                 picture_paths_list: List[str],
                  parameters_dictionary: Dict[str, Union[str, int]],
                  list_of_dataframes: List[pd.DataFrame]
                  ):
@@ -60,6 +61,7 @@ class DwellTimesAndRevisits:
             text_input_document: .docx file where all inputs are written.
             text_input_soup: BeautifulSoup of the xml of the input .docx file.
             list_of_tables: List of all table names.
+            picture_paths_list: List of the path of all input pictures.
             parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value)
             list_of_dataframes: List of data frames containing the cGOM data of each participant
         """
@@ -68,6 +70,7 @@ class DwellTimesAndRevisits:
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
         self.tables = list_of_tables
+        self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
         self.cGOM_dataframes = list_of_dataframes
 
@@ -220,7 +223,7 @@ class DwellTimesAndRevisits:
         """
 
         time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                       self.tables, self.parameters)
+                                       self.tables, self.picture_paths, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 

@@ -1,13 +1,9 @@
 from docx.document import Document
-from docx.table import Table
 from bs4 import BeautifulSoup
 from typing import List, Dict, Union
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
-import time
-from docx.shared import Pt, Cm, RGBColor
+from docx.shared import Cm
 
 from docx_package import text_reading
 from docx_package.results import ResultsChapter
@@ -27,6 +23,10 @@ class TimeOnTasks:
     # parameter keys as they appear in the parameters dictionary
     PARTICIPANTS_NUMBER_KEY = 'Number of participants'
     TASKS_NUMBER_KEY = 'Number of critical tasks'
+
+    # column labels as they appear in the Tobii data frame
+    EVENT_LABEL = 'Event'
+    SECONDS_LABEL = 'Seconds'
 
     # information about the headings of this chapter
     TITLE = 'Time on tasks'
@@ -48,7 +48,9 @@ class TimeOnTasks:
                  text_input_document: Document,
                  text_input_soup: BeautifulSoup,
                  list_of_tables: List[str],
-                 parameters_dictionary: Dict[str, Union[str, int]]
+                 picture_paths_list: List[str],
+                 parameters_dictionary: Dict[str, Union[str, int]],
+                 tobii_data: pd.DataFrame
                  ):
         """
         Args:
@@ -56,16 +58,20 @@ class TimeOnTasks:
             text_input_document: .docx file where all inputs are written.
             text_input_soup: BeautifulSoup of the xml of the input .docx file.
             list_of_tables: List of all table names.
-            parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value)
+            picture_paths_list: List of the path of all input pictures.
+            parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value).
+            tobii_data: Data frame that contains the given Tobii data.
         """
 
         self.report = report_document
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
+        self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
         self.tables = list_of_tables
         input_table_index = self.tables.index(self.TIME_ON_TASK_TABLE_NAME)
         self.input_table = text_input_document.tables[input_table_index]
+        self.tobii_data = tobii_data
 
     @ property
     def tasks(self) -> List[str]:
@@ -86,37 +92,61 @@ class TimeOnTasks:
             List of participants, i.e. [Participant 1, Participant 2, ...].
         """
 
-        participants = ['Participant {}'.format(i) for i in range(1, self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1)]
+        participants = ['Participant{}'.format(i) for i in range(1, self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1)]
         return participants
 
     @ property
-    def times(self) -> np.ndarray:
-        """
-        Returns:
-            Matrix of task completion times.
-        """
-
-        rows = self.parameters[self.TASKS_NUMBER_KEY]
-        columns = self.parameters[self.PARTICIPANTS_NUMBER_KEY]
-        times = np.zeros((rows, columns))
-        for i in range(rows):
-            for j in range(columns):
-                time = float(self.input_table.cell(i+1, j+1).text)
-                times[i, j] = time
-
-        # return the transposed matrix to have participants as rows and tasks as columns
-        return times.transpose()
-
-    # TODO: check if pd.DataFrame = pandas.core.frame.DataFrame which is the type of the return value here
-    @ property
-    def task_times_df(self) -> pd.DataFrame:
+    def times_from_table(self) -> pd.DataFrame:
         """
         Returns:
             Data frame of tasks completion times with participants as index and task names as columns.
         """
 
-        data_frame = pd.DataFrame(self.times, index=self.participants, columns=self.tasks)
-        return data_frame
+        rows_number = self.parameters[self.TASKS_NUMBER_KEY]
+        columns_number = self.parameters[self.PARTICIPANTS_NUMBER_KEY]
+
+        # create a matrix full of zeros of the size of the input table
+        times_matrix = np.zeros((rows_number, columns_number))
+        for i in range(rows_number):
+            for j in range(columns_number):
+
+                # set the completion time or let '0' if no time were given
+                try:
+                    time = float(self.input_table.cell(i+1, j+1).text)
+                    times_matrix[i, j] = time
+                except ValueError:
+                    pass
+
+        # create a data frame with the transposed matrix to have participants as rows and tasks as columns
+        times_df = pd.DataFrame(times_matrix.transpose(), index=self.participants, columns=self.tasks)
+
+        return times_df
+
+    def times_from_tables_and_tobii(self):
+        """
+        Complete the data frame of tasks completion times with the input given through Tobii.
+
+        Returns:
+            Data frame of tasks completion times with participants as index and task names as columns.
+        """
+
+        # data frame of tasks completion times with the input given through the text input form
+        times_df = self.times_from_table
+
+        for participant in self.participants:
+            participants_data = self.tobii_data[self.tobii_data.index == participant]
+            for idx, task in enumerate(self.tasks):
+                tasks_data = participants_data[participants_data[self.EVENT_LABEL] == 'Task{}'.format(idx+1)]
+
+                # replace the time in the data frame or do nothing when no time was given through Tobii
+                try:
+                    seconds = tasks_data[self.SECONDS_LABEL].to_numpy()
+                    time = seconds[1] - seconds[0]
+                    times_df.loc[participant].at[task] = time
+                except IndexError:
+                    pass
+
+        return times_df
 
     @ property
     def plot_type(self) -> str:
@@ -140,7 +170,7 @@ class TimeOnTasks:
         all participants are created.
         """
 
-        task_times_df = self.task_times_df
+        task_times_df = self.times_from_tables_and_tobii()
 
         # create a bar plot for each participant
         for idx, participant in enumerate(self.participants):
@@ -173,7 +203,7 @@ class TimeOnTasks:
         self.make_plots()
 
         time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                       self.tables, self.parameters)
+                                       self.tables, self.picture_paths, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
@@ -195,4 +225,3 @@ class TimeOnTasks:
 
         self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
         time_on_tasks.write_chapter()
-

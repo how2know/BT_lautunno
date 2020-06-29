@@ -150,6 +150,7 @@ class Parameters:
         Returns:
             Dictionary containing values and keys of all parameters.
         """
+
         parameters = cls(text_input_document, text_input_soup, list_of_tables)
 
         parameters.get_from_standard_tables()

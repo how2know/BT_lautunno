@@ -1,12 +1,8 @@
 from docx.document import Document
-from docx.table import Table
 from bs4 import BeautifulSoup
 from typing import List, Dict, Union
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
-from docx.shared import Pt, Cm, RGBColor
+from docx.shared import Cm
 
 from docx_package.picture import Picture
 from docx_package.results import ResultsChapter
@@ -36,6 +32,7 @@ class Transitions:
                  text_input_document: Document,
                  text_input_soup: BeautifulSoup,
                  list_of_tables: List[str],
+                 picture_paths_list: List[str],
                  parameters_dictionary: Dict[str, Union[str, int]],
                  list_of_dataframes: List[pd.DataFrame]
                  ):
@@ -45,6 +42,7 @@ class Transitions:
             text_input_document: .docx file where all inputs are written.
             text_input_soup: BeautifulSoup of the xml of the input .docx file.
             list_of_tables: List of all table names.
+            picture_paths_list: List of the path of all input pictures.
             parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value)
             list_of_dataframes: List of data frames containing the cGOM data of each participant
         """
@@ -53,6 +51,7 @@ class Transitions:
         self.text_input = text_input_document
         self.text_input_soup = text_input_soup
         self.tables = list_of_tables
+        self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
         self.cGOM_dataframes = list_of_dataframes
 
@@ -114,7 +113,7 @@ class Transitions:
         self.makes_plot()
 
         transitions = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                     self.tables, self.parameters)
+                                     self.tables, self.picture_paths, self.parameters)
 
         self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
         Picture.add_picture_and_caption(self.report,

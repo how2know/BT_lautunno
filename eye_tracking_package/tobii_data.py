@@ -1,73 +1,110 @@
-from docx import Document
-import os
-from zipfile import ZipFile
-from bs4 import BeautifulSoup
-import time
-from itertools import islice
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+
+from typing import Dict, Union
 import pandas as pd
+from os import listdir
 
 
 class TobiiData:
+    """
+    Class that represents the Tobii data and creates a readable form of it.
 
-    def __init__(self):
-        pass
+    Tobii data must be loaded in .tsv files in the 'Inputs/Data' directory.
+    """
 
-    @ staticmethod
-    def make_dataframe(txt_file_path):
+    # labels of the columns of the data frame
+    PARTICIPANTS_LABEL = 'Participant name'
+    TIMESTAMPS_LABEL = 'Recording timestamp'
+    EVENT_LABEL = 'Event'
+    SECONDS_LABEL = 'Seconds'
+
+    def __init__(self, parameters_dictionary: Dict[str, Union[str, int]]):
         """
-        Reads the .txt file that contains the data from cGOM and returns a data frame out of it.
-        The indexes of the data frame are the label, i.e. the AOI.
-        The columns of the data frame are the start time of a fixation, end time of a fixation, duration of a fixation.
+        Args:
+            parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value).
         """
 
-        dataframe = pd.DataFrame()
+        self.parameters = parameters_dictionary
 
-        start = time.time()
+    def make_dataframe(self, tsv_file_path) -> pd.DataFrame:
+        """
+        Args:
+            tsv_file_path: Path to the .tsv file that contains the Tobii data.
 
-        tobii_dataframe = pd.read_csv(txt_file_path, sep='\t')
-        # print(tobii_dataframe)
+        Returns:
+            Data frame which has the participants as index, the tasks in the 'Event' column
+            and the times in the 'Seconds' column.
+        """
 
-        end = time.time()
-        print('read csv: ', end-start)
+        # create a data frame from the .tsv file
+        tobii_df = pd.read_csv(tsv_file_path, sep='\t')
 
-        start = time.time()
+        # create a data frame with the relevant columns, i.e. 'Recording timestamp', 'Event',
+        # and 'Participant name' as index
+        timestamps = tobii_df[self.TIMESTAMPS_LABEL]
+        events = tobii_df[self.EVENT_LABEL]
+        participants = tobii_df[self.PARTICIPANTS_LABEL]
+        tasks_times_df = pd.concat([timestamps, events, participants], axis=1)
+        tasks_times_df.set_index(self.PARTICIPANTS_LABEL, inplace=True)
 
-        tobii_dataframe2 = pd.read_table(txt_file_path, sep='\t')
-        # print(tobii_dataframe2)
+        # delete all irrelevant rows and keep only the ones that describes a task
+        tasks_times_df = tasks_times_df.dropna()
+        tasks_times_df = tasks_times_df[tasks_times_df[self.EVENT_LABEL].str.contains('Task')]
 
-        end = time.time()
-        print('read table: ', end-start)
+        # convert the timestamp, that are in microseconds, in seconds and create a new column
+        microseconds = tasks_times_df[self.TIMESTAMPS_LABEL].to_numpy()
+        seconds = microseconds / 1000000
+        tasks_times_df[self.SECONDS_LABEL] = seconds
 
-        timestamps = tobii_dataframe['Recording timestamp']
-        timestamps2 = tobii_dataframe['Recording timestamp'].to_numpy()
-        events = tobii_dataframe['Event']
+        return tasks_times_df
 
-        events2 = tobii_dataframe['Event'].to_numpy()
+    @ classmethod
+    def make_main_dataframe(cls, parameters_dictionary: Dict[str, Union[str, int]]) -> pd.DataFrame:
+        """
+        Create a data frame that contains the relevant data from Tobii, i.e. 'Participant name', 'Event' of the tasks,
+        and times in 'Seconds'.
 
-        print(pd.DataFrame(data=events2, columns=['Event']))
-        print(pd.DataFrame(data=timestamps2, columns=['Recording timestamp']))
+        The data frame is created either from a .tsv file that already contains the data of all participants or
+        by combining the provided data frames of every participant.
 
-        # print(events)
-        # print(timestamps)
+        Args:
+            parameters_dictionary: Dictionary of all input parameters (key = parameter name, value = parameter value).
 
-        # dataframe = dataframe.append(timestamps)
-        # dataframe = dataframe.append(events)
+        Returns:
+            Data frame which has the participants as index, the tasks in the 'Event' column
+            and the times in the 'Seconds' column.
+        """
 
-        # dataframe = dataframe.append(pd.DataFrame(data=timestamps2, columns=['Recording timestamp']))
-        # dataframe = dataframe.append(pd.DataFrame(data=events2, columns=['Event']))
+        tobii = cls(parameters_dictionary)
 
-        '''dataframe = pd.concat([pd.DataFrame(data=timestamps2, columns=['Recording timestamp']), pd.DataFrame(data=events2, columns=['Event'])], axis=1)'''
+        # list of all files stored in the directory 'Inputs/Data'
+        files = listdir('Inputs/Data')
 
-        dataframe = pd.concat([timestamps, events], axis=1)
+        # create directly a data frame with .tsv files of all participants if there is one
+        if 'All_participants.tsv' in files:
+            tobii_df = tobii.make_dataframe('Inputs/Data/All_participants.tsv')
 
-        print(dataframe)
+        # create a data frame with the .tsv files provided for the different participants
+        else:
+            # main data frame that will contain the data of all participants
+            tobii_df = pd.DataFrame()
 
-        dataframe = dataframe.dropna()
+            participants_number = tobii.parameters['Number of participants']
 
-        print(dataframe)
+            # create a data frame with the Tobii data of each participants
+            # and append it to the main data frame
+            for i in range(1, participants_number + 1):
+                try:
+                    participant_df = tobii.make_dataframe('Inputs/Data/Participant{}.tsv'.format(i))
+                    indexes = ['Participant{}'.format(i)] * len(participant_df)
+                    participant_df.index = indexes
+                    tobii_df = tobii_df.append(participant_df)
 
-        return dataframe
+                # do nothing if no file is provided for a participant
+                except FileNotFoundError:
+                    pass
 
+        # create an empty with the relevant columns if no .tsv file was provided
+        if tobii_df.empty:
+            tobii_df = pd.DataFrame(columns=[tobii.EVENT_LABEL, tobii.SECONDS_LABEL])
+
+        return tobii_df

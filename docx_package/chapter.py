@@ -148,9 +148,9 @@ class Chapter:
 
         # stores values of corresponding parameter keys in a list
         parameters_values = ['', '', '']
-        for parameter_index, parameter in enumerate(self.chapter_parameters):
+        for parameter_idx, parameter in enumerate(self.chapter_parameters):
             if parameter != '-':
-                parameters_values[parameter_index] = self.parameters_dictionary[parameter]
+                parameters_values[parameter_idx] = self.parameters_dictionary[parameter]
 
         # write paragraphs including values of parameters
         for paragraph in self.paragraphs:
