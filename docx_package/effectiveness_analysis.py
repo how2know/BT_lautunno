@@ -18,7 +18,6 @@ class EffectivenessAnalysis:
     # name of tables as they appear in the tables list
     TASK_TABLE_NAME = 'Effectiveness analysis tasks and problems table'
     PROBLEM_TABLE_NAME = 'Effectiveness analysis problem type table'
-    '''VIDEO_TABLE_NAME = 'Effectiveness analysis video table' '''
 
     # parameter keys
     TASKS_NUMBER_KEY = 'Number of critical tasks'
@@ -88,18 +87,6 @@ class EffectivenessAnalysis:
 
         problem_table_index = self.tables.index(self.PROBLEM_TABLE_NAME)
         return self.text_input.tables[problem_table_index]
-
-    '''
-    @ property
-    def video_table(self) -> Table:
-        """
-        Returns:
-            Table of the input .docx file where the information about the task videos are written.
-        """
-
-        video_table_index = self.tables.index(self.VIDEO_TABLE_NAME)
-        return self.text_input.tables[video_table_index]
-    '''
 
     def make_result_table(self):
         """
@@ -226,6 +213,7 @@ class EffectivenessAnalysis:
 
         # create table
         colors_table = self.report.add_table(3, 8)
+        colors_table.alignment = WD_TABLE_ALIGNMENT.CENTER
         colors_table.autofit = False
 
         # set the height of all rows

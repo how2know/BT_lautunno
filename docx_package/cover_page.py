@@ -1,6 +1,6 @@
 from docx.document import Document
 from docx.text.paragraph import Paragraph
-from docx.enum.table import WD_ALIGN_VERTICAL
+from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
 from docx.shared import Cm
 from typing import List, Dict, Union
 import numpy as np
@@ -15,7 +15,7 @@ class CoverPage:
     Class that represents and creates the cover page of the report.
     """
 
-    # cover page table for the picture caption
+    # cover page table for the picture caption as it appears in the table list
     COVER_PAGE_TABLE = 'Cover page table'
 
     # title and subtitle parameter key
@@ -38,6 +38,9 @@ class CoverPage:
 
     # width of the picture of the cover page
     PICTURE_WIDTH = Cm(14)
+
+    # list of the table columns width
+    TABLE_WIDTHS = [3, 5, 3.5, 4.4]
 
     def __init__(self,
                  report_document: Document,
@@ -100,9 +103,8 @@ class CoverPage:
 
         # create table, define its style and fill it
         approval_table = self.report.add_table(rows=4, cols=4)
-        # layout.define_table_style(approval_table)
         approval_table.style = 'Table Grid'
-        # approval_table.alignment = WD_TABLE_ALIGNMENT.CENTER
+        approval_table.alignment = WD_TABLE_ALIGNMENT.CENTER
         approval_table.autofit = True
         for i in range(0, 4):
             for j in range(0, 4):
@@ -134,6 +136,10 @@ class CoverPage:
         for row in approval_table.rows:
             for cell in row.cells:
                 cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+
+        # set the width of all columns
+        for idx, column in enumerate(approval_table.columns):
+            Layout.set_column_width(column, self.TABLE_WIDTHS[idx])
 
     @ property
     def picture_caption(self) -> str:

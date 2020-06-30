@@ -4,7 +4,7 @@ from docx.text.paragraph import Paragraph
 from docx.table import _Row, _Column, _Cell
 from docx.enum.base import EnumValue
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.section import WD_SECTION, WD_ORIENT
+from docx.enum.section import WD_ORIENT
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.table import WD_ROW_HEIGHT_RULE
 from docx.enum.style import WD_STYLE_TYPE

@@ -21,24 +21,6 @@ def get_path(file_name, directory_name):
 
     return path
 
-'''
-# read dropdown lists and store their value in a list
-def read_dropdown_lists(file_name, list_of_value):
-
-    # open docx file as a zip file and store its relevant xml data
-    zip_file = ZipFile(file_name)
-    xml_data = zip_file.read('word/document.xml')
-    zip_file.close()
-
-    # parse the xml data with BeautifulSoup
-    soup = BeautifulSoup(xml_data, 'xml')
-
-    # look for all values of dropdown lists in the data and store them
-    dd_lists_content = soup.find_all('sdtContent')
-    for i in dd_lists_content:
-        list_of_value.append(i.find('t').string)
-'''
-
 
 def parse_xml_with_bs4(text_input_path):
     """

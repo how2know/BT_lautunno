@@ -1,24 +1,18 @@
 from docx.document import Document
-from docx.shared import Cm
-from typing import List, Dict, Union
-from bs4 import BeautifulSoup
-
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
-import win32com.client
-import inspect, os
 
 
 class TableOfContent:
-    def __init__(self, report_document: Document):
-        """
-        Args:
-            report_document: .docx file where the report is written.
-        """
+    """
+    Class that represents and creates the 'Table of content'.
+    """
 
-        self.report = report_document
+    def __init__(self):
+        pass
 
-    def write(self):
+    @ staticmethod
+    def write(report_document: Document):
         """
         Add a table of content.
 
@@ -30,10 +24,10 @@ class TableOfContent:
         """
 
         # add the heading of the table of content
-        self.report.add_paragraph('Table of content', 'Table of content')
+        report_document.add_paragraph('Table of content', 'Table of content')
 
         # access to XML run element <w:r>
-        paragraph = self.report.add_paragraph()
+        paragraph = report_document.add_paragraph()
         run = paragraph.add_run()
         r = run._r
 
@@ -45,7 +39,7 @@ class TableOfContent:
 
         instrText = OxmlElement('w:instrText')
         instrText.set(qn('xml:space'), 'preserve')
-        instrText.text = 'TOC \\o "1-2" \\h \\z \\u'  # change 1-3 depending on heading levels you need
+        instrText.text = 'TOC \\o "1-2" \\h \\z \\u'  # "1-2" correspond to heading levels
         r.append(instrText)
 
         fldChar2 = OxmlElement('w:fldChar')
@@ -58,13 +52,3 @@ class TableOfContent:
         fldChar4 = OxmlElement('w:fldChar')
         fldChar4.set(qn('w:fldCharType'), 'end')
         r.append(fldChar4)
-
-    def update(self, report_file_path):
-        word = win32com.client.DispatchEx("Word.Application")
-        doc = word.Documents.Open(report_file_path)
-
-        word.ActiveDocument.Fields.Update()
-
-        # doc.TablesOfContents(1).Update()
-        doc.Close(SaveChanges=True)
-        word.Quit()

@@ -23,9 +23,31 @@ from docx_package.average_fixation import AverageFixation
 from docx_package.transitions import Transitions
 from docx_package.parameters import Parameters
 from docx_package.picture import Picture
+from docx_package.document_history import DocumentHistory
+from docx_package.participants_characteristics import ParticipantsCharacteristics
 
 from eye_tracking_package import cGOM_data
 from eye_tracking_package.tobii_data import TobiiData
+
+
+def update(report_file):
+    """
+    Update all fields of  the report, i.e. the table of content, the figure captions and the list of figures.
+
+    Args:
+        report_file: File name of the report.
+    """
+
+    # get the absolut path of the report
+    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    report_file_path = os.path.join(script_dir, report_file)
+
+    # open the report through Word, update all fields, save and quit Word
+    word = win32com.client.DispatchEx("Word.Application")
+    doc = word.Documents.Open(report_file_path)
+    word.ActiveDocument.Fields.Update()
+    doc.Close(SaveChanges=True)
+    word.Quit()
 
 
 def main():
@@ -45,6 +67,8 @@ def main():
     # path of the input files
     text_input_path = text_reading.get_path(text_input_file, input_directory)
     definitions_path = text_reading.get_path(definitions_file, input_directory)
+
+    print(definitions_path)
 
     # load text input files with python-docx
     text_input = Document(text_input_path)
@@ -79,7 +103,7 @@ def main():
         'Goal parameter table',
         'Goal caption table',
         'Participants number table',
-        'Participants description table',
+        'Participants characteristics table',
         'Participants parameter table',
         'Participants caption table',
         'Use environment parameter table',
@@ -116,10 +140,7 @@ def main():
 
     cGOM_dataframes = cGOM_data.make_dataframes_list(parameters)
 
-    # tobii_data = TobiiData.make_dataframe('Inputs/Data/Participant1.tsv')
-    # tobii_data2 = TobiiData.make_dataframe('Inputs/Data/All_participants.tsv')
-
-    tobii_data3 = TobiiData.make_main_dataframe(parameters)
+    tobii_data = TobiiData.make_main_dataframe(parameters)
 
     # define all styles used in the document
     # layout.define_all_styles(report)
@@ -135,15 +156,7 @@ def main():
     # add a page break
     report.add_page_break()
 
-    # commented out to save time
-    # TODO: write this better (function in class TableOfContent)
-    # path to the file needed to update the table of content
-    script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    report_file_path = os.path.join(script_dir, report_file)
-
-
-    table_of_content = TableOfContent(report)
-    table_of_content.write()
+    TableOfContent.write(report)
 
     # add a new section
     section2 = report.add_section(WD_SECTION.NEW_PAGE)
@@ -195,7 +208,6 @@ def main():
     setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, picture_paths, parameters)
     setup.write_chapter()
 
-
     # TODO: write this better
     report.add_paragraph('Results', 'Heading 1')
 
@@ -205,8 +217,9 @@ def main():
     end1 = time.time()
     print('Effectiveness analysis: ', end1-start1)
 
+    '''
     start2 = time.time()
-    time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, picture_paths, parameters, tobii_data3)
+    time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, picture_paths, parameters, tobii_data)
     time_on_tasks.write_chapter()
     end2 = time.time()
     print('Time on tasks: ', end2-start2)
@@ -228,26 +241,32 @@ def main():
     transitions.write_chapter()
     end5 = time.time()
     print('Transitions: ', end5-start5)
+    '''
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, picture_paths, parameters)
     conclusion.write_chapter()
 
-    '''Picture.error_message(picture_paths)'''
+    DocumentHistory.write(report)
+
+    Picture.error_message(picture_paths)
 
     # add a page break
     report.add_page_break()
 
+    # TODO: write this better
+    report.add_paragraph('Appendix', 'Heading 1')
+
     Picture.add_figures_list(report)
+
+    ParticipantsCharacteristics.write(report, text_input, tables, parameters)
 
     # save the report
     report.save(report_file)
 
+
     start6 = time.time()
-
-    '''This works but it is very long...'''
     # update the table of content
-    table_of_content.update(report_file_path)
-
+    update(report_file)
     end6 = time.time()
     print('Update: ', end6 - start6)
 
