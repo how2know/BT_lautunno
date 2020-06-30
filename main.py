@@ -135,16 +135,12 @@ def main():
     # add a page break
     report.add_page_break()
 
-    # TODO: write this better (do not set it as heading 1)
-    # add table of content
-    report.add_paragraph('Table of content', 'Heading 1')
-
-    ''' commented out to save time
+    # commented out to save time
     # TODO: write this better (function in class TableOfContent)
     # path to the file needed to update the table of content
     script_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     report_file_path = os.path.join(script_dir, report_file)
-    '''
+
 
     table_of_content = TableOfContent(report)
     table_of_content.write()
@@ -246,15 +242,19 @@ def main():
     # save the report
     report.save(report_file)
 
+    start6 = time.time()
+
     '''This works but it is very long...'''
     # update the table of content
-    # table_of_content.update(report_file_path)
+    table_of_content.update(report_file_path)
+
+    end6 = time.time()
+    print('Update: ', end6 - start6)
 
     # open the report with the default handler for .docx (Word)
     os.startfile(report_file)
 
     end = time.time()
-
     print(end - start)
 
 

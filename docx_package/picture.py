@@ -118,7 +118,7 @@ class Picture:
         # add the label of the caption
         caption_paragraph = self.report.add_paragraph(self.CAPTION_LABEL, style=self.CAPTION_STYLE)
 
-        # add XML elements and set their attributes so that the caption is considered as a caption and can be updated
+        # add XML elements and set their attributes so that the caption is considered as such and can be updated
         run = caption_paragraph.add_run()
         r_element = run._r
 
@@ -194,7 +194,7 @@ class Picture:
         r = run._r
 
         # create new XML elements, set their attributes and add them to the run element
-        # so that the caption is considered as a caption and can be updated
+        # so that the list of figure is considered as such and can be updated
         fldChar = OxmlElement('w:fldChar')
         fldChar.set(qn('w:fldCharType'), 'begin')
         r.append(fldChar)

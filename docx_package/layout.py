@@ -118,7 +118,8 @@ class Layout:
                             space_before=Pt(2))
         layout.define_style('Normal', 'Calibri', 11, layout.BLACK, WD_ALIGN_PARAGRAPH.JUSTIFY,
                             space_before=Pt(0), space_after=Pt(0))
-        # layout.define_style('Table', 'Calibri', 11, layout.BLACK, WD_ALIGN_PARAGRAPH.LEFT)
+        layout.define_style('Table of content', 'Calibri', 16, layout.BLACK, WD_ALIGN_PARAGRAPH.LEFT, bold=True,
+                            space_before=Pt(12))
         layout.define_style('Picture', 'Calibri', 11, layout.BLACK, WD_ALIGN_PARAGRAPH.CENTER,
                             space_before=Pt(8), space_after=Pt(5))
         layout.define_style('Caption', 'Calibri', 9, layout.BLACK, WD_ALIGN_PARAGRAPH.CENTER, bold=True)
