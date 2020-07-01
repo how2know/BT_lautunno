@@ -54,8 +54,8 @@ class ParticipantsCharacteristics:
             Table of the input .docx file where the participants' characteristics are written.
         """
 
-        task_table_index = self.tables.index(self.CHARACTERISTICS_TABLE)
-        return self.text_input.tables[task_table_index]
+        participants_table_index = self.tables.index(self.CHARACTERISTICS_TABLE)
+        return self.text_input.tables[participants_table_index]
 
     def add_table(self):
         """

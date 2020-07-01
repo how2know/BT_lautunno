@@ -22,6 +22,8 @@ class Parameters:
         'Effectiveness analysis problem number table',
     ]
 
+    CHARACTERISTICS_TABLE = 'Participants characteristics table'
+
     # tables that have special features (e.g. more than two columns, dropdown lists, ...)
     # those tables are handled separately
     TASKS_TABLE = 'Critical tasks description table'
@@ -59,12 +61,51 @@ class Parameters:
 
             for row in table.rows:
                 key = row.cells[0].text
+                value_text = row.cells[1].text
 
-                # a difference is made when the value should be an integer or a string
+                # TODO: add error message if given number does not correspond to number of element
+
+                # case where the value is an integer
                 if key.startswith('Number of'):
-                    self.dictionary[key] = int(row.cells[1].text)
+                    if value_text and int(value_text) <= 15:
+                        self.dictionary[key] = int(value_text)
+
+                    # if no number where provided,
+                    # read it from the number of described elements in the corresponding table
+                    else:
+                        if 'participants' in key:
+                            self.dictionary[key] = self.get_number(self.tables.index(self.CHARACTERISTICS_TABLE))
+                        if 'tasks' in key:
+                            self.dictionary[key] = self.get_number(self.tables.index(self.TASKS_TABLE))
+
+                # case where the value is a string
                 else:
-                    self.dictionary[key] = row.cells[1].text
+                    self.dictionary[key] = value_text
+
+    def get_number(self, table_index: int) -> int:
+        """
+        Get the number of described elements in a table.
+
+        This function is called to determine the number of participants or the number of critical tasks
+        if they were not provided in the text input form.
+
+        Args:
+            table_index: Index of the table where the elements, i.e. participants or critical tasks, are described.
+
+        Returns:
+            The number of described elements, i.e. number of participants or number of critical tasks.
+        """
+
+        table = self.text_input.tables[table_index]
+
+        # return the index of a row when nothing was written in it
+        for idx, row in enumerate(table.rows[1:]):
+            row_described = False
+            for cell in row.cells[1:]:
+                if cell.text:
+                    row_described = True
+            if not row_described:
+                return idx
 
     def get_from_tasks_table(self):
         """
@@ -73,15 +114,15 @@ class Parameters:
         The critical tasks table differs from the standard table because it has 3 columns.
         """
 
-        table_index = self.tables.index(self.TASKS_TABLE)
-        table = self.text_input.tables[table_index]
+        tasks_table_index = self.tables.index(self.TASKS_TABLE)
+        tasks_table = self.text_input.tables[tasks_table_index]
 
         for i in range(1, self.dictionary['Number of critical tasks'] + 1):
-            type_key = table.cell(i, 0).text + ' name'
-            description_key = table.cell(i, 0).text + ' description'
+            type_key = tasks_table.cell(i, 0).text + ' name'
+            description_key = tasks_table.cell(i, 0).text + ' description'
 
-            self.dictionary[type_key] = table.cell(i, 1).text
-            self.dictionary[description_key] = table.cell(i, 2).text
+            self.dictionary[type_key] = tasks_table.cell(i, 1).text
+            self.dictionary[description_key] = tasks_table.cell(i, 2).text
 
     def get_from_problems_table(self):
         """

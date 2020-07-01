@@ -217,7 +217,6 @@ def main():
     end1 = time.time()
     print('Effectiveness analysis: ', end1-start1)
 
-    '''
     start2 = time.time()
     time_on_tasks = TimeOnTasks(report, text_input, text_input_soup, tables, picture_paths, parameters, tobii_data)
     time_on_tasks.write_chapter()
@@ -241,7 +240,6 @@ def main():
     transitions.write_chapter()
     end5 = time.time()
     print('Transitions: ', end5-start5)
-    '''
 
     conclusion = Chapter(report, text_input, text_input_soup, 'Conclusion', tables, picture_paths, parameters)
     conclusion.write_chapter()
