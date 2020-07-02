@@ -61,14 +61,12 @@ def main():
 
     # name of the directory and the input files
     input_directory = 'Inputs'
-    text_input_file = 'Text_input.docx'
+    text_input_file = 'Text_input2.docx'
     definitions_file = 'Terms_definitions.docx'
 
     # path of the input files
     text_input_path = text_reading.get_path(text_input_file, input_directory)
     definitions_path = text_reading.get_path(definitions_file, input_directory)
-
-    print(definitions_path)
 
     # load text input files with python-docx
     text_input = Document(text_input_path)
@@ -115,7 +113,7 @@ def main():
         'Setup parameter table',
         'Setup caption table',
         'Effectiveness analysis tasks and problems table',
-        'Effectiveness analysis problem number table',
+        # 'Effectiveness analysis problem number table',
         'Effectiveness analysis problem type table',
         'Effectiveness analysis parameter table',
         'Effectiveness analysis caption table',
@@ -181,8 +179,7 @@ def main():
     scope = Chapter(report, text_input, text_input_soup, 'Scope', tables, picture_paths, parameters)
     scope.write_chapter()
 
-    def_chapter = Definitions(report, text_input, text_input_soup, definitions, 'Terms definitions', tables)
-    def_chapter.write_all_definitions()
+    Definitions.write_all_definitions(report, text_input, text_input_soup, definitions, tables)
 
     ethics = Chapter(report, text_input, text_input_soup, 'Ethics statement', tables, picture_paths, parameters)
     ethics.write_chapter()
@@ -254,13 +251,18 @@ def main():
     # TODO: write this better
     report.add_paragraph('Appendix', 'Heading 1')
 
+    Definitions.write_references(report, text_input, text_input_soup, definitions, tables)
+
+    report.add_page_break()
+
     Picture.add_figures_list(report)
+
+    report.add_page_break()
 
     ParticipantsCharacteristics.write(report, text_input, tables, parameters)
 
     # save the report
     report.save(report_file)
-
 
     start6 = time.time()
     # update the table of content

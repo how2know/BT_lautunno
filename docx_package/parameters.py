@@ -19,7 +19,7 @@ class Parameters:
         'Approval table',
         'Participants number table',
         'Critical tasks number table',
-        'Effectiveness analysis problem number table',
+        # 'Effectiveness analysis problem number table',
     ]
 
     CHARACTERISTICS_TABLE = 'Participants characteristics table'
@@ -27,7 +27,7 @@ class Parameters:
     # tables that have special features (e.g. more than two columns, dropdown lists, ...)
     # those tables are handled separately
     TASKS_TABLE = 'Critical tasks description table'
-    EFFECTIVENESS_TABLE = 'Effectiveness analysis problem type table'
+    PROBLEMS_TABLE = 'Effectiveness analysis problem type table'
 
     def __init__(self,
                  text_input_document: Document,
@@ -77,6 +77,8 @@ class Parameters:
                             self.dictionary[key] = self.get_number(self.tables.index(self.CHARACTERISTICS_TABLE))
                         if 'tasks' in key:
                             self.dictionary[key] = self.get_number(self.tables.index(self.TASKS_TABLE))
+                        if 'problems' in key:
+                            self.dictionary[key] = self.get_problems_number(self.tables.index(self.PROBLEMS_TABLE))
 
                 # case where the value is a string
                 else:
@@ -107,6 +109,30 @@ class Parameters:
             if not row_described:
                 return idx
 
+    def get_problems_number(self, table_index: int):
+        """
+        Get the number of described elements in a table.
+
+        This function is called to determine the number of participants or the number of critical tasks
+        if they were not provided in the text input form.
+
+        Args:
+            table_index: Index of the table where the elements, i.e. participants or critical tasks, are described.
+
+        Returns:
+            The number of described elements, i.e. number of participants or number of critical tasks.
+        """
+
+        problems_table_index = self.tables.index(self.PROBLEMS_TABLE)
+        problem_types = text_reading.get_dropdown_list_of_table(self.text_input_soup, problems_table_index)
+
+        # return the index of a row when nothing was written in it
+        for idx, problem_type in enumerate(problem_types):
+            if '-' in problem_type:
+                problems_number = idx
+
+        self.dictionary['Number of problems'] = problems_number
+
     def get_from_tasks_table(self):
         """
         Read the parameters from the critical tasks table and stored them in the dictionary.
@@ -131,10 +157,17 @@ class Parameters:
         The problems table differs from the standard table because it has 3 columns and contains dropdown lists.
         """
 
-        table_index = self.tables.index(self.EFFECTIVENESS_TABLE)
-        table = self.text_input.tables[table_index]
+        problems_table_index = self.tables.index(self.PROBLEMS_TABLE)
+        problems_table = self.text_input.tables[problems_table_index]
+        problem_types = text_reading.get_dropdown_list_of_table(self.text_input_soup, problems_table_index)
 
-        number_of_problems = self.dictionary['Number of problems']
+        # return the index of a row when nothing was written in it
+        for idx, problem_type in enumerate(problem_types):
+            if '-' in problem_type:
+                problems_number = idx
+                break
+
+        self.dictionary['Number of problems'] = problems_number
 
         # cells are not recognized as cells by word if they contain a dropdown list,
         # so here is a work around to get the values
@@ -145,20 +178,21 @@ class Parameters:
         # stores the text of every relevant cell in the list
         stop = False
         while not stop:
-            for i in range(1, number_of_problems + 1):
-                for cell in table.rows[i].cells:
+            for i in range(1, problems_number + 1):
+                for cell in problems_table.rows[i].cells:
                     text = cell.text
-                    if not text:
-                        list_of_text.pop()
-                        stop = True
-                    else:
+                    if text or len(list_of_text) == (problems_number * 2) - 1:
                         list_of_text.append(text)
+                    else:
+                        print(list_of_text)
+                        list_of_text.pop()
+                        print(list_of_text)
+                        stop = True
 
         # delete the last item to ensure that there is no key without a corresponding value
         if len(list_of_text) % 2 != 0:
             list_of_text.pop()
-
-        dropdown_lists_values = text_reading.get_dropdown_list_of_table(self.text_input_soup, table_index)
+            print(list_of_text)
 
         value = 0
 
@@ -171,7 +205,7 @@ class Parameters:
                 # problem types
                 problem_number = list_of_text[i]
                 type_key = problem_number + ' type'
-                self.dictionary[type_key] = dropdown_lists_values[value]
+                self.dictionary[type_key] = problem_types[value]
 
                 # problem descriptions
                 description = list_of_text[i + 1]
