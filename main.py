@@ -283,7 +283,6 @@ def main():
     environment = Chapter(report, text_input, text_input_soup, 'Use environment', tables, picture_paths, parameters)
     environment.write_chapter()
 
-
     scenarios = Chapter(report, text_input, text_input_soup, 'Use scenarios', tables, picture_paths, parameters)
     scenarios.write_chapter()
 

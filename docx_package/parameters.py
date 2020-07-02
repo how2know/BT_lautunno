@@ -66,6 +66,8 @@ class Parameters:
 
                 # case where the value is an integer
                 if key.startswith('Number of'):
+
+                    '''
                     if value_text and int(value_text) <= 15:
                         self.dictionary[key] = int(value_text)
 
@@ -76,6 +78,7 @@ class Parameters:
                             self.dictionary[key] = self.get_number(self.tables.index(self.CHARACTERISTICS_TABLE))
                         if 'tasks' in key:
                             self.dictionary[key] = self.get_number(self.tables.index(self.TASKS_TABLE))
+                    # '''
 
                 # case where the value is a string
                 else:
@@ -116,12 +119,16 @@ class Parameters:
         tasks_table_index = self.tables.index(self.TASKS_TABLE)
         tasks_table = self.text_input.tables[tasks_table_index]
 
-        for i in range(1, self.dictionary['Number of critical tasks'] + 1):
-            type_key = tasks_table.cell(i, 0).text + ' name'
-            description_key = tasks_table.cell(i, 0).text + ' description'
+        for row in tasks_table.rows[1:]:
+            type_key = row.cells[0].text + ' name'
+            description_key = row.cells[0].text + ' description'
+            type_value = row.cells[1].text
+            description_value = row.cells[2].text
 
-            self.dictionary[type_key] = tasks_table.cell(i, 1).text
-            self.dictionary[description_key] = tasks_table.cell(i, 2).text
+            # add keys and values to dictionary if a critical is defined either with its type or its definition
+            if type_value.replace(' ', '') or description_value.replace(' ', ''):
+                self.dictionary[type_key] = type_value
+                self.dictionary[description_key] = description_value
 
     def get_from_problems_table(self):
         """
