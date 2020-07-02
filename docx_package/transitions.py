@@ -7,12 +7,16 @@ from docx.shared import Cm
 from docx_package.picture import Picture
 from docx_package.results import ResultsChapter
 from eye_tracking_package import plot, eye_tracking
+from docx_package import text_reading
 
 
 class Transitions:
     """
     Class that represents the 'Transitions' chapter and the visualization of its results.
     """
+
+    # name of tables as they appear in the tables list
+    DECISION_TABLE = 'Transitions decision table'
 
     # information about the headings of this chapter
     TITLE = 'Transitions'
@@ -110,18 +114,22 @@ class Transitions:
         Write the whole chapter 'Transitions', including plot.
         """
 
-        self.makes_plot()
+        decision_table_index = self.tables.index(self.DECISION_TABLE)
+        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
 
-        transitions = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                     self.tables, self.picture_paths, self.parameters)
+        if decision[0] == 'Yes':
+            self.makes_plot()
 
-        self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
-        Picture.add_picture_and_caption(self.report,
-                                        [self.HEAT_MAP_FIGURE_PATH],
-                                        self.HEAT_MAP_FIGURE_PATH,
-                                        self.CAPTION,
-                                        width=Cm(12)
-                                        )
+            transitions = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
+                                         self.tables, self.picture_paths, self.parameters)
 
-        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
-        transitions.write_chapter()
+            self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
+            Picture.add_picture_and_caption(self.report,
+                                            [self.HEAT_MAP_FIGURE_PATH],
+                                            self.HEAT_MAP_FIGURE_PATH,
+                                            self.CAPTION,
+                                            width=Cm(12)
+                                            )
+
+            self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
+            transitions.write_chapter()

@@ -17,8 +17,9 @@ class TimeOnTasks:
     """
 
     # name of table as it appears in the tables list
-    TIME_ON_TASK_TABLE_NAME = 'Time on tasks table'
+    TIME_ON_TASK_TABLE = 'Time on tasks table'
     PLOT_TYPE_TABLE = 'Time on tasks plot type table'
+    DECISION_TABLE = 'Time on tasks decision table'
 
     # parameter keys as they appear in the parameters dictionary
     PARTICIPANTS_NUMBER_KEY = 'Number of participants'
@@ -69,7 +70,7 @@ class TimeOnTasks:
         self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
         self.tables = list_of_tables
-        input_table_index = self.tables.index(self.TIME_ON_TASK_TABLE_NAME)
+        input_table_index = self.tables.index(self.TIME_ON_TASK_TABLE)
         self.input_table = text_input_document.tables[input_table_index]
         self.tobii_data = tobii_data
 
@@ -200,28 +201,32 @@ class TimeOnTasks:
         Write the whole chapter 'Time on tasks', including the chosen plot.
         """
 
-        self.make_plots()
+        decision_table_index = self.tables.index(self.DECISION_TABLE)
+        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
 
-        time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                       self.tables, self.picture_paths, self.parameters)
+        if decision[0] == 'Yes':
+            self.make_plots()
 
-        self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
+            time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
+                                           self.tables, self.picture_paths, self.parameters)
 
-        # add bar plot or box plot depending on the choice of plot type
-        if self.plot_type == 'Bar plot':
-            Picture.add_picture_and_caption(self.report,
-                                            [self.BAR_PLOT_FIGURE_PATH],
-                                            self.BAR_PLOT_FIGURE_PATH,
-                                            self.BAR_PLOT_CAPTION,
-                                            width=Cm(12)
-                                            )
-        if self.plot_type == 'Box plot':
-            Picture.add_picture_and_caption(self.report,
-                                            [self.BOX_PLOT_FIGURE_PATH],
-                                            self.BOX_PLOT_FIGURE_PATH,
-                                            self.BOX_PLOT_CAPTION,
-                                            width=Cm(12)
-                                            )
+            self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
-        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
-        time_on_tasks.write_chapter()
+            # add bar plot or box plot depending on the choice of plot type
+            if self.plot_type == 'Bar plot':
+                Picture.add_picture_and_caption(self.report,
+                                                [self.BAR_PLOT_FIGURE_PATH],
+                                                self.BAR_PLOT_FIGURE_PATH,
+                                                self.BAR_PLOT_CAPTION,
+                                                width=Cm(12)
+                                                )
+            if self.plot_type == 'Box plot':
+                Picture.add_picture_and_caption(self.report,
+                                                [self.BOX_PLOT_FIGURE_PATH],
+                                                self.BOX_PLOT_FIGURE_PATH,
+                                                self.BOX_PLOT_CAPTION,
+                                                width=Cm(12)
+                                                )
+
+            self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
+            time_on_tasks.write_chapter()

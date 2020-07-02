@@ -8,6 +8,7 @@ from typing import List, Dict, Union
 
 from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
+from docx_package import text_reading
 
 
 class EffectivenessAnalysis:
@@ -16,8 +17,9 @@ class EffectivenessAnalysis:
     """
 
     # name of tables as they appear in the tables list
-    TASK_TABLE_NAME = 'Effectiveness analysis tasks and problems table'
-    PROBLEM_TABLE_NAME = 'Effectiveness analysis problem type table'
+    TASK_TABLE = 'Effectiveness analysis tasks and problems table'
+    PROBLEM_TABLE = 'Effectiveness analysis problem type table'
+    DECISION_TABLE = 'Effectiveness analysis decision table'
 
     # parameter keys
     TASKS_NUMBER_KEY = 'Number of critical tasks'
@@ -75,7 +77,7 @@ class EffectivenessAnalysis:
             Table of the input .docx file where the information about the effectiveness analysis are written.
         """
 
-        task_table_index = self.tables.index(self.TASK_TABLE_NAME)
+        task_table_index = self.tables.index(self.TASK_TABLE)
         return self.text_input.tables[task_table_index]
 
     @ property
@@ -85,7 +87,7 @@ class EffectivenessAnalysis:
             Table of the input .docx file where the description of the problems are written.
         """
 
-        problem_table_index = self.tables.index(self.PROBLEM_TABLE_NAME)
+        problem_table_index = self.tables.index(self.PROBLEM_TABLE)
         return self.text_input.tables[problem_table_index]
 
     def make_result_table(self):
@@ -244,15 +246,19 @@ class EffectivenessAnalysis:
         Write the whole chapter 'Effectiveness analysis', including the tables.
         """
 
-        effectiveness_analysis = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                                self.tables, self.picture_paths, self.parameters)
+        decision_table_index = self.tables.index(self.DECISION_TABLE)
+        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
 
-        self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
-        self.make_result_table()
-        self.make_colors_table()
+        if decision[0] == 'Yes':
+            effectiveness_analysis = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
+                                                    self.tables, self.picture_paths, self.parameters)
 
-        self.report.add_paragraph(self.DESCRIPTION_TITLE, self.DESCRIPTION_STYLE)
-        self.write_problem_description()
+            self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
+            self.make_result_table()
+            self.make_colors_table()
 
-        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
-        effectiveness_analysis.write_chapter()
+            self.report.add_paragraph(self.DESCRIPTION_TITLE, self.DESCRIPTION_STYLE)
+            self.write_problem_description()
+
+            self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
+            effectiveness_analysis.write_chapter()

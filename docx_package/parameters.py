@@ -18,8 +18,7 @@ class Parameters:
         'Header table',
         'Approval table',
         'Participants number table',
-        'Critical tasks number table',
-        # 'Effectiveness analysis problem number table',
+        'Critical tasks number table'
     ]
 
     CHARACTERISTICS_TABLE = 'Participants characteristics table'
@@ -77,8 +76,6 @@ class Parameters:
                             self.dictionary[key] = self.get_number(self.tables.index(self.CHARACTERISTICS_TABLE))
                         if 'tasks' in key:
                             self.dictionary[key] = self.get_number(self.tables.index(self.TASKS_TABLE))
-                        if 'problems' in key:
-                            self.dictionary[key] = self.get_problems_number(self.tables.index(self.PROBLEMS_TABLE))
 
                 # case where the value is a string
                 else:
@@ -108,30 +105,6 @@ class Parameters:
                     row_described = True
             if not row_described:
                 return idx
-
-    def get_problems_number(self, table_index: int):
-        """
-        Get the number of described elements in a table.
-
-        This function is called to determine the number of participants or the number of critical tasks
-        if they were not provided in the text input form.
-
-        Args:
-            table_index: Index of the table where the elements, i.e. participants or critical tasks, are described.
-
-        Returns:
-            The number of described elements, i.e. number of participants or number of critical tasks.
-        """
-
-        problems_table_index = self.tables.index(self.PROBLEMS_TABLE)
-        problem_types = text_reading.get_dropdown_list_of_table(self.text_input_soup, problems_table_index)
-
-        # return the index of a row when nothing was written in it
-        for idx, problem_type in enumerate(problem_types):
-            if '-' in problem_type:
-                problems_number = idx
-
-        self.dictionary['Number of problems'] = problems_number
 
     def get_from_tasks_table(self):
         """
@@ -184,15 +157,12 @@ class Parameters:
                     if text or len(list_of_text) == (problems_number * 2) - 1:
                         list_of_text.append(text)
                     else:
-                        print(list_of_text)
                         list_of_text.pop()
-                        print(list_of_text)
                         stop = True
 
         # delete the last item to ensure that there is no key without a corresponding value
         if len(list_of_text) % 2 != 0:
             list_of_text.pop()
-            print(list_of_text)
 
         value = 0
 

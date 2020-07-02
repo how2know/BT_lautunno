@@ -1,4 +1,5 @@
 from docx.document import Document
+from docx.table import Table
 from docx.shared import Cm
 from typing import List, Dict, Union
 from bs4 import BeautifulSoup
@@ -43,6 +44,8 @@ class ResultsChapter:
         self.picture_paths = picture_paths_list
         self.parameters_dictionary = parameters_dictionary
 
+    '''
+
     def chapter_heading_index(self) -> int:
         """
         Returns:
@@ -53,7 +56,7 @@ class ResultsChapter:
             if paragraph.text == self.title and 'Heading' in paragraph.style.name:
                 return paragraph_index
 
-    def analysis_heading_index(self) -> int:
+    def discussion_heading_index(self) -> int:
         """
         Returns:
             Paragraph index of the sub-chapter 'Discussion' heading in the text input document.
@@ -70,7 +73,7 @@ class ResultsChapter:
             Paragraph index of the following heading in the text input document.
         """
 
-        previous_index = self.analysis_heading_index()
+        previous_index = self.discussion_heading_index()
         for paragraph_index, paragraph in enumerate(self.text_input.paragraphs[previous_index + 1:]):
             if 'Heading' in paragraph.style.name:
                 return paragraph_index + previous_index + 1
@@ -83,11 +86,37 @@ class ResultsChapter:
         """
 
         list_of_paragraphs = []
-        heading_index = self.analysis_heading_index()
+        heading_index = self.discussion_heading_index()
         next_heading_index = self.next_heading_index()
 
         # store all paragraphs that are between the two heading indexes in a list
         for paragraph in self.text_input.paragraphs[heading_index + 1: next_heading_index]:
+            list_of_paragraphs.append(paragraph.text)
+
+        return list_of_paragraphs
+    '''
+
+    @ property
+    def paragraph_table(self) -> Table:
+        """
+        Returns:
+            Table of the input .docx file where the paragraphs of the chapter are written.
+        """
+
+        problem_table_index = self.tables.index('{} text table'.format(self.title))
+        return self.text_input.tables[problem_table_index]
+
+    def paragraphs_from_table(self) -> List[str]:
+        """
+        Returns:
+            List of all paragraphs (as text string) of the chapter.
+        """
+
+        cell = self.paragraph_table.rows[1].cells[0]
+
+        list_of_paragraphs = []
+
+        for paragraph in cell.paragraphs:
             list_of_paragraphs.append(paragraph.text)
 
         return list_of_paragraphs
@@ -157,12 +186,21 @@ class ResultsChapter:
             if parameter != '-':
                 parameters_values[parameter_idx] = self.parameters_dictionary[parameter]
 
+        '''
         # write paragraphs including values of parameters
         for paragraph in self.paragraphs:
             new_paragraph = self.report.add_paragraph(
                 paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2],)
             )
             new_paragraph.style.name = 'Normal'
+        '''
+
+        # write paragraphs including values of parameters
+        for paragraph in self.paragraphs_from_table():
+            self.report.add_paragraph(
+                paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2]),
+                'Normal'
+            )
 
         # add pictures and their caption at the end of the sub-chapter
         self.add_picture()

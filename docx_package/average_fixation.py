@@ -17,6 +17,7 @@ class AverageFixation:
 
     # name of table as it appears in the tables list
     PLOT_TYPE_TABLE = 'Average fixation plot type table'
+    DECISION_TABLE = 'Average fixation decision table'
 
     # information about the headings of this chapter
     TITLE = 'Average fixation'
@@ -91,17 +92,12 @@ class AverageFixation:
         for idx, dataframe in enumerate(self.cGOM_dataframes):
             aois = eye_tracking.areas_of_interest(dataframe)
             participant_fixations = eye_tracking.fixations(aois, dataframe)
-            # TODO: choose which plot to make and complete docstring according to the choice
+
             plot.make_boxplot(data_frame=participant_fixations,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
                               title='Average fixation: participant {}'.format(idx+1),
                               ylabel='Fixation time [s]')
-            '''
-            plot.make_barplot(data_frame=participant_fixations,
-                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
-                              title='Average fixation: participant {}'.format(idx+1),
-                              ylabel='Fixation time [s]')
-            '''
+
             average_fixation_df = average_fixation_df.append(participant_fixations, ignore_index=True)
 
         # create a bar plot and a box plot with the fixations of all participants
@@ -119,28 +115,32 @@ class AverageFixation:
         Write the whole chapter 'Average fixation', including the chosen plot.
         """
 
-        self.make_plots()
+        decision_table_index = self.tables.index(self.DECISION_TABLE)
+        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
 
-        time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                       self.tables, self.picture_paths, self.parameters)
+        if decision[0] == 'Yes':
+            self.make_plots()
 
-        self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
+            time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
+                                           self.tables, self.picture_paths, self.parameters)
 
-        # add bar plot or box plot depending on the choice of plot type
-        if self.plot_type == 'Bar plot':
-            Picture.add_picture_and_caption(self.report,
-                                            [self.BAR_PLOT_FIGURE_PATH],
-                                            self.BAR_PLOT_FIGURE_PATH,
-                                            self.BAR_PLOT_CAPTION,
-                                            width=Cm(12)
-                                            )
-        if self.plot_type == 'Box plot':
-            Picture.add_picture_and_caption(self.report,
-                                            [self.BOX_PLOT_FIGURE_PATH],
-                                            self.BOX_PLOT_FIGURE_PATH,
-                                            self.BOX_PLOT_CAPTION,
-                                            width=Cm(12)
-                                            )
+            self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
-        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
-        time_on_tasks.write_chapter()
+            # add bar plot or box plot depending on the choice of plot type
+            if self.plot_type == 'Bar plot':
+                Picture.add_picture_and_caption(self.report,
+                                                [self.BAR_PLOT_FIGURE_PATH],
+                                                self.BAR_PLOT_FIGURE_PATH,
+                                                self.BAR_PLOT_CAPTION,
+                                                width=Cm(12)
+                                                )
+            if self.plot_type == 'Box plot':
+                Picture.add_picture_and_caption(self.report,
+                                                [self.BOX_PLOT_FIGURE_PATH],
+                                                self.BOX_PLOT_FIGURE_PATH,
+                                                self.BOX_PLOT_CAPTION,
+                                                width=Cm(12)
+                                                )
+
+            self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
+            time_on_tasks.write_chapter()

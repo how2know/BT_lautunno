@@ -11,12 +11,16 @@ from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
 from eye_tracking_package import plot, eye_tracking
+from docx_package import text_reading
 
 
 class DwellTimesAndRevisits:
     """
     Class that represents the 'Dwells times and revisits' chapter and the visualization of its results.
     """
+
+    # name of tables as they appear in the tables list
+    DECISION_TABLE = 'Dwell times and revisits decision table'
 
     # information about the headings of this chapter
     TITLE = 'Dwell times and revisits'
@@ -222,19 +226,23 @@ class DwellTimesAndRevisits:
         Write the whole chapter 'Dwell times and revisits', including the table and the plot.
         """
 
-        time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
-                                       self.tables, self.picture_paths, self.parameters)
+        decision_table_index = self.tables.index(self.DECISION_TABLE)
+        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
 
-        self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
+        if decision[0] == 'Yes':
+            time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,
+                                           self.tables, self.picture_paths, self.parameters)
 
-        self.add_table()
+            self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
-        Picture.add_picture_and_caption(self.report,
-                                        [self.PIE_PLOT_FIGURE_PATH],
-                                        self.PIE_PLOT_FIGURE_PATH,
-                                        self.CAPTION,
-                                        width=Cm(12)
-                                        )
+            self.add_table()
 
-        self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
-        time_on_tasks.write_chapter()
+            Picture.add_picture_and_caption(self.report,
+                                            [self.PIE_PLOT_FIGURE_PATH],
+                                            self.PIE_PLOT_FIGURE_PATH,
+                                            self.CAPTION,
+                                            width=Cm(12)
+                                            )
+
+            self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
+            time_on_tasks.write_chapter()
