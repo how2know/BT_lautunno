@@ -21,6 +21,7 @@ class Definitions:
     # name of the standards as they appear in the definitions document
     STANDARDS_NAMES = ['EU Regulation 2017/745', 'IEC 62366-1', 'FDA Guidance']
 
+    # TODO: put this in the __init__
     # dictionary where the keys are the defined terms and the values are a tuple of
     # a list of paragraphs corresponding to the definitions and
     # a list of the styles in which these paragraphs will be written

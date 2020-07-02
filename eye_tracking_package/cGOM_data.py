@@ -60,56 +60,33 @@ def make_dataframes_list(parameters):
     # list of all files stored in the directory 'Inputs/Data'
     files = listdir('Inputs/Data')
 
-    directory_path2 = 'Inputs/Data/{}'
-
-    dataframes_list2 = []
-
-    print(files)
-
     biggest_number = 1
 
+    # look for all files that are named in the form 'Participant<Number>.txt' and get the biggest value of <Number>
     for file in files:
         if file.startswith('Participant') and file.endswith('.txt'):
-            number = file.replace('Participant', '').replace('.txt', '')
-            if number.isdigit():
-                if int(number) > biggest_number:
+            try:
+                number = int(file.replace('Participant', '').replace('.txt', ''))
+                if number > biggest_number:
                     biggest_number = int(number)
-
-                '''
-                txt_file_path = directory_path2.format(file)
-
-                dataframe = make_dataframe(txt_file_path)
-                if not dataframe.empty:
-                    dataframes_list2.append(dataframe)
-                '''
-
-                '''
-
-                # stores a data frame in the list or passes if the file is not provided
-                try:
-                    dataframe = make_dataframe(txt_file_path)
-                    if not dataframe.empty:
-                        dataframes_list2.append(dataframe)
-                except FileNotFoundError:
-                    pass
-                '''
-
+            except ValueError:
+                pass
 
     # path to the .txt files
     directory_path = 'Inputs/Data/Participant{}.txt'
-
-    # participants_number = parameters['Number of participants']
-
 
     dataframes_list = []
 
     for i in range(biggest_number+1):
         txt_file_path = directory_path.format(str(i))
 
-        # stores a data frame in the list or passes if the file is not provided
+        # store the data frames in the list and skip the empty ones
         try:
-            dataframes_list.append(make_dataframe(txt_file_path))
-            print(txt_file_path)
+            dataframe = make_dataframe(txt_file_path)
+            if not dataframe.empty:
+                dataframes_list.append(dataframe)
+
+        # pass if the file is not provided
         except FileNotFoundError:
             pass
 

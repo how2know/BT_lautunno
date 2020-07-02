@@ -75,6 +75,57 @@ class TimeOnTasks:
         self.tobii_data = tobii_data
 
     @ property
+    def tasks_number(self) -> int:
+        """
+        Returns:
+            Biggest number of critical tasks between the one given in the 'Number of critical tasks' input
+            and the one that corresponds to the time on tasks input table.
+        """
+
+        tasks_number = 0
+
+        # get the index of the last row that is filled which corresponds to the number of critical tasks
+        for i in range(1, len(self.input_table.rows)):
+            row_filled = False
+            for cell in self.input_table.rows[i].cells[1:]:
+                if cell.text:
+                    row_filled = True
+            if row_filled:
+                tasks_number = i
+
+        # choose the biggest number of critical tasks
+        if tasks_number > self.parameters[self.TASKS_NUMBER_KEY]:
+            print(tasks_number)
+            return tasks_number
+        else:
+            return self.parameters[self.TASKS_NUMBER_KEY]
+
+    @ property
+    def participants_number(self) -> int:
+        """
+        Returns:
+            Biggest number of participants between the one given in the 'Number of participants' input
+            and the one that corresponds to the time on tasks input table.
+        """
+
+        participants_number = 0
+
+        # get the index of the last column that is filled which corresponds to the number of participants
+        for j in range(1, len(self.input_table.columns)):
+            column_completed = False
+            for cell in self.input_table.columns[j].cells[1:]:
+                if cell.text:
+                    column_completed = True
+            if column_completed:
+                participants_number = j
+
+        # choose the biggest number of participant
+        if participants_number > self.parameters[self.PARTICIPANTS_NUMBER_KEY]:
+            return participants_number
+        else:
+            return self.parameters[self.PARTICIPANTS_NUMBER_KEY]
+
+    @ property
     def tasks(self) -> List[str]:
         """
         Returns:
@@ -82,8 +133,14 @@ class TimeOnTasks:
         """
 
         tasks = []
-        for i in range(1, self.parameters[self.TASKS_NUMBER_KEY] + 1):
-            tasks.append(self.parameters['Critical task {} name'.format(i)])
+        for i in range(1, self.tasks_number + 1):
+
+            # write the real task name if it is provided or a generic name if not
+            try:
+                tasks.append(self.parameters['Critical task {} name'.format(i)])
+            except KeyError:
+                tasks.append('Critical task {}'.format(i))
+
         return tasks
 
     @ property
@@ -93,7 +150,7 @@ class TimeOnTasks:
             List of participants, i.e. [Participant 1, Participant 2, ...].
         """
 
-        participants = ['Participant{}'.format(i) for i in range(1, self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1)]
+        participants = ['Participant{}'.format(i) for i in range(1, self.participants_number + 1)]
         return participants
 
     @ property
@@ -103,15 +160,15 @@ class TimeOnTasks:
             Data frame of tasks completion times with participants as index and task names as columns.
         """
 
-        rows_number = self.parameters[self.TASKS_NUMBER_KEY]
-        columns_number = self.parameters[self.PARTICIPANTS_NUMBER_KEY]
+        rows_number = self.tasks_number
+        columns_number = self.participants_number
 
-        # create a matrix full of zeros of the size of the input table
-        times_matrix = np.zeros((rows_number, columns_number))
+        # create a matrix full of NaN of the size of the input table
+        times_matrix = np.full((rows_number, columns_number), np.nan)
         for i in range(rows_number):
             for j in range(columns_number):
 
-                # set the completion time or let '0' if no time were given
+                # set the completion time or keep NaN if no time were given
                 try:
                     time = float(self.input_table.cell(i+1, j+1).text)
                     times_matrix[i, j] = time
@@ -147,6 +204,10 @@ class TimeOnTasks:
                 except IndexError:
                     pass
 
+        # delete all rows and columns that are full of missing values
+        times_df = times_df.dropna(axis=0, how='all')
+        times_df = times_df.dropna(axis=1, how='all')
+
         return times_df
 
     @ property
@@ -175,14 +236,20 @@ class TimeOnTasks:
 
         # create a bar plot for each participant
         for idx, participant in enumerate(self.participants):
-            participant_times = task_times_df.loc[participant].to_numpy()
-            participant_times_df = pd.DataFrame(data=[participant_times],
-                                                columns=task_times_df.columns)
 
-            plot.make_barplot(data_frame=participant_times_df,
-                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
-                              title='Time on task: participant {}'.format(idx+1),
-                              ylabel='Completion time [s]')
+            try:
+                participant_times = task_times_df.loc[participant].to_numpy()
+                participant_times_df = pd.DataFrame(data=[participant_times],
+                                                    columns=task_times_df.columns)
+
+                plot.make_barplot(data_frame=participant_times_df,
+                                  figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
+                                  title='Time on task: participant {}'.format(idx+1),
+                                  ylabel='Completion time [s]')
+
+            # pass when no data are available for a participant
+            except KeyError:
+                pass
 
         # create a bar plot and a box plot with the data of all participants
         plot.make_barplot(data_frame=task_times_df,

@@ -337,6 +337,7 @@ def main():
 
     Definitions.write_references(report, text_input, text_input_soup, definitions, tables)
 
+    # TODO: add page break in the function
     report.add_page_break()
 
     Picture.add_figures_list(report)

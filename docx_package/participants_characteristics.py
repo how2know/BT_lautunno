@@ -1,8 +1,8 @@
 from docx.document import Document
-from docx.table import Table
+from docx.table import Table, _Row
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 
 from docx_package.layout import Layout
 
@@ -57,13 +57,41 @@ class ParticipantsCharacteristics:
         participants_table_index = self.tables.index(self.CHARACTERISTICS_TABLE)
         return self.text_input.tables[participants_table_index]
 
+    @ property
+    def described_rows(self) -> Tuple[int, List[_Row]]:
+        """
+        Get the number of described elements in a table.
+
+        Returns:
+            Tuple that contains the number of participants described in the participant characteristics table
+             and a list of rows in which they are described.
+        """
+
+        participants_number = 0
+        described_rows = []
+
+        # store the row in the list if it is described and increase the number of participants
+        for row in self.input_table.rows[1:]:
+            row_described = False
+            for cell in row.cells[1:]:
+                if cell.text:
+                    row_described = True
+            if row_described:
+                participants_number += 1
+                described_rows.append(row)
+
+        return participants_number, described_rows
+
     def add_table(self):
         """
         Add a table for the document history.
         """
 
+        participants_number = self.described_rows[0]
+        described_rows = self.described_rows[1]
+
         # create table and define its style
-        rows_number = self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1
+        rows_number = participants_number + 1
         cols_number = len(self.input_table.columns)
         appendix_table = self.report.add_table(rows_number, cols_number)
         appendix_table.style = 'Table Grid'
@@ -73,13 +101,17 @@ class ParticipantsCharacteristics:
         for i in range(rows_number):
             for j in range(cols_number):
 
+                # fill the first row
+                if i == 0:
+                    appendix_table.cell(i, j).text = self.input_table.cell(i, j).text
+
                 # fill the first columns with 'P1', 'P2', 'P3', etc... with the number corresponding to the participant
-                if i != 0 and j == 0:
+                elif i != 0 and j == 0:
                     appendix_table.cell(i, j).text = 'P{}'.format(i)
 
-                # fill all other cells with the entries given in input form
+                # fill all other cells with the entries given in the described rows
                 else:
-                    appendix_table.cell(i, j).text = self.input_table.cell(i, j).text
+                    appendix_table.cell(i, j).text = described_rows[i-1].cells[j].text
 
         # color the first row in light_grey_10 and set the font to bold
         for cell in appendix_table.rows[0].cells:
@@ -107,7 +139,7 @@ class ParticipantsCharacteristics:
               parameters_dictionary: Dict[str, Union[str, int]]
               ):
         """
-        Write the chapter 'Participants’ characteristics' with its table.
+        Write the chapter 'Participants’ characteristics' with its table if some participants were described.
 
         Args:
             report_document: .docx file where the report is written.
@@ -118,7 +150,9 @@ class ParticipantsCharacteristics:
 
         participant_appendix = cls(report_document, text_input_document, list_of_tables, parameters_dictionary)
 
-        # add a heading to the chapter
-        report_document.add_paragraph(participant_appendix.TITLE, participant_appendix.TITLE_STYLE)
+        if participant_appendix.described_rows[0] != 0:
 
-        participant_appendix.add_table()
+            # add a heading to the chapter
+            report_document.add_paragraph(participant_appendix.TITLE, participant_appendix.TITLE_STYLE)
+
+            participant_appendix.add_table()

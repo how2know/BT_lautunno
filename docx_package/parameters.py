@@ -67,7 +67,7 @@ class Parameters:
                 # case where the value is an integer
                 if key.startswith('Number of'):
 
-                    '''
+                    # '''
                     if value_text and int(value_text) <= 15:
                         self.dictionary[key] = int(value_text)
 

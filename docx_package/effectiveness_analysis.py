@@ -70,6 +70,7 @@ class EffectivenessAnalysis:
         self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
 
+    # TODO: write this in __init__
     @ property
     def task_table(self) -> Table:
         """
@@ -90,14 +91,64 @@ class EffectivenessAnalysis:
         problem_table_index = self.tables.index(self.PROBLEM_TABLE)
         return self.text_input.tables[problem_table_index]
 
+    @ property
+    def tasks_number(self) -> int:
+        """
+        Returns:
+            Biggest number of critical tasks between the one given in the 'Number of critical tasks' input
+            and the one that corresponds to the effectiveness analysis input table.
+        """
+
+        tasks_number = 0
+
+        # get the index of the last row that is filled which corresponds to the number of critical tasks
+        for i in range(1, len(self.task_table.rows)):
+            row_filled = False
+            for cell in self.task_table.rows[i].cells[1:]:
+                if cell.text:
+                    row_filled = True
+            if row_filled:
+                tasks_number = i
+
+        # choose the biggest number of critical tasks
+        if tasks_number > self.parameters[self.TASKS_NUMBER_KEY]:
+            return tasks_number
+        else:
+            return self.parameters[self.TASKS_NUMBER_KEY]
+
+    @ property
+    def participants_number(self) -> int:
+        """
+        Returns:
+            Biggest number of participants between the one given in the 'Number of participants' input
+            and the one that corresponds to the effectiveness analysis input table.
+        """
+
+        participants_number = 0
+
+        # get the index of the last column that is filled which corresponds to the number of participants
+        for j in range(1, len(self.task_table.columns)):
+            column_completed = False
+            for cell in self.task_table.columns[j].cells[1:]:
+                if cell.text:
+                    column_completed = True
+            if column_completed:
+                participants_number = j
+
+        # choose the biggest number of participant
+        if participants_number > self.parameters[self.PARTICIPANTS_NUMBER_KEY]:
+            return participants_number
+        else:
+            return self.parameters[self.PARTICIPANTS_NUMBER_KEY]
+
     def make_result_table(self):
         """
         Create a table for the visualization of the effectiveness analysis.
         """
 
         # create a table for the results visualization
-        rows_number = self.parameters[self.TASKS_NUMBER_KEY] + 1
-        cols_number = self.parameters[self.PARTICIPANTS_NUMBER_KEY] + 1
+        rows_number = self.tasks_number + 1
+        cols_number = self.participants_number + 1
         result_table = self.report.add_table(rows_number, cols_number)
         result_table.style = 'Table Grid'
         result_table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -122,9 +173,14 @@ class EffectivenessAnalysis:
 
                 # first column
                 elif i != 0 and j == 0:
-                    cell.text = self.parameters['Critical task {} name'.format(i)]
+                    try:
+                        cell.text = self.parameters['Critical task {} name'.format(i)]
+                        cell.paragraphs[0].runs[0].font.bold = True
+
+                    # case where no critical task name were given
+                    except KeyError:
+                        pass
                     Layout.set_cell_shading(cell, self.LIGHT_GREY_10)     # color the cell in light_grey_10
-                    cell.paragraphs[0].runs[0].font.bold = True
 
                 # bolds all text
                 if cell.text:
@@ -137,14 +193,20 @@ class EffectivenessAnalysis:
 
                 if cell.text:     # check if the text string is not empty
                     problem_index = int(cell.text)
+                    try:
+                        problem_type = self.parameters['Problem {} type'.format(problem_index)]
 
-                    if self.parameters['Problem {} type'.format(problem_index)] == 'Important problem':
+                    # case where no problem type were given
+                    except KeyError:
+                        problem_type = ''
+
+                    if problem_type == 'Important problem':
                         Layout.set_cell_shading(cell, self.ORANGE)
 
-                    if self.parameters['Problem {} type'.format(problem_index)] == 'Marginal problem':
+                    if problem_type == 'Marginal problem':
                         Layout.set_cell_shading(cell, self.YELLOW)
 
-                    if self.parameters['Problem {} type'.format(problem_index)] == 'Critical problem':
+                    if problem_type == 'Critical problem':
                         Layout.set_cell_shading(cell, self.RED)
                 else:
                     Layout.set_cell_shading(cell, self.GREEN)
@@ -178,6 +240,8 @@ class EffectivenessAnalysis:
     def add_color_description(table: Table, cell_row: int, cell_column: int, color: str, description: str):
         """
         Color the cell of a table and add a description in the following cell.
+
+        This function is used to create the table that describes the color of the effectiveness analysis table.
 
         Args:
             table: Table that will contain the colors and their description.

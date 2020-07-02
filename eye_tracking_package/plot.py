@@ -40,6 +40,7 @@ def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
     plt.show()
 
 
+# TODO: make label visible even if there is a lot of columns
 def make_boxplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=None):
     """
     Create a box plot out of a data frame and save its figure.
