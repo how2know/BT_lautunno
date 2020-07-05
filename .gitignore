@@ -1,4 +1,6 @@
 /.idea
+/docx_package/__pycache__
+/eye_tracking_package/__pycache__
 /Report.docx
 /Inputs/Pictures/*
 /Inputs/Tobii_data/*
