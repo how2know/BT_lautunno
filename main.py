@@ -61,7 +61,7 @@ def main():
 
     # name of the directory and the input files
     input_directory = 'Inputs'
-    text_input_file = 'Text_input2.docx'
+    text_input_file = 'Text_input.docx'
     definitions_file = 'Terms_definitions.docx'
 
     # path of the input files
@@ -143,11 +143,14 @@ def main():
     # list of all tables in the order they appear in the text input document
     # useful to get the index of a table in the document
     tables = [
-        'Report table',
         'Study table',
-        'Header table',
+        'Title table',
+        # 'Study table',
         'Approval table',
-        'Cover page table',
+        'Cover page caption table',
+        'Header table',
+        # 'Approval table',
+        # 'Cover page table',
         'Purpose text table',
         'Purpose parameter table',
         'Purpose caption table',
@@ -170,7 +173,7 @@ def main():
         'Goal parameter table',
         'Goal caption table',
         'Participants text table',
-        'Participants number table',
+        # 'Participants number table',
         # 'Participants characteristics table',
         'Participants parameter table',
         'Participants caption table',
@@ -178,13 +181,14 @@ def main():
         'Use environment parameter table',
         'Use environment caption table',
         'Use scenarios text table',
-        'Critical tasks number table',
+        # 'Critical tasks number table',
         'Use scenarios parameter table',
         'Use scenarios caption table',
-        'Critical tasks description table',
+        # 'Critical tasks description table',
         'Setup text table',
         'Setup parameter table',
         'Setup caption table',
+        'Critical tasks description table',
         'Effectiveness analysis decision table',
         'Effectiveness analysis tasks and problems table',
         'Effectiveness analysis problem type table',
@@ -192,8 +196,9 @@ def main():
         'Effectiveness analysis parameter table',
         'Effectiveness analysis caption table',
         'Time on tasks decision table',
-        'Time on tasks table',
         'Time on tasks plot type table',
+        'Time on tasks table',
+        # 'Time on tasks plot type table',
         'Time on tasks text table',
         'Time on tasks parameter table',
         'Time on tasks caption table',
@@ -349,13 +354,11 @@ def main():
     # save the report
     report.save(report_file)
 
-    '''
     start6 = time.time()
     # update the table of content
     update(report_file)
     end6 = time.time()
     print('Update: ', end6 - start6)
-    '''
 
     # open the report with the default handler for .docx (Word)
     os.startfile(report_file)

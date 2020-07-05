@@ -76,11 +76,11 @@ class TobiiData:
         tobii = cls(parameters_dictionary)
 
         # list of all files stored in the directory 'Inputs/Data'
-        files = listdir('Inputs/Data')
+        files = listdir('Inputs/Tobii_data')
 
         # create directly a data frame with .tsv files of all participants if there is one
         if 'All_participants.tsv' in files:
-            tobii_df = tobii.make_dataframe('Inputs/Data/All_participants.tsv')
+            tobii_df = tobii.make_dataframe('Inputs/Tobii_data/All_participants.tsv')
 
         # create a data frame with the .tsv files provided for the different participants
         else:
@@ -93,7 +93,7 @@ class TobiiData:
             # and append it to the main data frame
             for i in range(1, participants_number + 1):
                 try:
-                    participant_df = tobii.make_dataframe('Inputs/Data/Participant{}.tsv'.format(i))
+                    participant_df = tobii.make_dataframe('Inputs/Tobii_data/Participant{}.tsv'.format(i))
                     indexes = ['Participant{}'.format(i)] * len(participant_df)
                     participant_df.index = indexes
                     tobii_df = tobii_df.append(participant_df)

@@ -13,12 +13,12 @@ class Parameters:
     # tables with two columns having parameters in each row
     # all those tables are handled the same way
     STANDARD_PARAMETERS_TABLES = [
-        'Report table',
         'Study table',
+        'Title table',
         'Header table',
         'Approval table',
-        'Participants number table',
-        'Critical tasks number table'
+        # 'Participants number table',
+        # 'Critical tasks number table'
     ]
 
     CHARACTERISTICS_TABLE = 'Participants characteristics table'

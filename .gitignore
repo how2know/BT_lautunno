@@ -1,9 +1,7 @@
 /.idea
 /Report.docx
 /Inputs/Pictures/*
-/Inputs/Data/*
-/Inputs/Text_input_form.docx
-/Inputs/Text_input_goal.docx
-/Inputs/Text_input_form_photos.docx
+/Inputs/Tobii_data/*
+/Inputs/cGOM_data/*
 /Outputs/*
 /Inputs/Text_input2.docx

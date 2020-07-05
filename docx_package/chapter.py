@@ -191,10 +191,15 @@ class Chapter:
 
         # write paragraphs including values of parameters
         for paragraph in self.paragraphs_from_table():
-            self.report.add_paragraph(
-                paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2]),
-                'Normal'
-            )
+
+            try:
+                self.report.add_paragraph(
+                    paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2]),
+                    'Normal'
+                )
+
+            except IndexError:
+                pass
 
         # add pictures and their caption at the end of the chapter
         self.add_picture()

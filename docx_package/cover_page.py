@@ -16,7 +16,7 @@ class CoverPage:
     """
 
     # cover page table for the picture caption as it appears in the table list
-    COVER_PAGE_TABLE = 'Cover page table'
+    COVER_PAGE_TABLE = 'Cover page caption table'
 
     # title and subtitle parameter key
     TITLE_KEY = 'Title'

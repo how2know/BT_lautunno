@@ -46,6 +46,9 @@ def make_dataframe(txt_file_path):
     dataframe[end_time] = end_times_list
     dataframe[fixation_time] = fixation_times_vector
 
+    # rename BG in Background
+    dataframe = dataframe.rename(index={'BG': 'Background'})
+
     return dataframe
 
 
@@ -58,7 +61,7 @@ def make_dataframes_list(parameters):
     """
 
     # list of all files stored in the directory 'Inputs/Data'
-    files = listdir('Inputs/Data')
+    files = listdir('Inputs/cGOM_data')
 
     biggest_number = 1
 
@@ -73,7 +76,7 @@ def make_dataframes_list(parameters):
                 pass
 
     # path to the .txt files
-    directory_path = 'Inputs/Data/Participant{}.txt'
+    directory_path = 'Inputs/cGOM_data/Participant{}.txt'
 
     dataframes_list = []
 
