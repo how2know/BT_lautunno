@@ -1,9 +1,14 @@
 /.idea
+
 /docx_package/__pycache__
 /eye_tracking_package/__pycache__
-/Report.docx
+
 /Inputs/Pictures/*
 /Inputs/Tobii_data/*
 /Inputs/cGOM_data/*
+/Inputs/Text_input_bere.docx
+/Inputs/Text_input_test.docx
+
 /Outputs/*
-/Inputs/Text_input2.docx
+
+/Report.docx

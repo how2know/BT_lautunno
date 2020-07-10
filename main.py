@@ -61,7 +61,7 @@ def main():
 
     # name of the directory and the input files
     input_directory = 'Inputs'
-    text_input_file = 'Text_input.docx'
+    text_input_file = 'Text_input_form.docx'
     definitions_file = 'Terms_definitions.docx'
 
     # path of the input files
