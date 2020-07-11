@@ -3,9 +3,10 @@
 /docx_package/__pycache__
 /eye_tracking_package/__pycache__
 
-/Inputs/Pictures/*
-/Inputs/Tobii_data/*
-/Inputs/cGOM_data/*
+/Inputs/Pictures/Test
+/Inputs/Tobii_data/Test
+/Inputs/cGOM_data/Test
+
 /Inputs/Text_input_bere.docx
 /Inputs/Text_input_test.docx
 
