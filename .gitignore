@@ -7,9 +7,11 @@
 /Inputs/Tobii_data/Test
 /Inputs/cGOM_data/Test
 
-/Inputs/Text_input_bere.docx
 /Inputs/Text_input_test.docx
 
-/Outputs/*
+/Outputs/Average*
+/Outputs/Dwell*
+/Outputs/Time*
+/Outputs/Transitions*
 
 /Report.docx

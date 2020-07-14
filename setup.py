@@ -1,3 +1,5 @@
+
+'''
 from cx_Freeze import setup, Executable
 base = None
 # //Remplacer "monprogramme.py" par le nom du script qui lance votre programme
@@ -18,3 +20,4 @@ setup(
     description='Program that generates report',
     executables=executables
 )
+'''
