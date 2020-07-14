@@ -247,21 +247,24 @@ class TimeOnTasks:
                                   title='Time on task: participant {}'.format(idx+1),
                                   ylabel='Completion time [s]')
 
-            # pass when no data are available for a participant
+            # pass when no data is available for a participant
             except KeyError:
                 pass
 
-        # create a bar plot and a box plot with the data of all participants
-        plot.make_barplot(data_frame=task_times_df,
-                          figure_save_path=self.BAR_PLOT_FIGURE_PATH,
-                          title='Time on task',
-                          ylabel='Completion time [s]'
-                          )
-        plot.make_boxplot(data_frame=task_times_df,
-                          figure_save_path=self.BOX_PLOT_FIGURE_PATH,
-                          title='Time on task',
-                          ylabel='Completion time [s]'
-                          )
+        # create a bar plot and a box plot with the data of all participants or do nothing if no data is provided
+        try:
+            plot.make_barplot(data_frame=task_times_df,
+                              figure_save_path=self.BAR_PLOT_FIGURE_PATH,
+                              title='Time on task',
+                              ylabel='Completion time [s]'
+                              )
+            plot.make_boxplot(data_frame=task_times_df,
+                              figure_save_path=self.BOX_PLOT_FIGURE_PATH,
+                              title='Time on task',
+                              ylabel='Completion time [s]'
+                              )
+        except ValueError:
+            pass
 
     def write_chapter(self):
         """
@@ -279,21 +282,24 @@ class TimeOnTasks:
 
             self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
-            # add bar plot or box plot depending on the choice of plot type
-            if self.plot_type == 'Bar plot':
-                Picture.add_picture_and_caption(self.report,
-                                                [self.BAR_PLOT_FIGURE_PATH],
-                                                self.BAR_PLOT_FIGURE_PATH,
-                                                self.BAR_PLOT_CAPTION,
-                                                width=Cm(12)
-                                                )
-            if self.plot_type == 'Box plot':
-                Picture.add_picture_and_caption(self.report,
-                                                [self.BOX_PLOT_FIGURE_PATH],
-                                                self.BOX_PLOT_FIGURE_PATH,
-                                                self.BOX_PLOT_CAPTION,
-                                                width=Cm(12)
-                                                )
+            # add bar plot or box plot depending on the choice of plot type or do nothing if no data is provided
+            try:
+                if self.plot_type == 'Bar plot':
+                    Picture.add_picture_and_caption(self.report,
+                                                    [self.BAR_PLOT_FIGURE_PATH],
+                                                    self.BAR_PLOT_FIGURE_PATH,
+                                                    self.BAR_PLOT_CAPTION,
+                                                    width=Cm(12)
+                                                    )
+                if self.plot_type == 'Box plot':
+                    Picture.add_picture_and_caption(self.report,
+                                                    [self.BOX_PLOT_FIGURE_PATH],
+                                                    self.BOX_PLOT_FIGURE_PATH,
+                                                    self.BOX_PLOT_CAPTION,
+                                                    width=Cm(12)
+                                                    )
+            except FileNotFoundError:
+                pass
 
             self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
             time_on_tasks.write_chapter()

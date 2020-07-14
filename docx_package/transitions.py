@@ -99,15 +99,18 @@ class Transitions:
                                                )
             transitions_stat = transitions_stat.append(transitions_mean_df)
 
-        # calculate the ratios and create a heat map that shows the transition percentage
+        # calculate the ratios
         transitions_number = transitions_stat.to_numpy().sum()
         transitions_stat = transitions_stat.div(transitions_number)
-        plot.make_heatmap(transitions_stat,
-                          figure_save_path=self.HEAT_MAP_FIGURE_PATH,
-                          title='Transitions',
-                          xlabel='AOI destination (to)',
-                          ylabel='AOI source (from)'
-                          )
+
+        # create a heat map that shows the transition percentage or do nothing if no cGOM data is provided
+        if not transitions_stat.empty:
+            plot.make_heatmap(data_frame=transitions_stat,
+                              figure_save_path=self.HEAT_MAP_FIGURE_PATH,
+                              title='Transitions',
+                              xlabel='AOI destination (to)',
+                              ylabel='AOI source (from)'
+                              )
 
     def write_chapter(self):
         """
@@ -124,12 +127,16 @@ class Transitions:
                                          self.tables, self.picture_paths, self.parameters)
 
             self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
-            Picture.add_picture_and_caption(self.report,
-                                            [self.HEAT_MAP_FIGURE_PATH],
-                                            self.HEAT_MAP_FIGURE_PATH,
-                                            self.CAPTION,
-                                            width=Cm(12)
-                                            )
+
+            try:
+                Picture.add_picture_and_caption(self.report,
+                                                [self.HEAT_MAP_FIGURE_PATH],
+                                                self.HEAT_MAP_FIGURE_PATH,
+                                                self.CAPTION,
+                                                width=Cm(12)
+                                                )
+            except FileNotFoundError:      # do nothing if no cGOM data is provided
+                pass
 
             self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
             transitions.write_chapter()

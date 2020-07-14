@@ -1,14 +1,12 @@
 from docx import Document
 from docx.enum.section import WD_SECTION
 import os
-from docx.oxml.ns import qn
-from docx.oxml import OxmlElement
 import win32com.client
 import inspect
 
 import time
 
-from docx_package import text_reading, picture
+from docx_package import text_reading
 
 from docx_package.layout import Layout
 from docx_package.chapter import Chapter
@@ -61,7 +59,7 @@ def main():
 
     # name of the directory and the input files
     input_directory = 'Inputs'
-    text_input_file = 'Text_input_form.docx'
+    text_input_file = 'Text_input_test.docx'
     definitions_file = 'Terms_definitions.docx'
 
     # path of the input files
@@ -77,80 +75,14 @@ def main():
     #
     text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
 
-    '''
-    # list of all tables in the order they appear in the text input document
-    # useful to get the index of a table in the document
-    tables = [
-        'Report table',
-        'Study table',
-        'Header table',
-        'Approval table',
-        'Cover page table',
-        'Purpose parameter table',
-        'Purpose caption table',
-        'Background parameter table',
-        'Background caption table',
-        'Scope parameter table',
-        'Scope caption table',
-        'EU Regulation 2017/745 definitions table',
-        'IEC 62366-1 definitions table',
-        'FDA Guidance definitions table',
-        'Ethics statement parameter table',
-        'Ethics statement caption table',
-        'Device specifications parameter table',
-        'Device specifications caption table',
-        'Goal parameter table',
-        'Goal caption table',
-        'Participants number table',
-        # 'Participants characteristics table',
-        'Participants parameter table',
-        'Participants caption table',
-        'Use environment parameter table',
-        'Use environment caption table',
-        'Use scenarios text table',
-        'Critical tasks number table',
-        'Use scenarios parameter table',
-        'Use scenarios caption table',
-        'Critical tasks description table',
-        'Setup parameter table',
-        'Setup caption table',
-        'Effectiveness analysis decision table',
-        'Effectiveness analysis tasks and problems table',
-        'Effectiveness analysis problem type table',
-        'Effectiveness analysis parameter table',
-        'Effectiveness analysis caption table',
-        'Time on tasks decision table',
-        'Time on tasks table',
-        'Time on tasks plot type table',
-        'Time on tasks parameter table',
-        'Time on tasks caption table',
-        'Dwell times and revisits decision table',
-        'Dwell times and revisits parameter table',
-        'Dwell times and revisits caption table',
-        'Average fixation decision table',
-        'Average fixation plot type table',
-        'Average fixation parameter table',
-        'Average fixation caption table',
-        'Transitions decision table',
-        'Transitions parameter table',
-        'Transitions caption table',
-        'Conclusion parameter table',
-        'Conclusion caption table',
-        'Participants characteristics table'
-    ]
-    '''
-
     # list of all tables in the order they appear in the text input document
     # useful to get the index of a table in the document
     tables = [
         'Study table',
         'Title table',
-        # 'Study table',
         'Approval table',
         'Cover page caption table',
         'Header table',
-        # 'Approval table',
-        # 'Cover page table',
         'Purpose text table',
         'Purpose parameter table',
         'Purpose caption table',
@@ -173,18 +105,14 @@ def main():
         'Goal parameter table',
         'Goal caption table',
         'Participants text table',
-        # 'Participants number table',
-        # 'Participants characteristics table',
         'Participants parameter table',
         'Participants caption table',
         'Use environment text table',
         'Use environment parameter table',
         'Use environment caption table',
         'Use scenarios text table',
-        # 'Critical tasks number table',
         'Use scenarios parameter table',
         'Use scenarios caption table',
-        # 'Critical tasks description table',
         'Setup text table',
         'Setup parameter table',
         'Setup caption table',
@@ -198,7 +126,6 @@ def main():
         'Time on tasks decision table',
         'Time on tasks plot type table',
         'Time on tasks table',
-        # 'Time on tasks plot type table',
         'Time on tasks text table',
         'Time on tasks parameter table',
         'Time on tasks caption table',
@@ -277,7 +204,7 @@ def main():
     device.write_chapter()
 
     # TODO: write this better
-    report.add_paragraph('Test procedure', 'Heading 2')
+    report.add_paragraph('Test procedure', 'Heading 1')
 
     goal = Chapter(report, text_input, text_input_soup, 'Goal', tables, picture_paths, parameters)
     goal.write_chapter()
@@ -332,7 +259,7 @@ def main():
 
     DocumentHistory.write(report)
 
-    Picture.error_message(picture_paths)
+    '''Picture.error_message(picture_paths)'''
 
     # add a page break
     report.add_page_break()
@@ -354,11 +281,13 @@ def main():
     # save the report
     report.save(report_file)
 
+    '''
     start6 = time.time()
     # update the table of content
     update(report_file)
     end6 = time.time()
     print('Update: ', end6 - start6)
+    '''
 
     # open the report with the default handler for .docx (Word)
     os.startfile(report_file)

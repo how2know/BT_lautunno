@@ -94,21 +94,27 @@ class AverageFixation:
             participant_fixations = eye_tracking.fixations(aois, dataframe)
 
             plot.make_boxplot(data_frame=participant_fixations,
-                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
-                              title='Average fixation: participant {}'.format(idx+1),
+                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx + 1),
+                              title='Average fixation: participant {}'.format(idx + 1),
                               ylabel='Fixation time [s]')
 
             average_fixation_df = average_fixation_df.append(participant_fixations, ignore_index=True)
 
-        # create a bar plot and a box plot with the fixations of all participants
-        plot.make_boxplot(data_frame=average_fixation_df,
-                          figure_save_path=self.BOX_PLOT_FIGURE_PATH,
-                          title='Average fixation',
-                          ylabel='Fixation time [s]')
-        plot.make_barplot(data_frame=average_fixation_df,
-                          figure_save_path=self.BAR_PLOT_FIGURE_PATH,
-                          title='Average fixation',
-                          ylabel='Fixation time [s]')
+        # create a bar plot and a box plot with the fixations of all participants or
+        # do nothing if no cGOM data is provided
+        try:
+            plot.make_boxplot(data_frame=average_fixation_df,
+                              figure_save_path=self.BOX_PLOT_FIGURE_PATH,
+                              title='Average fixation',
+                              ylabel='Fixation time [s]')
+            plot.make_barplot(data_frame=average_fixation_df,
+                              figure_save_path=self.BAR_PLOT_FIGURE_PATH,
+                              title='Average fixation',
+                              ylabel='Fixation time [s]')
+        except ValueError:
+            pass
+
+
 
     def write_chapter(self):
         """
@@ -126,21 +132,24 @@ class AverageFixation:
 
             self.report.add_paragraph(self.TITLE, self.TITLE_STYLE)
 
-            # add bar plot or box plot depending on the choice of plot type
-            if self.plot_type == 'Bar plot':
-                Picture.add_picture_and_caption(self.report,
-                                                [self.BAR_PLOT_FIGURE_PATH],
-                                                self.BAR_PLOT_FIGURE_PATH,
-                                                self.BAR_PLOT_CAPTION,
-                                                width=Cm(12)
-                                                )
-            if self.plot_type == 'Box plot':
-                Picture.add_picture_and_caption(self.report,
-                                                [self.BOX_PLOT_FIGURE_PATH],
-                                                self.BOX_PLOT_FIGURE_PATH,
-                                                self.BOX_PLOT_CAPTION,
-                                                width=Cm(12)
-                                                )
+            # add bar plot or box plot depending on the choice of plot type or do nothing if no cGOM data is provided
+            try:
+                if self.plot_type == 'Bar plot':
+                    Picture.add_picture_and_caption(self.report,
+                                                    [self.BAR_PLOT_FIGURE_PATH],
+                                                    self.BAR_PLOT_FIGURE_PATH,
+                                                    self.BAR_PLOT_CAPTION,
+                                                    width=Cm(12)
+                                                    )
+                if self.plot_type == 'Box plot':
+                    Picture.add_picture_and_caption(self.report,
+                                                    [self.BOX_PLOT_FIGURE_PATH],
+                                                    self.BOX_PLOT_FIGURE_PATH,
+                                                    self.BOX_PLOT_CAPTION,
+                                                    width=Cm(12)
+                                                    )
+            except FileNotFoundError:
+                pass
 
             self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
             time_on_tasks.write_chapter()

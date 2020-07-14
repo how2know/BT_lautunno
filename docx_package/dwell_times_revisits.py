@@ -78,7 +78,7 @@ class DwellTimesAndRevisits:
         self.parameters = parameters_dictionary
         self.cGOM_dataframes = list_of_dataframes
 
-    def make_dwell_times_plot_and_table(self) -> pd.DataFrame:
+    def make_dwell_times_plot_and_dataframe(self) -> pd.DataFrame:
         """
         Create pie plots of the total sums of dwell times.
 
@@ -107,9 +107,10 @@ class DwellTimesAndRevisits:
             participant_sum = participant_sum[~np.isnan(participant_sum)]
             plot.make_pieplot(data_vector=participant_sum,
                               labels_list=aois,
-                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
-                              title='Dwell times: participant {}'.format(idx+1)
+                              figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx + 1),
+                              title='Dwell times: participant {}'.format(idx + 1)
                               )
+
 
         # create a data frame with the mean of the statistics for all participants for each AOI
         all_aois = eye_tracking.areas_of_interest(all_dwell_times_df)
@@ -126,13 +127,15 @@ class DwellTimesAndRevisits:
             dwell_times_table.loc[aoi].at[self.MAX_INDEX] = data_of_aoi[self.MAX_INDEX].mean()
             dwell_times_table.loc[aoi].at[self.MIN_INDEX] = data_of_aoi[self.MIN_INDEX].mean()
 
-        # create a pie plot with the average dwell times sum of all participants
+        # create a pie plot with the average dwell times sum of all participants or
+        # do nothing if no cGOM data is provided
         all_sums = dwell_times_table[self.SUM_INDEX].to_numpy()
-        plot.make_pieplot(data_vector=all_sums,
-                          labels_list=all_aois,
-                          figure_save_path=self.PIE_PLOT_FIGURE_PATH,
-                          title='Dwell times'
-                          )
+        if not dwell_times_table.empty:
+            plot.make_pieplot(data_vector=all_sums,
+                              labels_list=all_aois,
+                              figure_save_path=self.PIE_PLOT_FIGURE_PATH,
+                              title='Dwell times'
+                              )
 
         return dwell_times_table
 
@@ -174,52 +177,54 @@ class DwellTimesAndRevisits:
         """
 
         # data frames containing the data
-        dwell_times_df = self.make_dwell_times_plot_and_table()
+        dwell_times_df = self.make_dwell_times_plot_and_dataframe()
         revisits_df = self.revisits_stat()
 
-        # areas of interests
-        aois = dwell_times_df.index
+        # do nothing if no cGOM data is provided
+        if not dwell_times_df.empty:
+            # areas of interests
+            aois = dwell_times_df.index
 
-        # create table
-        table = self.report.add_table(len(aois) + 1, len(self.TABLE_FIRST_ROW))
-        table.style = 'Table Grid'
-        table.alignment = WD_TABLE_ALIGNMENT.CENTER
-        table.autofit = False
+            # create table
+            table = self.report.add_table(len(aois) + 1, len(self.TABLE_FIRST_ROW))
+            table.style = 'Table Grid'
+            table.alignment = WD_TABLE_ALIGNMENT.CENTER
+            table.autofit = False
 
-        # write the first row
-        for index, label in enumerate(self.TABLE_FIRST_ROW):
-            cell = table.rows[0].cells[index]
-            cell.text = label
-            Layout.set_cell_shading(cell, self.LIGHT_GREY_10)  # color the cell in light_grey_10
-            cell.paragraphs[0].runs[0].font.bold = True
+            # write the first row
+            for index, label in enumerate(self.TABLE_FIRST_ROW):
+                cell = table.rows[0].cells[index]
+                cell.text = label
+                Layout.set_cell_shading(cell, self.LIGHT_GREY_10)  # color the cell in light_grey_10
+                cell.paragraphs[0].runs[0].font.bold = True
 
-        # write the first column with the name of the areas of interest
-        for idx, aoi in enumerate(aois):
-            cell = table.columns[0].cells[idx+1]
-            cell.text = aoi
+            # write the first column with the name of the areas of interest
+            for idx, aoi in enumerate(aois):
+                cell = table.columns[0].cells[idx + 1]
+                cell.text = aoi
 
-        # write all the entries of the tables except the ones about revisits
-        matrix = dwell_times_df.to_numpy()
-        for i in range(len(aois)):
-            for j in range(4):
-                table.cell(i+1, j+1).text = str(round(matrix[i, j], 4))
+            # write all the entries of the tables except the ones about revisits
+            matrix = dwell_times_df.to_numpy()
+            for i in range(len(aois)):
+                for j in range(4):
+                    table.cell(i + 1, j + 1).text = str(round(matrix[i, j], 4))
 
-        # write the third column with the mean of revisits of each AOI
-        for idx, revisits in enumerate(revisits_df.loc[self.MEAN_INDEX].to_numpy()):
-            cell = table.columns[5].cells[idx+1]
-            cell.text = str(round(revisits, 4))
+            # write the third column with the mean of revisits of each AOI
+            for idx, revisits in enumerate(revisits_df.loc[self.MEAN_INDEX].to_numpy()):
+                cell = table.columns[5].cells[idx + 1]
+                cell.text = str(round(revisits, 4))
 
-        # set the vertical and horizontal alignment of all cells
-        for row in table.rows:
-            for cell in row.cells:
-                cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
-        for i in range(len(table.rows)):
-            for j in range(1, len(table.columns)):
-                table.cell(i, j).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+            # set the vertical and horizontal alignment of all cells
+            for row in table.rows:
+                for cell in row.cells:
+                    cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+            for i in range(len(table.rows)):
+                for j in range(1, len(table.columns)):
+                    table.cell(i, j).paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-        # set the widths of all columns
-        for idx, column in enumerate(table.columns):
-            Layout.set_column_width(column, self.WIDTHS[idx])
+            # set the widths of all columns
+            for idx, column in enumerate(table.columns):
+                Layout.set_column_width(column, self.WIDTHS[idx])
 
     def write_chapter(self):
         """
@@ -237,12 +242,15 @@ class DwellTimesAndRevisits:
 
             self.add_table()
 
-            Picture.add_picture_and_caption(self.report,
-                                            [self.PIE_PLOT_FIGURE_PATH],
-                                            self.PIE_PLOT_FIGURE_PATH,
-                                            self.CAPTION,
-                                            width=Cm(12)
-                                            )
+            try:
+                Picture.add_picture_and_caption(self.report,
+                                                [self.PIE_PLOT_FIGURE_PATH],
+                                                self.PIE_PLOT_FIGURE_PATH,
+                                                self.CAPTION,
+                                                width=Cm(12)
+                                                )
+            except FileNotFoundError:     # do nothing if no cGOM data is provided
+                pass
 
             self.report.add_paragraph(self.DISCUSSION_TITLE, self.DISCUSSION_STYLE)
             time_on_tasks.write_chapter()

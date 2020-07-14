@@ -141,7 +141,8 @@ class Parameters:
         problems_table = self.text_input.tables[problems_table_index]
         problem_types = text_reading.get_dropdown_list_of_table(self.text_input_soup, problems_table_index)
 
-        # return the index of a row when nothing was written in it
+        # return the index of a row when nothing was written in it to get the number of problems
+        problems_number = 0
         for idx, problem_type in enumerate(problem_types):
             if '-' in problem_type:
                 problems_number = idx
@@ -156,16 +157,18 @@ class Parameters:
         list_of_text = []
 
         # stores the text of every relevant cell in the list
-        stop = False
-        while not stop:
-            for i in range(1, problems_number + 1):
-                for cell in problems_table.rows[i].cells:
-                    text = cell.text
-                    if text or len(list_of_text) == (problems_number * 2) - 1:
-                        list_of_text.append(text)
-                    else:
-                        list_of_text.pop()
-                        stop = True
+        if problems_number != 0:
+            stop = False
+            while not stop:
+                for i in range(1, problems_number + 1):
+                    for cell in problems_table.rows[i].cells:
+                        text = cell.text
+                        if text or len(list_of_text) == (problems_number * 2) - 1:
+                            list_of_text.append(text)
+                        else:
+                            list_of_text.pop()
+                            stop = True
+
 
         # delete the last item to ensure that there is no key without a corresponding value
         if len(list_of_text) % 2 != 0:
