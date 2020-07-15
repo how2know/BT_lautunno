@@ -180,26 +180,16 @@ class Chapter:
             if parameter != '-':
                 parameters_values[parameter_idx] = self.parameters_dictionary[parameter]
 
-        '''
-        # write paragraphs including values of parameters
-        for paragraph in self.paragraphs:
-            new_paragraph = self.report.add_paragraph(
-                paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2],)
-            )
-            new_paragraph.style.name = 'Normal'
-        '''
-
-        # write paragraphs including values of parameters
+        # write paragraphs including values of parameters or print an error message when a wrong reference was given
         for paragraph in self.paragraphs_from_table():
-
             try:
                 self.report.add_paragraph(
                     paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2]),
                     'Normal'
                 )
-
             except IndexError:
-                pass
+                self.report.add_paragraph(paragraph, 'Normal')
+                print('A wrong reference to a parameter was given in the chapter "{}"'.format(self.title))
 
         # add pictures and their caption at the end of the chapter
         self.add_picture()
