@@ -31,8 +31,8 @@ class AverageFixation:
     BOX_PLOT_FIGURE_PATH = 'Outputs/Average_fixation_box_plot.png'
 
     # caption of the pie plot figure
-    BAR_PLOT_CAPTION = 'Bar plot showing the mean of the fixation time and the 95% confidence interval.'
-    BOX_PLOT_CAPTION = 'Box plot showing the mean, the 25% and 75% quartiles and the distribution of the fixation time.'
+    BAR_PLOT_CAPTION = 'Bar plot showing the mean of the fixation duration and the 95% confidence interval.'
+    BOX_PLOT_CAPTION = 'Box plot showing the mean, the 25% and 75% quartiles, and the distribution of the fixation duration.'
 
     def __init__(self,
                  report_document: Document,
@@ -95,8 +95,10 @@ class AverageFixation:
 
             plot.make_boxplot(data_frame=participant_fixations,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx + 1),
-                              title='Average fixation: participant {}'.format(idx + 1),
-                              ylabel='Fixation time [s]')
+                              title='Average fixation duration: participant {}'.format(idx + 1),
+                              ylabel='Fixation duration [s]',
+                              xlabel='Area of interest'
+                              )
 
             average_fixation_df = average_fixation_df.append(participant_fixations, ignore_index=True)
 
@@ -105,16 +107,18 @@ class AverageFixation:
         try:
             plot.make_boxplot(data_frame=average_fixation_df,
                               figure_save_path=self.BOX_PLOT_FIGURE_PATH,
-                              title='Average fixation',
-                              ylabel='Fixation time [s]')
+                              title='Average fixation duration',
+                              ylabel='Fixation duration [s]',
+                              xlabel='Area of interest'
+                              )
             plot.make_barplot(data_frame=average_fixation_df,
                               figure_save_path=self.BAR_PLOT_FIGURE_PATH,
-                              title='Average fixation',
-                              ylabel='Fixation time [s]')
+                              title='Average fixation duration',
+                              ylabel='Fixation duration [s]',
+                              xlabel='Area of interest'
+                              )
         except ValueError:
             pass
-
-
 
     def write_chapter(self):
         """

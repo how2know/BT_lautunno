@@ -98,40 +98,6 @@ class Definitions:
 
                 return list_of_defined_terms
 
-    '''
-    def write_terms_definitions(self, standard_name: str):
-        """
-        Write in the report the terms and their definition given in this standard.
-
-        Args:
-            standard_name: Name of the standard of which we want to write the definitions.
-        """
-
-        # create a list of paragraph indexes of all headings in the standard section,
-        # i.e. the indexes of the terms
-        terms_heading_indexes = []
-        standard_heading_index = self.standard_heading_index(standard_name)
-        next_index = self.next_standard_heading_index(standard_heading_index)
-        for paragraph_index, paragraph in enumerate(self.definitions.paragraphs[standard_heading_index: next_index]):
-            if 'Heading' in paragraph.style.name:
-                terms_heading_indexes.append(paragraph_index + standard_heading_index)
-
-        # create a list of all paragraphs that have to be written, i.e. the terms and their definitions,
-        # and a list of the style in which the paragraphs have to be written
-        list_of_paragraphs = []
-        list_of_styles = []
-        wanted_terms = self.standard_wanted_terms(standard_name)
-        for index, terms_heading_index in enumerate(terms_heading_indexes):
-            if self.definitions.paragraphs[terms_heading_index].text in wanted_terms:
-                for i in range(terms_heading_index, terms_heading_indexes[index + 1]):
-                    list_of_paragraphs.append(self.definitions.paragraphs[i].text)
-                    list_of_styles.append(self.definitions.paragraphs[i].style.name)
-
-        # write the paragraphs, i.e. the terms and their definitions, with the according style in the report
-        for index, paragraph in enumerate(list_of_paragraphs):
-            self.report.add_paragraph(paragraph, list_of_styles[index])
-    '''
-
     def store_definitions(self, standard_name: str, reference_number: int):
         """
         Store the terms that have to defined in the dictionary.

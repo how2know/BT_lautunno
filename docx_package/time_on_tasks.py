@@ -41,8 +41,8 @@ class TimeOnTasks:
     BOX_PLOT_FIGURE_PATH = 'Outputs/Time_on_task_box_plot.png'
 
     # caption of the pie plot figure
-    BAR_PLOT_CAPTION = 'Bar plot showing the mean of the time on tasks and the 95% confidence interval.'
-    BOX_PLOT_CAPTION = 'Box plot showing the mean, the 25% and 75% quartiles and the distribution of the time on tasks.'
+    BAR_PLOT_CAPTION = 'Bar plot showing the mean of the task completion times and the 95% confidence interval.'
+    BOX_PLOT_CAPTION = 'Box plot showing the mean, the 25% and 75% quartiles, and the distribution of the task completion times.'
 
     def __init__(self,
                  report_document: Document,
@@ -245,7 +245,9 @@ class TimeOnTasks:
                 plot.make_barplot(data_frame=participant_times_df,
                                   figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
                                   title='Time on task: participant {}'.format(idx+1),
-                                  ylabel='Completion time [s]')
+                                  ylabel='Completion time [s]',
+                                  xlabel='Critical task'
+                                  )
 
             # pass when no data is available for a participant
             except KeyError:
@@ -256,12 +258,14 @@ class TimeOnTasks:
             plot.make_barplot(data_frame=task_times_df,
                               figure_save_path=self.BAR_PLOT_FIGURE_PATH,
                               title='Time on task',
-                              ylabel='Completion time [s]'
+                              ylabel='Completion time [s]',
+                              xlabel='Critical task'
                               )
             plot.make_boxplot(data_frame=task_times_df,
                               figure_save_path=self.BOX_PLOT_FIGURE_PATH,
                               title='Time on task',
-                              ylabel='Completion time [s]'
+                              ylabel='Completion time [s]',
+                              xlabel='Critical task'
                               )
         except ValueError:
             pass

@@ -49,6 +49,11 @@ def make_dataframe(txt_file_path):
     # rename BG in Background
     dataframe = dataframe.rename(index={'BG': 'Background'})
 
+    # TODO: delete this
+    dataframe = dataframe.rename(index={'Shoe': 'Syringe'})
+    dataframe = dataframe.rename(index={'Sponge': 'Disinfectant'})
+    dataframe = dataframe.rename(index={'Sink': 'Bottle'})
+
     return dataframe
 
 

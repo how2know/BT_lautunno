@@ -4,8 +4,10 @@
 /eye_tracking_package/__pycache__
 
 /Inputs/Pictures/Test
+/Inputs/Pictures/*
 /Inputs/Tobii_data/Test
 /Inputs/cGOM_data/Test
+/Inputs/cGOM_data/Part*
 
 /Inputs/Text_input_test.docx
 

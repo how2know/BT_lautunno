@@ -24,8 +24,11 @@ def make_barplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
     plot = sns.barplot(data=data_frame,
                        capsize=0.1,     # length of the caps at the endpoint of the confidence interval bar
                        errwidth=1.5,     # width of the confidence interval bar
-                       ci=95     # size of the confidence interval
+                       ci=95,     # size of the confidence interval
+                       palette='PuBu'
                        )
+
+    plot.set_xticklabels(plot.get_xticklabels(), rotation=90, horizontalalignment='right')
 
     if title:
         plot.set_title(title)
@@ -54,7 +57,9 @@ def make_boxplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
     """
 
     sns.set(style='whitegrid')
-    plot = sns.boxplot(data=data_frame)
+    plot = sns.boxplot(data=data_frame, palette='PuBu')
+
+    plot.set_xticklabels(plot.get_xticklabels(), rotation=90, horizontalalignment='right')
 
     if title:
         plot.set_title(title)
@@ -85,9 +90,10 @@ def make_heatmap(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
                        vmin=0, vmax=1,     # max and min value
                        annot=True,     # annotate each cell
                        linewidths=.5,     # width of the line between each cell
-                       cmap='YlOrRd',     # color of the cells
+                       # cmap='YlOrRd',     # color of the cells
+                       cmap='PuBu',
                        cbar=False,     # bar showing the colors
-                       fmt='.2%'     # formatting of the annotation
+                       fmt='.2%',     # formatting of the annotation
                        )
 
     if title:
@@ -105,6 +111,8 @@ def make_heatmap(data_frame, figure_save_path, title=None, xlabel=None, ylabel=N
 
 # TODO: write better and make more beautiful plot
 # TODO: is this better with pd.DataFrame.plot.pie
+# TODO: delete colors
+# TODO: make dict with colors
 def make_pieplot(data_vector, labels_list, figure_save_path, title=None):
     """
     Create a pie plot out of a vector and a list of labels and save its figure.
@@ -121,7 +129,8 @@ def make_pieplot(data_vector, labels_list, figure_save_path, title=None):
     # add a pie plot
     patches, texts = plt.pie(x=data_vector,
                              startangle=0,     # start angle of the first wedge
-                             explode=explode
+                             explode=explode,
+                             colors=['midnightblue', 'royalblue', 'lightblue', 'deepskyblue']
                              )
 
     # add a list of the labels with their corresponding percentage
