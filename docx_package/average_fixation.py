@@ -7,6 +7,7 @@ import pandas as pd
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
 from docx_package import text_reading
+from eye_tracking_package.eye_tracking import EyeTracking
 from eye_tracking_package import plot, eye_tracking
 
 
@@ -90,8 +91,8 @@ class AverageFixation:
         # create a data frame with the fixation times for each participant, create a box plot with it,
         # and append it to the main data frame
         for idx, dataframe in enumerate(self.cGOM_dataframes):
-            aois = eye_tracking.areas_of_interest(dataframe)
-            participant_fixations = eye_tracking.fixations(aois, dataframe)
+            aois = EyeTracking.areas_of_interest(dataframe)
+            participant_fixations = EyeTracking.fixations(aois, dataframe)
 
             plot.make_boxplot(data_frame=participant_fixations,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx + 1),

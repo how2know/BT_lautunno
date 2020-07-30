@@ -6,6 +6,7 @@ from docx.shared import Cm
 
 from docx_package.picture import Picture
 from docx_package.results import ResultsChapter
+from eye_tracking_package.eye_tracking import EyeTracking
 from eye_tracking_package import plot, eye_tracking
 from docx_package import text_reading
 
@@ -72,8 +73,8 @@ class Transitions:
 
         # create a data frame with the number of transitions for each participant and append it to the main data frame
         for idx, dataframe in enumerate(self.cGOM_dataframes):
-            aois = eye_tracking.areas_of_interest(dataframe)
-            participant_transitions = eye_tracking.transitions(aois, dataframe)
+            aois = EyeTracking.areas_of_interest(dataframe)
+            participant_transitions = EyeTracking.transitions(aois, dataframe)
             all_transitions = all_transitions.append(participant_transitions)
 
             # calculate the ratios and create a heat map that shows the transition percentage

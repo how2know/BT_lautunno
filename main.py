@@ -24,7 +24,7 @@ from docx_package.picture import Picture
 from docx_package.document_history import DocumentHistory
 from docx_package.participants_characteristics import ParticipantsCharacteristics
 
-from eye_tracking_package import cGOM_data
+from eye_tracking_package.cGOM_data import cGOM
 from eye_tracking_package.tobii_data import TobiiData
 
 
@@ -152,7 +152,7 @@ def main():
 
     print(parameters)   # TODO: delete this line
 
-    cGOM_dataframes = cGOM_data.make_dataframes_list(parameters)
+    cGOM_dataframes = cGOM.make_dataframes_list()
 
     tobii_data = TobiiData.make_main_dataframe(parameters)
 

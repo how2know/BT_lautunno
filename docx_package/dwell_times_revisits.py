@@ -10,6 +10,7 @@ import pandas as pd
 from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
+from eye_tracking_package.eye_tracking import EyeTracking
 from eye_tracking_package import plot, eye_tracking
 from docx_package import text_reading
 
@@ -98,8 +99,8 @@ class DwellTimesAndRevisits:
         # create a data frame with the dwell times and statistics of each participants
         # and append it to the main data frame
         for idx, dataframe in enumerate(self.cGOM_dataframes):
-            aois = eye_tracking.areas_of_interest(dataframe)
-            participants_df = eye_tracking.dwell_times(aois, dataframe)
+            aois = EyeTracking.areas_of_interest(dataframe)
+            participants_df = EyeTracking.dwell_times(aois, dataframe)
             all_dwell_times_df = all_dwell_times_df.append(participants_df)
 
             # plot the total sum of the dwell times for each participants
@@ -113,7 +114,7 @@ class DwellTimesAndRevisits:
 
 
         # create a data frame with the mean of the statistics for all participants for each AOI
-        all_aois = eye_tracking.areas_of_interest(all_dwell_times_df)
+        all_aois = EyeTracking.areas_of_interest(all_dwell_times_df)
         dwell_times_table = pd.DataFrame(index=all_aois,
                                          columns=[self.SUM_INDEX, self.MEAN_INDEX, self.MAX_INDEX, self.MIN_INDEX],
                                          data=np.zeros((len(all_aois), 4))
@@ -151,8 +152,8 @@ class DwellTimesAndRevisits:
 
         # create a data frame with the revisits for each participant and append it to the main data frame
         for idx, dataframe in enumerate(self.cGOM_dataframes):
-            aois = eye_tracking.areas_of_interest(dataframe)
-            revisits = eye_tracking.revisits(aois, dataframe)
+            aois = EyeTracking.areas_of_interest(dataframe)
+            revisits = EyeTracking.revisits(aois, dataframe)
             participant_revisits = pd.DataFrame(index=['Participant {}'.format(idx + 1)],
                                                 columns=aois,
                                                 data=[revisits]

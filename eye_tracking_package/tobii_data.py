@@ -5,9 +5,9 @@ from os import listdir
 
 class TobiiData:
     """
-    Class that represents the Tobii data and creates a readable form of it.
+    Class that represents the Tobii data and creates a readable form of it, i.e. data frames.
 
-    Tobii data must be loaded in .tsv files in the 'Inputs/Data' directory.
+    Tobii data must be loaded in .tsv files in the 'Inputs/Tobii_data' directory.
     """
 
     # labels of the columns of the data frame
