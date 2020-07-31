@@ -47,36 +47,3 @@ class DropDownLists:
             list_of_value.append(i.find('t').string)
 
         return list_of_value
-
-
-'''
-def get_soup(text_input_path):
-    """
-    Opens a docx file as a zip file, stores the xml data containing the infos about the docx document
-    and return the parsed xml data as BeautifulSoup object.
-
-    This takes some time, that's why it is better to run it once at the beginning and not in a loop.
-    """
-
-    # open docx file as a zip file and store its relevant xml data
-    zip_file = ZipFile(text_input_path)
-    xml_data = zip_file.read('word/document.xml')
-    zip_file.close()
-
-    # parse the xml data with BeautifulSoup
-    return BeautifulSoup(xml_data, 'xml')
-
-
-# return a list of the value of all dropdown lists in a table
-def get_from_table(text_input_soup, table_index):
-
-    list_of_value = []
-
-    # look for all values of dropdown lists in the data and store them
-    tables = text_input_soup.find_all('tbl')
-    dd_lists_content = tables[table_index].find_all('sdtContent')
-    for i in dd_lists_content:
-        list_of_value.append(i.find('t').string)
-
-    return list_of_value
-'''
