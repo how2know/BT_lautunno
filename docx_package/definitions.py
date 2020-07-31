@@ -2,7 +2,7 @@ from docx import Document
 from typing import List
 from bs4 import BeautifulSoup
 
-from docx_package import text_reading
+from docx_package.dropdown_lists import DropDownLists
 
 
 class Definitions:
@@ -81,7 +81,7 @@ class Definitions:
             if standard_name in table:
 
                 # create a list of 'Yes' or 'No' stored in dropdown lists in the table of this standard
-                list_of_yes_no = text_reading.get_dropdown_list_of_table(self.text_input_soup, table_index)
+                list_of_yes_no = DropDownLists.get_from_table(self.text_input_soup, table_index)
 
                 # create a list of all possible terms that can be defined in this standard
                 list_of_terms = []

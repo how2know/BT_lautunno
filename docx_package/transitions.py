@@ -6,9 +6,9 @@ from docx.shared import Cm
 
 from docx_package.picture import Picture
 from docx_package.results import ResultsChapter
+from docx_package.dropdown_lists import DropDownLists
 from eye_tracking_package.eye_tracking import EyeTracking
-from eye_tracking_package import plot, eye_tracking
-from docx_package import text_reading
+from eye_tracking_package.plot import Plot
 
 
 class Transitions:
@@ -80,7 +80,7 @@ class Transitions:
             # calculate the ratios and create a heat map that shows the transition percentage
             transitions_number = participant_transitions.to_numpy().sum()
             participant_transitions = participant_transitions.div(transitions_number)
-            plot.make_heatmap(data_frame=participant_transitions,
+            Plot.make_heatmap(data_frame=participant_transitions,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(str(idx + 1)),
                               title='Transitions: participant {}'.format(str(idx + 1)),
                               xlabel='AOI destination (to)',
@@ -106,7 +106,7 @@ class Transitions:
 
         # create a heat map that shows the transition percentage or do nothing if no cGOM data is provided
         if not transitions_stat.empty:
-            plot.make_heatmap(data_frame=transitions_stat,
+            Plot.make_heatmap(data_frame=transitions_stat,
                               figure_save_path=self.HEAT_MAP_FIGURE_PATH,
                               title='Transitions',
                               xlabel='AOI destination (to)',
@@ -119,7 +119,7 @@ class Transitions:
         """
 
         decision_table_index = self.tables.index(self.DECISION_TABLE)
-        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
+        decision = DropDownLists.get_from_table(self.text_input_soup, decision_table_index)
 
         if decision[0] == 'Yes':
             self.makes_plot()

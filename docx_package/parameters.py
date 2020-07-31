@@ -2,7 +2,7 @@ from docx.document import Document
 from bs4 import BeautifulSoup
 from typing import List
 
-from docx_package import text_reading
+from docx_package.dropdown_lists import DropDownLists
 
 
 class Parameters:
@@ -139,7 +139,7 @@ class Parameters:
 
         problems_table_index = self.tables.index(self.PROBLEMS_TABLE)
         problems_table = self.text_input.tables[problems_table_index]
-        problem_types = text_reading.get_dropdown_list_of_table(self.text_input_soup, problems_table_index)
+        problem_types = DropDownLists.get_from_table(self.text_input_soup, problems_table_index)
 
         # return the index of a row when nothing was written in it to get the number of problems
         problems_number = 0

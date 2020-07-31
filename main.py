@@ -6,8 +6,6 @@ import inspect
 
 import time
 
-from docx_package import text_reading
-
 from docx_package.layout import Layout
 from docx_package.chapter import Chapter
 from docx_package.effectiveness_analysis import EffectivenessAnalysis
@@ -23,6 +21,7 @@ from docx_package.parameters import Parameters
 from docx_package.picture import Picture
 from docx_package.document_history import DocumentHistory
 from docx_package.participants_characteristics import ParticipantsCharacteristics
+from docx_package.dropdown_lists import DropDownLists
 
 from eye_tracking_package.cGOM_data import cGOM
 from eye_tracking_package.tobii_data import TobiiData
@@ -57,14 +56,9 @@ def main():
     # create document
     report = Document()
 
-    # name of the directory and the input files
-    input_directory = 'Inputs'
-    text_input_file = 'Text_input_test.docx'
-    definitions_file = 'Terms_definitions.docx'
-
     # path of the input files
-    text_input_path = text_reading.get_path(text_input_file, input_directory)
-    definitions_path = text_reading.get_path(definitions_file, input_directory)
+    text_input_path = 'Inputs/Text_input_test.docx'
+    definitions_path = 'Inputs/Terms_definitions.docx'
 
     # load text input files with python-docx
     text_input = Document(text_input_path)
@@ -73,7 +67,7 @@ def main():
     picture_paths = Picture.get_picture_paths()
 
     #
-    text_input_soup = text_reading.parse_xml_with_bs4(text_input_path)
+    text_input_soup = DropDownLists.get_soup(text_input_path)
 
     # list of all tables in the order they appear in the text input document
     # useful to get the index of a table in the document

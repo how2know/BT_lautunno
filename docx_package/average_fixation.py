@@ -6,9 +6,9 @@ import pandas as pd
 
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
-from docx_package import text_reading
+from docx_package.dropdown_lists import DropDownLists
 from eye_tracking_package.eye_tracking import EyeTracking
-from eye_tracking_package import plot, eye_tracking
+from eye_tracking_package.plot import Plot
 
 
 class AverageFixation:
@@ -71,9 +71,9 @@ class AverageFixation:
             i.e. 'Bar plot' or 'Box plot'.
         """
 
-        plot_type_list = text_reading.get_dropdown_list_of_table(self.text_input_soup,
-                                                                 self.tables.index(self.PLOT_TYPE_TABLE)
-                                                                 )
+        plot_type_list = DropDownLists.get_from_table(self.text_input_soup,
+                                                      self.tables.index(self.PLOT_TYPE_TABLE)
+                                                      )
         return plot_type_list[0]
 
     def make_plots(self):
@@ -94,7 +94,7 @@ class AverageFixation:
             aois = EyeTracking.areas_of_interest(dataframe)
             participant_fixations = EyeTracking.fixations(aois, dataframe)
 
-            plot.make_boxplot(data_frame=participant_fixations,
+            Plot.make_boxplot(data_frame=participant_fixations,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx + 1),
                               title='Average fixation duration: participant {}'.format(idx + 1),
                               ylabel='Fixation duration [s]',
@@ -106,13 +106,13 @@ class AverageFixation:
         # create a bar plot and a box plot with the fixations of all participants or
         # do nothing if no cGOM data is provided
         try:
-            plot.make_boxplot(data_frame=average_fixation_df,
+            Plot.make_boxplot(data_frame=average_fixation_df,
                               figure_save_path=self.BOX_PLOT_FIGURE_PATH,
                               title='Average fixation duration',
                               ylabel='Fixation duration [s]',
                               xlabel='Area of interest'
                               )
-            plot.make_barplot(data_frame=average_fixation_df,
+            Plot.make_barplot(data_frame=average_fixation_df,
                               figure_save_path=self.BAR_PLOT_FIGURE_PATH,
                               title='Average fixation duration',
                               ylabel='Fixation duration [s]',
@@ -127,7 +127,7 @@ class AverageFixation:
         """
 
         decision_table_index = self.tables.index(self.DECISION_TABLE)
-        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
+        decision = DropDownLists.get_from_table(self.text_input_soup, decision_table_index)
 
         if decision[0] == 'Yes':
             self.make_plots()

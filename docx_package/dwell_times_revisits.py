@@ -10,9 +10,9 @@ import pandas as pd
 from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
+from docx_package.dropdown_lists import DropDownLists
 from eye_tracking_package.eye_tracking import EyeTracking
-from eye_tracking_package import plot, eye_tracking
-from docx_package import text_reading
+from eye_tracking_package.plot import Plot
 
 
 class DwellTimesAndRevisits:
@@ -106,12 +106,11 @@ class DwellTimesAndRevisits:
             # plot the total sum of the dwell times for each participants
             participant_sum = participants_df[self.SUM_INDEX].to_numpy()
             participant_sum = participant_sum[~np.isnan(participant_sum)]
-            plot.make_pieplot(data_vector=participant_sum,
+            Plot.make_pieplot(data_vector=participant_sum,
                               labels_list=aois,
                               figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx + 1),
                               title='Dwell times: participant {}'.format(idx + 1)
                               )
-
 
         # create a data frame with the mean of the statistics for all participants for each AOI
         all_aois = EyeTracking.areas_of_interest(all_dwell_times_df)
@@ -132,7 +131,7 @@ class DwellTimesAndRevisits:
         # do nothing if no cGOM data is provided
         all_sums = dwell_times_table[self.SUM_INDEX].to_numpy()
         if not dwell_times_table.empty:
-            plot.make_pieplot(data_vector=all_sums,
+            Plot.make_pieplot(data_vector=all_sums,
                               labels_list=all_aois,
                               figure_save_path=self.PIE_PLOT_FIGURE_PATH,
                               title='Dwell times'
@@ -233,7 +232,7 @@ class DwellTimesAndRevisits:
         """
 
         decision_table_index = self.tables.index(self.DECISION_TABLE)
-        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
+        decision = DropDownLists.get_from_table(self.text_input_soup, decision_table_index)
 
         if decision[0] == 'Yes':
             time_on_tasks = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,

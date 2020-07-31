@@ -4,7 +4,7 @@ from docx.shared import Cm
 from typing import List, Dict, Union
 from bs4 import BeautifulSoup
 
-from docx_package import text_reading
+from docx_package.dropdown_lists import DropDownLists
 from docx_package.picture import Picture
 
 
@@ -44,58 +44,6 @@ class ResultsChapter:
         self.picture_paths = picture_paths_list
         self.parameters_dictionary = parameters_dictionary
 
-    '''
-
-    def chapter_heading_index(self) -> int:
-        """
-        Returns:
-            Paragraph index of the chapter heading in the text input document.
-        """
-
-        for paragraph_index, paragraph in enumerate(self.text_input.paragraphs):
-            if paragraph.text == self.title and 'Heading' in paragraph.style.name:
-                return paragraph_index
-
-    def discussion_heading_index(self) -> int:
-        """
-        Returns:
-            Paragraph index of the sub-chapter 'Discussion' heading in the text input document.
-        """
-
-        previous_index = self.chapter_heading_index()
-        for paragraph_index, paragraph in enumerate(self.text_input.paragraphs[previous_index + 1:]):
-            if paragraph.text == self.DISCUSSION_TITLE and 'Heading' in paragraph.style.name:
-                return paragraph_index + previous_index + 1
-
-    def next_heading_index(self) -> int:
-        """
-        Returns:
-            Paragraph index of the following heading in the text input document.
-        """
-
-        previous_index = self.discussion_heading_index()
-        for paragraph_index, paragraph in enumerate(self.text_input.paragraphs[previous_index + 1:]):
-            if 'Heading' in paragraph.style.name:
-                return paragraph_index + previous_index + 1
-
-    @ property
-    def paragraphs(self) -> List[str]:
-        """
-        Returns:
-            List of all paragraphs (as text string) of the sub-chapter 'Discussion'.
-        """
-
-        list_of_paragraphs = []
-        heading_index = self.discussion_heading_index()
-        next_heading_index = self.next_heading_index()
-
-        # store all paragraphs that are between the two heading indexes in a list
-        for paragraph in self.text_input.paragraphs[heading_index + 1: next_heading_index]:
-            list_of_paragraphs.append(paragraph.text)
-
-        return list_of_paragraphs
-    '''
-
     @ property
     def paragraph_table(self) -> Table:
         """
@@ -128,9 +76,9 @@ class ResultsChapter:
             List of parameters needed to be writen in the sub-chapter.
         """
 
-        return text_reading.get_dropdown_list_of_table(self.text_input_soup,
-                                                       self.tables.index('{} parameter table'.format(self.title))
-                                                       )
+        return DropDownLists.get_from_table(self.text_input_soup,
+                                             self.tables.index('{} parameter table'.format(self.title))
+                                             )
 
     @property
     def picture_name(self) -> str:

@@ -8,7 +8,7 @@ from typing import List, Dict, Union
 
 from docx_package.layout import Layout
 from docx_package.results import ResultsChapter
-from docx_package import text_reading
+from docx_package.dropdown_lists import DropDownLists
 
 
 class EffectivenessAnalysis:
@@ -311,7 +311,7 @@ class EffectivenessAnalysis:
         """
 
         decision_table_index = self.tables.index(self.DECISION_TABLE)
-        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
+        decision = DropDownLists.get_from_table(self.text_input_soup, decision_table_index)
 
         if decision[0] == 'Yes':
             effectiveness_analysis = ResultsChapter(self.report, self.text_input, self.text_input_soup, self.TITLE,

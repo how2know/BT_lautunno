@@ -5,10 +5,10 @@ import numpy as np
 import pandas as pd
 from docx.shared import Cm
 
-from docx_package import text_reading
+from docx_package.dropdown_lists import DropDownLists
 from docx_package.results import ResultsChapter
 from docx_package.picture import Picture
-from eye_tracking_package import plot
+from eye_tracking_package.plot import Plot
 
 
 class TimeOnTasks:
@@ -95,7 +95,6 @@ class TimeOnTasks:
 
         # choose the biggest number of critical tasks
         if tasks_number > self.parameters[self.TASKS_NUMBER_KEY]:
-            print(tasks_number)
             return tasks_number
         else:
             return self.parameters[self.TASKS_NUMBER_KEY]
@@ -218,9 +217,9 @@ class TimeOnTasks:
             i.e. 'Bar plot' or 'Box plot'.
         """
 
-        plot_type_list = text_reading.get_dropdown_list_of_table(self.text_input_soup,
-                                                                 self.tables.index(self.PLOT_TYPE_TABLE)
-                                                                 )
+        plot_type_list = DropDownLists.get_from_table(self.text_input_soup,
+                                                       self.tables.index(self.PLOT_TYPE_TABLE)
+                                                       )
         return plot_type_list[0]
 
     def make_plots(self):
@@ -242,7 +241,7 @@ class TimeOnTasks:
                 participant_times_df = pd.DataFrame(data=[participant_times],
                                                     columns=task_times_df.columns)
 
-                plot.make_barplot(data_frame=participant_times_df,
+                Plot.make_barplot(data_frame=participant_times_df,
                                   figure_save_path=self.PARTICIPANT_FIGURE_PATH.format(idx+1),
                                   title='Time on task: participant {}'.format(idx+1),
                                   ylabel='Completion time [s]',
@@ -255,13 +254,13 @@ class TimeOnTasks:
 
         # create a bar plot and a box plot with the data of all participants or do nothing if no data is provided
         try:
-            plot.make_barplot(data_frame=task_times_df,
+            Plot.make_barplot(data_frame=task_times_df,
                               figure_save_path=self.BAR_PLOT_FIGURE_PATH,
                               title='Time on task',
                               ylabel='Completion time [s]',
                               xlabel='Critical task'
                               )
-            plot.make_boxplot(data_frame=task_times_df,
+            Plot.make_boxplot(data_frame=task_times_df,
                               figure_save_path=self.BOX_PLOT_FIGURE_PATH,
                               title='Time on task',
                               ylabel='Completion time [s]',
@@ -276,7 +275,7 @@ class TimeOnTasks:
         """
 
         decision_table_index = self.tables.index(self.DECISION_TABLE)
-        decision = text_reading.get_dropdown_list_of_table(self.text_input_soup, decision_table_index)
+        decision = DropDownLists.get_from_table(self.text_input_soup, decision_table_index)
 
         if decision[0] == 'Yes':
             self.make_plots()
