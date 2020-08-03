@@ -44,7 +44,7 @@ class Plot:
         figure = plot.get_figure()
         figure.savefig(figure_save_path, bbox_inches='tight')
 
-        plt.show()
+        plt.show(block=False)
 
     @ staticmethod
     def make_boxplot(data_frame, figure_save_path, title=None, xlabel=None, ylabel=None):
@@ -114,7 +114,7 @@ class Plot:
         figure = plot.get_figure()
         figure.savefig(figure_save_path, bbox_inches='tight')
 
-        plt.show()
+        plt.show(block=False)
 
     # TODO: delete colors
     # TODO: make dict with colors
@@ -167,4 +167,4 @@ class Plot:
 
         plt.savefig(figure_save_path, bbox_inches='tight')
 
-        plt.show()
+        plt.show(block=False)
