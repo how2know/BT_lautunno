@@ -105,7 +105,7 @@ class EffectivenessAnalysis:
         for i in range(1, len(self.task_table.rows)):
             row_filled = False
             for cell in self.task_table.rows[i].cells[1:]:
-                if cell.text:
+                if cell.text.replace(' ', ''):
                     row_filled = True
             if row_filled:
                 tasks_number = i
@@ -130,7 +130,7 @@ class EffectivenessAnalysis:
         for j in range(1, len(self.task_table.columns)):
             column_completed = False
             for cell in self.task_table.columns[j].cells[1:]:
-                if cell.text:
+                if cell.text.replace(' ', ''):
                     column_completed = True
             if column_completed:
                 participants_number = j
@@ -191,13 +191,14 @@ class EffectivenessAnalysis:
             for j in range(1, cols_number):
                 cell = result_table.cell(i, j)
 
-                if cell.text:     # check if the text string is not empty
-                    problem_index = int(cell.text)
+                if cell.text.replace(' ', ''):     # check if the text string is not empty
                     try:
+                        problem_index = int(cell.text)
                         problem_type = self.parameters['Problem {} type'.format(problem_index)]
 
                     # case where no problem type were given
-                    except KeyError:
+                    except (KeyError, ValueError) as error:
+                        print('Unexpected input in "Effectiveness analysis": ', error)
                         problem_type = ''
 
                     if problem_type == 'Important problem':

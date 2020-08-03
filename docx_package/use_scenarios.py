@@ -154,17 +154,18 @@ class UseScenarios:
                     paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2]),
                     'Normal'
                 )
-            except IndexError:
+            except (IndexError, ValueError) as error:
                 self.report.add_paragraph(paragraph, 'Normal')
-                print('A wrong reference to a parameter was given in the chapter "{}"'.format(self.title))
+                print('A wrong reference to a parameter was given in the chapter "{}"'.format(self.title), ': ', error)
 
         self.report.add_paragraph()
-        self.report.add_paragraph('List of critical tasks:', 'Heading 3')
+        self.report.add_paragraph('List of critical tasks', 'Heading 3')
 
         for key, value in self.parameters_dictionary.items():
             if 'Critical task' in key:
                 if 'name' in key:
                     task = self.report.add_paragraph(value, 'List Number 3')
+                    task.add_run(': ')
                 if 'description' in key:
                     task.add_run(value)
 

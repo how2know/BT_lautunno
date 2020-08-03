@@ -157,9 +157,9 @@ class Chapter:
                     paragraph.format(parameters_values[0], parameters_values[1], parameters_values[2]),
                     'Normal'
                 )
-            except IndexError:
+            except (IndexError, ValueError) as error:
                 self.report.add_paragraph(paragraph, 'Normal')
-                print('A wrong reference to a parameter was given in the chapter "{}"'.format(self.title))
+                print('A wrong reference to a parameter was given in the chapter "{}"'.format(self.title), ': ', error)
 
         # add pictures and their caption at the end of the chapter
         self.add_picture()

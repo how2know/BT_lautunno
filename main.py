@@ -48,7 +48,7 @@ def update(report_file):
 
 
 def main():
-    start = time.time()
+    main_start = time.time()
 
     # file name of the report
     report_file = 'Report.docx'
@@ -57,16 +57,17 @@ def main():
     report = Document()
 
     # path of the input files
-    text_input_path = 'Inputs/Text_input_test1.docx'
+    text_input_path = 'Inputs/Text_input_test2.docx'
     definitions_path = 'Inputs/Terms_definitions.docx'
 
     # load text input files with python-docx
     text_input = Document(text_input_path)
     definitions = Document(definitions_path)
 
+    # path to the pictures that must be added to the report
     picture_paths = Picture.get_picture_paths()
 
-    #
+    # soup of the text input form document
     text_input_soup = DropDownLists.get_soup(text_input_path)
 
     # list of all tables in the order they appear in the text input document,
@@ -142,43 +143,50 @@ def main():
         'Participants characteristics table'
     ]
 
+    # parameters needed to write the report
     parameters = Parameters.get_all(text_input, text_input_soup, tables)
 
     print(parameters)   # TODO: delete this line
 
+    # list of data frames that contain the cGOM data
     cGOM_dataframes = cGOM.make_dataframes_list()
 
+    # data frame that contain the Tobii data
     tobii_data = TobiiData.make_main_dataframe(parameters)
 
     # define all styles used in the document
-    # layout.define_all_styles(report)
     Layout.define_all_styles(report)
 
-    # section1 includes cover page and table of content
+    ######   COVER PAGE   ######
+
     section1 = report.sections[0]
     Layout.define_page_format(section1)
 
+    cover_page_start = time.time()
     cover_page = CoverPage(report, text_input, tables, picture_paths, parameters)
     cover_page.create()
 
-    # add a page break
+    '''
+    cover_page_end = time.time()
+    print('Cover page added in %.2f seconds' % (cover_page_end - cover_page_start))
+    '''
+
+    ######   TABLE OF CONTENT   ######
+
     report.add_page_break()
 
     TableOfContent.write(report)
 
-    # add a new section
+    ######   CHAPTERS   ######
+
     section2 = report.add_section(WD_SECTION.NEW_PAGE)
     Layout.define_page_format(section2)
 
-    # add a footer with page number
     footer = Footer(section2)
     footer.write()
 
-    # add a header
     header = Header(section2, parameters)
     header.write()
-
-    '''  create and write all the chapters '''
 
     purpose = Chapter(report, text_input, text_input_soup, 'Purpose', tables, picture_paths, parameters)
     purpose.write_chapter()
@@ -197,7 +205,6 @@ def main():
     device = Chapter(report, text_input, text_input_soup, 'Device specifications', tables, picture_paths, parameters)
     device.write_chapter()
 
-    # TODO: write this better
     report.add_paragraph('Test procedure', 'Heading 1')
 
     goal = Chapter(report, text_input, text_input_soup, 'Goal', tables, picture_paths, parameters)
@@ -209,16 +216,12 @@ def main():
     environment = Chapter(report, text_input, text_input_soup, 'Use environment', tables, picture_paths, parameters)
     environment.write_chapter()
 
-    # scenarios = Chapter(report, text_input, text_input_soup, 'Use scenarios', tables, picture_paths, parameters)
-    # scenarios.write_chapter()
-
     scenarios = UseScenarios(report, text_input, text_input_soup, 'Use scenarios', tables, picture_paths, parameters)
     scenarios.write_chapter()
 
     setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, picture_paths, parameters)
     setup.write_chapter()
 
-    # TODO: write this better
     report.add_paragraph('Results', 'Heading 1')
 
     start1 = time.time()
@@ -256,17 +259,14 @@ def main():
 
     DocumentHistory.write(report)
 
-    '''Picture.error_message(picture_paths)'''
+    ######   APPENDIX   ######
 
-    # add a page break
     report.add_page_break()
 
-    # TODO: write this better
     report.add_paragraph('Appendix', 'Heading 1')
 
     Definitions.write_references(report, text_input, text_input_soup, definitions, tables)
 
-    # TODO: add page break in the function
     report.add_page_break()
 
     Picture.add_figures_list(report)
@@ -278,6 +278,9 @@ def main():
     # save the report
     report.save(report_file)
 
+    # error message for the image files that were not added to the report
+    '''Picture.error_message(picture_paths)'''
+
     '''
     start6 = time.time()
     # update the table of content
@@ -286,11 +289,11 @@ def main():
     print('Update: ', end6 - start6)
     '''
 
-    # open the report with the default handler for .docx (Word)
+    # open the report with the default application for .docx (Word)
     os.startfile(report_file)
 
     end = time.time()
-    print(end - start)
+    print(end - main_start)
 
 
 if __name__ == '__main__':

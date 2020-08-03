@@ -17,8 +17,6 @@ class Parameters:
         'Title table',
         'Header table',
         'Approval table',
-        # 'Participants number table',
-        # 'Critical tasks number table'
     ]
 
     CHARACTERISTICS_TABLE = 'Participants characteristics table'
@@ -67,8 +65,7 @@ class Parameters:
                 # case where the value is an integer
                 if key.startswith('Number of'):
 
-                    # '''
-                    if value_text and int(value_text) <= 15:
+                    if value_text and value_text.isdigit() and int(value_text) <= 15:
                         self.dictionary[key] = int(value_text)
 
                     # if no number where provided,
@@ -78,7 +75,6 @@ class Parameters:
                             self.dictionary[key] = self.get_number(self.tables.index(self.CHARACTERISTICS_TABLE))
                         if 'tasks' in key:
                             self.dictionary[key] = self.get_number(self.tables.index(self.TASKS_TABLE))
-                    # '''
 
                 # case where the value is a string
                 else:
@@ -168,7 +164,6 @@ class Parameters:
                         else:
                             list_of_text.pop()
                             stop = True
-
 
         # delete the last item to ensure that there is no key without a corresponding value
         if len(list_of_text) % 2 != 0:

@@ -87,11 +87,9 @@ class TobiiData:
             # main data frame that will contain the data of all participants
             tobii_df = pd.DataFrame()
 
-            participants_number = tobii.parameters['Number of participants']
-
             # create a data frame with the Tobii data of each participants
             # and append it to the main data frame
-            for i in range(1, participants_number + 1):
+            for i in range(16):
                 try:
                     participant_df = tobii.make_dataframe('Inputs/Tobii_data/Participant{}.tsv'.format(i))
                     indexes = ['Participant{}'.format(i)] * len(participant_df)

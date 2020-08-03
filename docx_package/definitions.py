@@ -119,10 +119,11 @@ class Definitions:
         for idx, paragraph in enumerate(self.definitions.paragraphs[standard_heading_index: next_index]):
             if 'Heading' in paragraph.style.name:
                 terms_heading_indexes.append(idx + standard_heading_index)
+        terms_heading_indexes.append(next_index)
 
         # select the indexes of the terms that have to be defined
         wanted_terms = self.standard_wanted_terms(standard_name)
-        for idx, terms_heading_index in enumerate(terms_heading_indexes):
+        for idx, terms_heading_index in enumerate(terms_heading_indexes[:-1]):
             term = self.definitions.paragraphs[terms_heading_index].text
             if term in wanted_terms:
 

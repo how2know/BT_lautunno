@@ -78,11 +78,13 @@ class TimeOnTasks:
     def tasks_number(self) -> int:
         """
         Returns:
-            Biggest number of critical tasks between the one given in the 'Number of critical tasks' input
-            and the one that corresponds to the time on tasks input table.
+            Biggest number of critical tasks between the one given in the 'Number of critical tasks' input,
+            the one that corresponds to the time on tasks input table,
+            and the one given in the Tobii data.
         """
 
-        tasks_number = 0
+        table_tasks_number = 0
+        tobii_tasks_number = 0
 
         # get the index of the last row that is filled which corresponds to the number of critical tasks
         for i in range(1, len(self.input_table.rows)):
@@ -91,23 +93,30 @@ class TimeOnTasks:
                 if cell.text:
                     row_filled = True
             if row_filled:
-                tasks_number = i
+                table_tasks_number = i
 
-        # choose the biggest number of critical tasks
-        if tasks_number > self.parameters[self.TASKS_NUMBER_KEY]:
-            return tasks_number
-        else:
-            return self.parameters[self.TASKS_NUMBER_KEY]
+        # get the number of critical tasks described in the Tobii data
+        tobii_tasks = self.tobii_data[self.EVENT_LABEL].tolist()
+        for task in tobii_tasks:
+            number = int(task.replace('Task', ''))
+            if number > tobii_tasks_number:
+                tobii_tasks_number = number
+
+        return max([tobii_tasks_number,
+                    table_tasks_number,
+                    self.parameters[self.TASKS_NUMBER_KEY]])
 
     @ property
     def participants_number(self) -> int:
         """
         Returns:
-            Biggest number of participants between the one given in the 'Number of participants' input
-            and the one that corresponds to the time on tasks input table.
+            Biggest number of participants between the one given in the 'Number of participants' input,
+            the one that corresponds to the time on tasks input table,
+            and the one given in the Tobii data.
         """
 
-        participants_number = 0
+        table_participants_number = 0
+        tobii_participants_number = 0
 
         # get the index of the last column that is filled which corresponds to the number of participants
         for j in range(1, len(self.input_table.columns)):
@@ -116,13 +125,18 @@ class TimeOnTasks:
                 if cell.text:
                     column_completed = True
             if column_completed:
-                participants_number = j
+                table_participants_number = j
 
-        # choose the biggest number of participant
-        if participants_number > self.parameters[self.PARTICIPANTS_NUMBER_KEY]:
-            return participants_number
-        else:
-            return self.parameters[self.PARTICIPANTS_NUMBER_KEY]
+        # get the number of participants described in the Tobii data
+        tobii_participants = self.tobii_data.index.values.tolist()
+        for participant in tobii_participants:
+            number = int(participant.replace('Participant', ''))
+            if number > tobii_participants_number:
+                tobii_participants_number = number
+
+        return max([tobii_participants_number,
+                    table_participants_number,
+                    self.parameters[self.PARTICIPANTS_NUMBER_KEY]])
 
     @ property
     def tasks(self) -> List[str]:

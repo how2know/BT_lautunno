@@ -79,7 +79,7 @@ class Plot:
         figure = plot.get_figure()
         figure.savefig(figure_save_path, bbox_inches='tight')
 
-        plt.show()
+        plt.show(block=False)
 
     @ staticmethod
     def make_heatmap(data_frame, figure_save_path, title=None, xlabel=None, ylabel=None):
