@@ -70,7 +70,6 @@ class EffectivenessAnalysis:
         self.picture_paths = picture_paths_list
         self.parameters = parameters_dictionary
 
-    # TODO: write this in __init__
     @ property
     def task_table(self) -> Table:
         """

@@ -84,7 +84,6 @@ class CoverPage:
         subtitle = self.report.add_paragraph(subtitle_text, 'Subtitle')
         return subtitle
 
-    # TODO: set column size
     def add_approval_table(self):
         """
         Add a table for the approval of the document.

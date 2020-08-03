@@ -60,8 +60,6 @@ class Parameters:
                 key = row.cells[0].text
                 value_text = row.cells[1].text
 
-                # TODO: add error message if given number does not correspond to number of element
-
                 # case where the value is an integer
                 if key.startswith('Number of'):
 

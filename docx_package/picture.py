@@ -7,8 +7,6 @@ from os import listdir
 from PIL import Image, UnidentifiedImageError
 
 
-# TODO: maybe add a option to treat the path one know
-# TODO: add update function
 class Picture:
     """
     Class that represents everything that have something to do with the pictures in the report,

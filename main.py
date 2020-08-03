@@ -48,6 +48,7 @@ def update(report_file):
 
 
 def main():
+
     main_start = time.time()
 
     # file name of the report
@@ -145,8 +146,6 @@ def main():
 
     # parameters needed to write the report
     parameters = Parameters.get_all(text_input, text_input_soup, tables)
-
-    print(parameters)   # TODO: delete this line
 
     # list of data frames that contain the cGOM data
     cGOM_dataframes = cGOM.make_dataframes_list()

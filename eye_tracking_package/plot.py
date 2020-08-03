@@ -2,8 +2,6 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# TODO: add type to argument
-
 
 class Plot:
     """Class that represents and creates the different plots needed for the visualization of the data."""
@@ -116,17 +114,6 @@ class Plot:
 
         plt.show(block=False)
 
-    # TODO: delete colors
-    # TODO: make dict with colors
-    '''    
-    x = {}
-    for name, hex in matplotlib.colors.cnames.items():
-        x[hex] = name
-    y = sorted(x)
-    for hey in y:
-        if 'blue' in x[hey]:
-            print(x[hey], '  ', hey)
-    '''
     @ staticmethod
     def make_pieplot(data_vector, labels_list, figure_save_path, title=None):
         """
@@ -143,7 +130,10 @@ class Plot:
         explode = np.full(len(data_vector), 0.001)
 
         # set the colors of the wedges
-        colors = ['midnightblue', 'royalblue', 'lightblue', 'deepskyblue']
+        colors = ['midnightblue', 'paleturquoise', 'blue',
+                  'deepskyblue', 'royalblue', 'lightcyan',
+                  'steelblue', 'darkslateblue', 'lightblue'
+                  ]
 
         # add a pie plot
         patches, texts = plt.pie(x=data_vector,
