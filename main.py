@@ -3,7 +3,6 @@ from docx.enum.section import WD_SECTION
 import os
 import win32com.client
 import inspect
-
 import time
 
 from docx_package.layout import Layout
@@ -22,6 +21,7 @@ from docx_package.picture import Picture
 from docx_package.document_history import DocumentHistory
 from docx_package.participants_characteristics import ParticipantsCharacteristics
 from docx_package.dropdown_lists import DropDownLists
+from docx_package.use_scenarios import UseScenarios
 
 from eye_tracking_package.cGOM_data import cGOM
 from eye_tracking_package.tobii_data import TobiiData
@@ -53,11 +53,11 @@ def main():
     # file name of the report
     report_file = 'Report.docx'
 
-    # create document
+    # create the report document
     report = Document()
 
     # path of the input files
-    text_input_path = 'Inputs/Text_input_test.docx'
+    text_input_path = 'Inputs/Text_input_test1.docx'
     definitions_path = 'Inputs/Terms_definitions.docx'
 
     # load text input files with python-docx
@@ -69,8 +69,8 @@ def main():
     #
     text_input_soup = DropDownLists.get_soup(text_input_path)
 
-    # list of all tables in the order they appear in the text input document
-    # useful to get the index of a table in the document
+    # list of all tables in the order they appear in the text input document,
+    # this is used to get the index of a table in the document
     tables = [
         'Study table',
         'Title table',
@@ -209,7 +209,10 @@ def main():
     environment = Chapter(report, text_input, text_input_soup, 'Use environment', tables, picture_paths, parameters)
     environment.write_chapter()
 
-    scenarios = Chapter(report, text_input, text_input_soup, 'Use scenarios', tables, picture_paths, parameters)
+    # scenarios = Chapter(report, text_input, text_input_soup, 'Use scenarios', tables, picture_paths, parameters)
+    # scenarios.write_chapter()
+
+    scenarios = UseScenarios(report, text_input, text_input_soup, 'Use scenarios', tables, picture_paths, parameters)
     scenarios.write_chapter()
 
     setup = Chapter(report, text_input, text_input_soup, 'Setup', tables, picture_paths, parameters)

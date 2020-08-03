@@ -8,12 +8,9 @@ from docx_package.dropdown_lists import DropDownLists
 from docx_package.picture import Picture
 
 
-class Chapter:
+class UseScenarios:
     """
-    Class that represents all classical chapter.
-
-    Every classical chapter are represented by this class, i.e. all chapters except
-    'Terms definitions' and those of the 'Results' section.
+    Class that represents the sub-chapter "Use scenarios".
     """
 
     def __init__(self,
@@ -94,7 +91,7 @@ class Chapter:
     def picture_name(self) -> str:
         """
         Returns:
-            Title with underscores instead of spaces, e.g. 'Use environment' becomes 'Use_environment'.
+            Title with underscores instead of spaces, e.g. 'Use scenarios' becomes 'Use_scenarios'.
         """
 
         return self.title.replace(' ', '_')
@@ -160,6 +157,16 @@ class Chapter:
             except IndexError:
                 self.report.add_paragraph(paragraph, 'Normal')
                 print('A wrong reference to a parameter was given in the chapter "{}"'.format(self.title))
+
+        self.report.add_paragraph()
+        self.report.add_paragraph('List of critical tasks:', 'Heading 3')
+
+        for key, value in self.parameters_dictionary.items():
+            if 'Critical task' in key:
+                if 'name' in key:
+                    task = self.report.add_paragraph(value, 'List Number 3')
+                if 'description' in key:
+                    task.add_run(value)
 
         # add pictures and their caption at the end of the chapter
         self.add_picture()
