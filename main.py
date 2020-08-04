@@ -280,13 +280,11 @@ def main():
     # error message for the image files that were not added to the report
     '''Picture.error_message(picture_paths)'''
 
-    '''
     start6 = time.time()
     # update the table of content
     update(report_file)
     end6 = time.time()
     print('Update: ', end6 - start6)
-    '''
 
     # open the report with the default application for .docx (Word)
     os.startfile(report_file)
