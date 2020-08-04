@@ -3,4 +3,4 @@ A program that is able to generate report for usability testing of medical devic
 ### Installation and execution
 Clone (or download) this repository to your target directory and follow the instructions given in the *Instructions.pdf* file.
 ### Testing
-Sample data and pictures can be found in the *Tests* folder in order to test the program.
+Sample data and pictures can be found in the *Tests* folder in order to test the program, as well as examples of automatically generated report.
