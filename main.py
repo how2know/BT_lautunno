@@ -58,7 +58,7 @@ def main():
     report = Document()
 
     # path of the input files
-    text_input_path = 'Inputs/Text_input_test2.docx'
+    text_input_path = 'Inputs/Text_input_form.docx'
     definitions_path = 'Inputs/Terms_definitions.docx'
 
     # load text input files with python-docx
